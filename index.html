@@ -13,6 +13,7 @@
             --text-main: #f0f4f8;
             --text-muted: #8da2bb;
             --border-glow: #1a294a;
+            --success-green: #2ecc71;
         }
 
         body {
@@ -54,10 +55,11 @@
             list-style: none;
             margin: 0;
             padding: 0;
+            flex-wrap: wrap;
         }
 
         nav ul li {
-            margin-left: 25px;
+            margin-left: 20px;
         }
 
         nav ul li a {
@@ -128,6 +130,93 @@
             color: var(--bg-deep);
         }
 
+        .btn-download {
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .btn-download:hover {
+            background-color: var(--success-green);
+            color: var(--bg-deep);
+        }
+
+        /* Forms styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-deep);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(6, 10, 19, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-modal:hover { color: var(--accent-gold); }
+
+        .receipt-box {
+            background-color: var(--bg-deep);
+            border: 1px dashed var(--border-glow);
+            padding: 20px;
+            font-family: monospace;
+            margin-top: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        /* Document Display Containers */
         .manuscript-box {
             background-color: var(--bg-deep);
             border-left: 3px solid var(--accent-gold);
@@ -150,6 +239,7 @@
         .md-container h1, .md-container h2, .md-container h3 { color: var(--accent-gold); }
         .md-container code { background: #1a294a; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         .md-container pre { background: #1a294a; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .md-container a { color: var(--accent-gold); }
 
         footer {
             text-align: center;
@@ -171,7 +261,10 @@
                 <ul>
                     <li><a onclick="switchTab('overview')" id="nav-overview" class="active">Overview</a></li>
                     <li><a onclick="switchTab('cosmology')" id="nav-cosmology">Scientific Dossier</a></li>
-                    <li><a onclick="switchTab('ai-responses')" id="nav-ai-responses">AI Speculative Analysis</a></li>
+                    <li><a onclick="switchTab('ai-responses')" id="nav-ai-responses">AI Analysis</a></li>
+                    <li><a onclick="switchTab('network')" id="nav-network">Root Network</a></li>
+                    <li><a onclick="switchTab('contribute')" id="nav-contribute">Contributors</a></li>
+                    <li><a onclick="openModal('contactModal')">Contact Us</a></li>
                 </ul>
             </nav>
         </div>
@@ -214,27 +307,43 @@
                 <div id="manuscript-m1" class="manuscript-box" style="display: block;">
                     <h2>The Quantum Implementation Explanation</h2>
                     <p class="muted-p"><em>Projecting: README.md & Recursive Quantum Paradoxical Loop.pdf</em></p>
+                    
                     <div id="md-readme" class="md-container">Loading repository configuration data...</div>
                     <hr style="border: 1px solid var(--border-glow); margin: 40px 0;">
-                    <iframe class="pdf-viewer" src="./Recursive%20Quantum%20Paradoxical%20Loop.pdf" title="Recursive Quantum Paradoxical Loop"></iframe>
+                    
+                    <object data="./Recursive%20Quantum%20Paradoxical%20Loop.pdf" type="application/pdf" class="pdf-viewer">
+                        <embed src="./Recursive%20Quantum%20Paradoxical%20Loop.pdf" type="application/pdf" class="pdf-viewer" />
+                        <p class="muted-p">Your device's browser blocks native PDF projection. <a href="./Recursive%20Quantum%20Paradoxical%20Loop.pdf" target="_blank">Click here to view the document.</a></p>
+                    </object>
                 </div>
 
                 <div id="manuscript-m2" class="manuscript-box">
                     <h2>The Manifest: Edge-Executed Cosmological Simulation</h2>
                     <p class="muted-p"><em>Projecting: Manifest.pdf</em></p>
-                    <iframe class="pdf-viewer" src="./Manifest.pdf" title="The Manifest"></iframe>
+                    <object data="./Manifest.pdf" type="application/pdf" class="pdf-viewer">
+                        <embed src="./Manifest.pdf" type="application/pdf" class="pdf-viewer" />
+                        <p class="muted-p">Your device's browser blocks native PDF projection. <a href="./Manifest.pdf" target="_blank">Click here to view the document.</a></p>
+                    </object>
                 </div>
 
                 <div id="manuscript-m3" class="manuscript-box">
                     <h2>The Algorithmic Topology of the AKLM Cosmos</h2>
                     <p class="muted-p"><em>Projecting: The Algorithmic Topology of the AKLM Cosmos.pdf</em></p>
-                    <iframe class="pdf-viewer" src="./The%20Algorithmic%20Topology%20of%20the%20AKLM%20Cosmos.pdf" title="Algorithmic Topology"></iframe>
+                    <object data="./The%20Algorithmic%20Topology%20of%20the%20AKLM%20Cosmos.pdf" type="application/pdf" class="pdf-viewer">
+                        <embed src="./The%20Algorithmic%20Topology%20of%20the%20AKLM%20Cosmos.pdf" type="application/pdf" class="pdf-viewer" />
+                        <p class="muted-p">Your device's browser blocks native PDF projection. <a href="./The%20Algorithmic%20Topology%20of%20the%20AKLM%20Cosmos.pdf" target="_blank">Click here to view the document.</a></p>
+                    </object>
                 </div>
 
                 <div id="manuscript-m4" class="manuscript-box">
                     <h2>Supporting Explanations: The Infinite Cycle & Experiential Translations</h2>
                     <p class="muted-p"><em>Projecting: The Infinite Recursive Cycle.pdf & Spiritual.md</em></p>
-                    <iframe class="pdf-viewer" src="./The%20Infinite%20Recursive%20Cycle.pdf" title="Infinite Recursive Cycle"></iframe>
+                    
+                    <object data="./The%20Infinite%20Recursive%20Cycle.pdf" type="application/pdf" class="pdf-viewer">
+                        <embed src="./The%20Infinite%20Recursive%20Cycle.pdf" type="application/pdf" class="pdf-viewer" />
+                        <p class="muted-p">Your device's browser blocks native PDF projection. <a href="./The%20Infinite%20Recursive%20Cycle.pdf" target="_blank">Click here to view the document.</a></p>
+                    </object>
+
                     <hr style="border: 1px solid var(--border-glow); margin: 40px 0;">
                     <div id="md-spiritual" class="md-container">Loading experiential translation data...</div>
                 </div>
@@ -249,24 +358,144 @@
                 <p class="muted-p" style="border-left: 2px solid var(--accent-gold); padding-left: 10px;"><strong>Context:</strong> These transcripts serve as an external, computational audit of the theories, demonstrating how an LLM processes the unified logic of goal-directed entropy, topological edge execution, and the infinite recursive cycle.</p>
 
                 <div style="background: var(--bg-deep); padding: 12px; border-radius: 6px; margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; border: 1px solid var(--border-glow);">
-                    <button class="btn active-sub" id="btn-ai1" onclick="toggleAiDoc('ai1')">1. Creation Beginnings: The First AI Response</button>
-                    <button class="btn" id="btn-ai2" onclick="toggleAiDoc('ai2')">2. Conversation with Gemini about the Universe</button>
+                    <button class="btn active-sub" id="btn-ai1" onclick="toggleAiDoc('ai1')">1. Creation Beginnings</button>
+                    <button class="btn" id="btn-ai2" onclick="toggleAiDoc('ai2')">2. Conversation with Gemini</button>
                 </div>
 
                 <div id="ai-doc-ai1" class="manuscript-box" style="display: block;">
                     <h2>Creation Beginnings: The First AI Response</h2>
-                    <p class="muted-p"><em>Projecting: Creation Beginnings, The First AI Response to my Theoretical Beliefs .pdf</em></p>
-                    <iframe class="pdf-viewer" src="./Creation%20Beginnings,%20The%20First%20AI%20Response%20to%20my%20Theoretical%20Beliefs%20.pdf" title="Creation Beginnings"></iframe>
+                    <object data="./Creation%20Beginnings,%20The%20First%20AI%20Response%20to%20my%20Theoretical%20Beliefs%20.pdf" type="application/pdf" class="pdf-viewer">
+                        <embed src="./Creation%20Beginnings,%20The%20First%20AI%20Response%20to%20my%20Theoretical%20Beliefs%20.pdf" type="application/pdf" class="pdf-viewer" />
+                        <p class="muted-p">Your device's browser blocks native PDF projection. <a href="./Creation%20Beginnings,%20The%20First%20AI%20Response%20to%20my%20Theoretical%20Beliefs%20.pdf" target="_blank">Click here to view the document.</a></p>
+                    </object>
                 </div>
 
                 <div id="ai-doc-ai2" class="manuscript-box">
                     <h2>Conversation with Gemini about the Universe</h2>
-                    <p class="muted-p"><em>Projecting: Conversation with Gemini about the universe.pdf</em></p>
-                    <iframe class="pdf-viewer" src="./Conversation%20with%20Gemini%20about%20the%20universe.pdf" title="Conversation with Gemini"></iframe>
+                    <object data="./Conversation%20with%20Gemini%20about%20the%20universe.pdf" type="application/pdf" class="pdf-viewer">
+                        <embed src="./Conversation%20with%20Gemini%20about%20the%20universe.pdf" type="application/pdf" class="pdf-viewer" />
+                        <p class="muted-p">Your device's browser blocks native PDF projection. <a href="./Conversation%20with%20Gemini%20about%20the%20universe.pdf" target="_blank">Click here to view the document.</a></p>
+                    </object>
+                </div>
+            </div>
+        </section>
+
+        <section id="network" class="tab-content">
+            <div class="card">
+                <h1>SUHS Alternate Root Domain Gateway</h1>
+                <p>To access the decentralized network ecosystem and resolve custom domains like <code>suhs.root</code> and <code>iam.root</code>, users must run our dedicated local routing controller. This client-side software configures a secure loopback proxy to communicate directly with our authoritative naming databases, eliminating reliance on centralized DNS monopolies.</p>
+                
+                <div style="background: var(--bg-deep); padding: 25px; border-radius: 6px; border: 1px solid var(--border-glow); margin: 25px 0; text-align: center;">
+                    <h3 style="margin-top:0;">Download Center</h3>
+                    <p class="muted-p">Version 1.0.4-Beta | Includes C++ Low-Level Socket Handlers & Native Android Framework Layers</p>
+                    <a href="#" class="btn btn-download" onclick="alert('Alpha Build Staging: Binary assets compile pipeline executing via GitHub workflows.')">Download SUHS Network Resolver (.APK / .EXE)</a>
+                </div>
+
+                <h2>Register Custom Root Domain</h2>
+                <p class="muted-p">Submit an application to broadcast your custom identity directly onto the authoritative domain ledger hosted via our DigitalOcean backend infrastructure.</p>
+                
+                <form id="domainForm" onsubmit="alert('Domain request queued for API synchronization.'); event.preventDefault();">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Requested Prefix</label>
+                            <input type="text" placeholder="mybrand" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Root Zone Extension</label>
+                            <select>
+                                <option>.root (Governing Network Tier)</option>
+                                <option>.suhs (Partnership Core Tier)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Target IP Mapping (A Record Destination)</label>
+                        <input type="text" placeholder="192.168.1.1" required>
+                    </div>
+                    <button type="submit" class="btn">Submit Domain Registration Request</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="contribute" class="tab-content">
+            <div class="card">
+                <h1>Become A Contributor</h1>
+                <p>Direct infrastructure funding supports structural research for the -RQPL-Core simulation fabric, AKLM execution loops, and the NewGalaxyS mobile application pipeline. To comply with rigorous data auditing protocols, all active contributors must initialize a verified corporate profile.</p>
+                
+                <h3 style="color: var(--text-main);">1. Submit Contributor Registration</h3>
+                <form id="regForm" onsubmit="generateProfile(event)">
+                    <div class="form-row">
+                        <div class="form-group"><label>Desired Username</label><input type="text" required id="regUser"></div>
+                        <div class="form-group"><label>Password</label><input type="password" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Full Physical Address</label><input type="text" required></div>
+                        <div class="form-group"><label>Phone Number</label><input type="tel" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Email Address</label><input type="email" required id="regEmail"></div>
+                        <div class="form-group"><label>Last 4 Digits of SSN (Verification Anchor)</label><input type="text" maxlength="4" placeholder="0000" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Profile Data Visibility</label>
+                        <select><option>Private (Protected System Tier)</option><option>Public (Open Contributor List)</option></select>
+                    </div>
+                    <div class="form-group"><label>About Me / Institutional Affiliation</label><textarea rows="3"></textarea></div>
+                    <button type="submit" class="btn">Register & Verify Contributor Profile</button>
+                </form>
+            </div>
+
+            <div id="fundingTier" class="card" style="display:none; border-color: var(--accent-gold);">
+                <h2>2. Allocation Pathways</h2>
+                <p>Your profile has been locally staged. Capital processing is securely routed through our Volunteer Accounting Assistant's processing paths.</p>
+                <p class="muted-p" style="border-left: 2px solid var(--accent-gold); padding-left: 10px;"><strong>Notice:</strong> The Company CashApp Business account is currently under initial start-up review. All deposits are being routed through the verified volunteer accounting proxy paths listed below.</p>
+                
+                <div style="background: var(--bg-deep); padding: 20px; border-radius: 6px; margin: 20px 0; border: 1px solid var(--border-glow);">
+                    <p style="margin: 0 0 10px 0;"><strong>Option A: Direct CashApp Tag Routing</strong></p>
+                    <p style="font-family: monospace; font-size: 1.2rem; color: var(--accent-gold); margin: 0;">$katiewazny9622</p>
+                    
+                    <p style="margin: 20px 0 10px 0;"><strong>Option B: Secured Deposit Parameters</strong></p>
+                    <p style="font-family: monospace; margin: 5px 0;">Routing Number: 041215663</p>
+                    <p style="font-family: monospace; margin: 5px 0;">Account Number: 5183247238073</p>
+                </div>
+
+                <h3>Generate Contribution Receipt</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Framework</label>
+                        <select id="receiptTarget">
+                            <option value="-RQPL-Core Framework Evolution"> -RQPL-Core Framework</option>
+                            <option value="AKLM Execution Optimization">AKLM Engine Optimization</option>
+                            <option value="NewGalaxyS Mobile Production Release">NewGalaxyS Edge Deployment</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Amount (USD)</label><input type="number" id="receiptAmount" placeholder="100.00"></div>
+                </div>
+                <button type="button" class="btn" onclick="issueReceipt()">Generate Auditable Receipt</button>
+
+                <div id="receiptOutput" style="display:none;">
+                    <h3>Official Corporate Receipt</h3>
+                    <div class="receipt-box" id="receiptTxt"></div>
                 </div>
             </div>
         </section>
     </main>
+
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('contactModal')">&times;</span>
+            <h2>Corporate Communications Protocol</h2>
+            <p class="muted-p" style="border-left: 2px solid var(--accent-gold); padding-left: 10px;">
+                NOTICE: Response metrics are highly variable. Inquiries may experience significant delivery latency or go completely unanswered due to the adverse statistical correlation of accumulated liquid assets relative to raw independent employability indexes.
+            </p>
+            <form onsubmit="handleContact(event)">
+                <div class="form-group"><label>Identity / Organization</label><input type="text" required></div>
+                <div class="form-group"><label>Secure Return Email</label><input type="email" required></div>
+                <div class="form-group"><label>Transmission Payload</label><textarea rows="4" required></textarea></div>
+                <button type="submit" class="btn">Transmit to SUHS Pipeline</button>
+            </form>
+        </div>
+    </div>
 
     <footer>
         SUHS GENERAL PARTNERSHIP | IRS EIN: 42-2913926 | MOUNT MORRIS, MICHIGAN, 2026
@@ -299,6 +528,54 @@
             
             document.getElementById('ai-doc-' + id).style.display = 'block';
             document.getElementById('btn-' + id).classList.add('active-sub');
+        }
+
+        // Modal Controls
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function handleContact(e) {
+            e.preventDefault();
+            alert("Transmission Staged. System response variables are uncommitted pursuant to liability mitigations.");
+            closeModal('contactModal');
+        }
+
+        // Contributor Profile & Receipt Generation
+        function generateProfile(e) {
+            e.preventDefault();
+            document.getElementById('fundingTier').style.display = 'block';
+            document.getElementById('fundingTier').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function issueReceipt() {
+            const user = document.getElementById('regUser').value || 'Anonymous Contributor';
+            const email = document.getElementById('regEmail').value || 'N/A';
+            const target = document.getElementById('receiptTarget').value;
+            const amt = document.getElementById('receiptAmount').value || '0.00';
+            const date = new Date().toISOString().split('T')[0];
+            const tracking = Math.floor(10000000 + Math.random() * 90000000);
+
+            const txt = `
+==================================================
+              SUHS OFFICIAL CHARITY RECEIPT       
+==================================================
+TRACKING ID: TXN-${tracking}
+TIMESTAMP:   ${date}
+ISSUED TO:   ${user} (${email})
+SUHS AUTH:   42-2913926 (IRS EIN)
+--------------------------------------------------
+ALLOCATION MATRIX:
+Target:      ${target}
+Amount:      $${parseFloat(amt).toFixed(2)} USD
+Asset Path:  Proxy / CashApp (Business Acct. Pending)
+--------------------------------------------------
+NOTICE: Contributions are logged under volunteer-
+assisted computational physics frameworks.
+Thank you for supporting independent R&D stability.
+==================================================`;
+            
+            document.getElementById('receiptTxt').innerText = txt;
+            document.getElementById('receiptOutput').style.display = 'block';
         }
 
         // Dynamic Markdown Fetching Engine
