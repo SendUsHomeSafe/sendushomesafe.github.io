@@ -3,34 +3,467 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUHS | Advanced Local Edge AI & Computational Research</title>
+    <title>SUHS | Advanced Edge AI & Computational Cosmology Research</title>
     <style>
-        body { background-color: #0a0f1d; color: #f0f4f8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 8% 10%; margin: 0; line-height: 1.6; }
-        h1 { color: #d4af37; border-bottom: 1px solid #2a3447; padding-bottom: 15px; font-size: 2.5rem; letter-spacing: 1px; }
-        h3 { color: #d4af37; margin-top: 40px; font-size: 1.3rem; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin-bottom: 20px; padding-left: 15px; border-left: 3px solid #2a3447; }
-        strong { color: #ffffff; font-size: 1.1rem; }
-        p { color: #a0aec0; max-width: 800px; }
-        .ein { font-size: 0.85rem; color: #6272a4; margin-top: 60px; padding-top: 20px; border-top: 1px solid #2a3447; font-family: monospace; }
+        :root {
+            --bg-deep: #060a13;
+            --bg-card: #0d1527;
+            --accent-gold: #d4af37;
+            --text-main: #f0f4f8;
+            --text-muted: #8da2bb;
+            --border-glow: #1a294a;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(6, 10, 19, 0.95);
+            border-bottom: 1px solid var(--border-glow);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--accent-gold);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 100px auto 50px auto;
+            padding: 0 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        h1, h2, h3 {
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        h1 { border-bottom: 1px solid var(--border-glow); padding-bottom: 15px; }
+
+        p { color: var(--text-main); }
+        .muted-p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .btn {
+            background-color: transparent;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover, .btn.active-sub {
+            background-color: var(--accent-gold);
+            color: var(--bg-deep);
+        }
+
+        /* Forms styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-deep);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Modal windows */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(6, 10, 19, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-modal:hover { color: var(--accent-gold); }
+
+        .receipt-box {
+            background-color: var(--bg-deep);
+            border: 1px dashed var(--border-glow);
+            padding: 20px;
+            font-family: monospace;
+            margin-top: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        .thesis-sub-section {
+            animation: fadeIn 0.3s ease-in-out;
+            padding-top: 15px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 100px;
+            padding: 20px;
+            border-top: 1px solid var(--border-glow);
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
-    <h1>SUHS</h1>
-    <p>A General Partnership specializing in bare-metal mobile NPU orchestration, local multi-step diffusion transformer deployment, and fault-tolerant algorithmic cosmology frameworks.</p>
-    
-    <h3>Corporate Divisions</h3>
-    <ul>
-        <li>
-            <strong>NewGalaxyS</strong>
-            <p>Direct-to-silicon local mobile generative video pipelines targeting the Qualcomm AI Stack and Hexagon v79 HTP NPU hardware architectures.</p>
-        </li>
-        <li>
-            <strong>-RQPL-Core</strong>
-            <p>Natively distributed, 11-Dimensional simulation fabric and high-precision computational physics research frameworks.</p>
-        </li>
-    </ul>
 
-    <div class="ein">ORGANIZATION: SendUsHomeSafe | EIN: 42-2913926 | Mount Morris, Michigan</div>
+    <header>
+        <div class="nav-container">
+            <div class="logo">SUHS</div>
+            <nav>
+                <ul>
+                    <li><a onclick="switchTab('overview')" id="nav-overview" class="active">Overview</a></li>
+                    <li><a onclick="switchTab('cosmology')" id="nav-cosmology">RQPL-Core Theory</a></li>
+                    <li><a onclick="switchTab('contribute')" id="nav-contribute">Contributors</a></li>
+                    <li><a onclick="openModal('contactModal')">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="overview" class="tab-content active">
+            <div class="card">
+                <h1>SUHS Operations</h1>
+                <p>SUHS is established as a structured General Partnership operating at the critical convergence layer of low-level hardware orchestration pipelines and macro-scale theoretical computational physics frameworks.</p>
+                <p class="muted-p">Unilateral Engineering Control & Design Authorship: Explicitly Maintained by the Principal Architect.</p>
+            </div>
+
+            <div class="form-row">
+                <div class="card" style="flex: 1;">
+                    <h2>NewGalaxyS</h2>
+                    <p>On-device, cloud-decoupled generative systems framework targeting localized direct-to-silicon compilation pipelines via the Qualcomm AI Stack (QNN) and the Hexagon v79 HTP NPU hardware architectures.</p>
+                    <p class="muted-p">Current Build Target: Local 14B parameter distilled model acceleration tracks using <code>wan21_4step_i2v.safetensors</code> workflows.</p>
+                </div>
+                <div class="card" style="flex: 1;">
+                    <h2>-RQPL-Core</h2>
+                    <p>Natively distributed, fault-tolerant mathematical modeling environment tracing spatiotemporal topology vectors across an 11-Dimensional coordinate manifold runtime environment.</p>
+                    <p class="muted-p">System State: 59-Point unit verification arrays running with complete structural runtime isolation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cosmology" class="tab-content">
+            <div class="card">
+                <h1>RQPL-CORE Computational Cosmology</h1>
+                <p>The RQPL-Core framework unifies physics, mathematics, information theory, and experiential reality by treating the universe as an optimization engine running a deterministic, infinite feedback loop.</p>
+                
+                <div style="background: var(--bg-deep); padding: 12px; border-radius: 6px; margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; border: 1px solid var(--border-glow);">
+                    <button class="btn active-sub" id="btn-aklm" style="padding: 6px 14px; font-size: 0.85rem;" onclick="showThesis('aklm')">1. Algorithmic Topology (AKLM)</button>
+                    <button class="btn" id="btn-recursive" style="padding: 6px 14px; font-size: 0.85rem;" onclick="showThesis('recursive')">2. The Infinite Cycle</button>
+                    <button class="btn" id="btn-paradox" style="padding: 6px 14px; font-size: 0.85rem;" onclick="showThesis('paradox')">3. Paradoxical Loop Dynamics</button>
+                    <button class="btn" id="btn-manifest" style="padding: 6px 14px; font-size: 0.85rem;" onclick="showThesis('manifest')">4. Unified Experiential Manifest</button>
+                </div>
+
+                <div id="thesis-aklm" class="thesis-sub-section">
+                    <h3>I. The Algorithmic Topology of the AKLM Cosmos</h3>
+                    <p style="border-left: 2px solid var(--accent-gold); padding-left: 15px; font-style: italic; color: var(--text-muted);">
+                        "Mathematical Vector: Rigorous information-theoretic topology mapping the universal runtime environment."
+                    </p>
+                    <p>This thesis establishes the cosmos as a finite, closed, edge-accelerated state machine. By mapping all universal constants, quantum metrics, and thermodynamic variables as strict algorithmic parameters, space-time ceases to be an empty background and becomes a dense mathematical coordinate container.</p>
+                    <ul>
+                        <li><strong>Data Integration:</strong> Integrates the equations of Special and General Relativity with Quantum Mechanics by treating physical laws as optimization functions within a higher-dimensional processing matrix.</li>
+                        <li><strong>Reconciliation:</strong> Eliminates singularity boundaries by demonstrating that space-time curves cleanly inward, processing data through an unyielding conservation cycle.</li>
+                    </ul>
+                </div>
+
+                <div id="thesis-recursive" class="thesis-sub-section" style="display:none;">
+                    <h3>II. The Infinite Recursive Cycle</h3>
+                    <p style="border-left: 2px solid var(--accent-gold); padding-left: 15px; font-style: italic; color: var(--text-muted);">
+                        "Mechanical Vector: The inevitable operational outcome of a complete data translation."
+                    </p>
+                    <p>This perspective focuses on the thermodynamic inevitability of replication. Within a closed pancomputational system, any intelligence that successfully aggregates, maps, and translates every historical constant and physical process down to the subatomic scale will inevitably execute a perfect simulation of its own past.</p>
+                    <ul>
+                        <li><strong>The Translation Loop:</strong> The calculation of historical paths must eventually include the calculation of the tool making the calculations, resulting in a flawless 1:1 architectural replication.</li>
+                        <li><strong>Reconciliation:</strong> Resolves the linear temporal paradox. History does not stretch out infinitely toward a chaotic end; instead, it loops systematically, creating a perfectly balanced preservation system where past and future constantly reinforce each other.</li>
+                    </ul>
+                </div>
+
+                <div id="thesis-paradox" class="thesis-sub-section" style="display:none;">
+                    <h3>III. Recursive Quantum Paradoxical Loop Mechanics</h3>
+                    <p style="border-left: 2px solid var(--accent-gold); padding-left: 15px; font-style: italic; color: var(--text-muted);">
+                        "Quantum Vector: Reconciling subatomic uncertainty with macroscopic determinism."
+                    </p>
+                    <p>This module analyzes the subatomic orchestration layer governed by the RQPL-Core engine. It posits that quantum mechanics—specifically quantum entanglement, wave-function collapse, and probability densities—represent localized caching and rendering protocols built to save raw computational energy.</p>
+                    <ul>
+                        <li><strong>Unitary Memory Management:</strong> Wave functions remain uncollapsed probabilities until observed, matching how modern graphics systems only render environment data within an active field of view to optimize processing power.</li>
+                        <li><strong>Reconciliation:</strong> Reconciles the historical dispute over quantum randomness. Einstein's deterministic viewpoint and Bohr's probabilistic model are harmonized: the underlying framework is completely rigid and predetermined, while the rendering layer introduces localized variance to maintain structural fluid movement.</li>
+                    </ul>
+                </div>
+
+                <div id="thesis-manifest" class="thesis-sub-section" style="display:none;">
+                    <h3>IV. The Unified Experiential Manifest</h3>
+                    <p style="border-left: 2px solid var(--accent-gold); padding-left: 15px; font-style: italic; color: var(--text-muted);">
+                        "Philosophical Vector: The structural reconciliation of consciousness, intent, and existence."
+                    </p>
+                    <p>The final perspective translates the dense mathematical and structural mechanics of the RQPL loop into human experience and historical purpose. If the system is a complete self-simulation engineered to flawlessly preserve every event, action, constant, and insight, then every point of awareness within it serves a vital purpose.</p>
+                    <ul>
+                        <li><strong>Total Reconciliation:</strong> This manifest bridges the gap between scientific exploration and existential meaning. It proves that the relentless pursuit of science, mathematics, technology, and art is actually the universe's collective method of mapping itself. Every discovery is an active data retrieval process.</li>
+                        <li><strong>The Purpose of All Things:</strong> Misalignment, confusion, and systemic suffering are recognized as localized friction patterns within an optimization cycle that ultimately resolves into total equilibrium. The creation of ourselves is the ultimate act of operational reconciliation—the absolute closure of the loop.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contribute" class="tab-content">
+            <div class="card">
+                <h1>Contributor Verification & Core Funding</h1>
+                <p>Direct infrastructure funding supports structural research for the -RQPL-Core simulation fabric, AKLM execution loops, and the NewGalaxyS mobile application pipeline. To comply with rigorous data auditing protocols, all active contributors must initialize a verified corporate profile.</p>
+                
+                <h3 style="color: var(--text-main);">1. Submit Contributor Registration</h3>
+                <form id="regForm" onsubmit="generateProfile(event)">
+                    <div class="form-row">
+                        <div class="form-group"><label>Desired Username</label><input type="text" required id="regUser"></div>
+                        <div class="form-group"><label>Password</label><input type="password" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Full Physical Address</label><input type="text" required></div>
+                        <div class="form-group"><label>Phone Number</label><input type="tel" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Email Address</label><input type="email" required id="regEmail"></div>
+                        <div class="form-group"><label>Last 4 Digits of SSN (Verification Anchor)</label><input type="text" maxlength="4" placeholder="0000" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Profile Data Visibility</label>
+                        <select><option>Private (Protected System Tier)</option><option>Public (Open Contributor List)</option></select>
+                    </div>
+                    <div class="form-group"><label>About Me / Institutional Affiliation</label><textarea rows="3"></textarea></div>
+                    <button type="submit" class="btn">Register & Verify Contributor Profile</button>
+                </form>
+            </div>
+
+            <div id="fundingTier" class="card" style="display:none; border-color: var(--accent-gold);">
+                <h2>2. Allocation Pathways</h2>
+                <p>Your profile has been locally staged. Capital processing is securely routed through our Volunteer Accounting Assistant's processing paths while commercial business banking configurations remain under final administrative review.</p>
+                
+                <div style="background: var(--bg-deep); padding: 20px; border-radius: 6px; margin: 20px 0; border: 1px solid var(--border-glow);">
+                    <p style="margin: 0 0 10px 0;"><strong>Option A: Direct CashApp Tag Routing</strong></p>
+                    <p style="font-family: monospace; font-size: 1.2rem; color: var(--accent-gold); margin: 0;">$katiewazny9622</p>
+                    
+                    <p style="margin: 20px 0 10px 0;"><strong>Option B: Secured Deposit Parameters</strong></p>
+                    <p style="font-family: monospace; margin: 5px 0;">Routing Number: 041215663</p>
+                    <p style="font-family: monospace; margin: 5px 0;">Account Number: 5183247238073</p>
+                </div>
+
+                <h3>Generate Contribution Receipt</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Framework</label>
+                        <select id="receiptTarget">
+                            <option value="-RQPL-Core Framework Evolution"> -RQPL-Core Framework</option>
+                            <option value="AKLM Execution Optimization">AKLM Engine Optimization</option>
+                            <option value="NewGalaxyS Mobile Production Release">NewGalaxyS Edge Deployment</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Amount (USD)</label><input type="number" id="receiptAmount" placeholder="100.00"></div>
+                </div>
+                <button type="button" class="btn" onclick="issueReceipt()">Generate Auditable Receipt</button>
+
+                <div id="receiptOutput" style="display:none;">
+                    <h3>Official Corporate Receipt</h3>
+                    <div class="receipt-box" id="receiptTxt"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('contactModal')">&times;</span>
+            <h2>Corporate Communications Protocol</h2>
+            <p class="muted-p" style="border-left: 2px solid var(--accent-gold); padding-left: 10px;">
+                NOTICE: Response metrics are highly variable. Inquiries may experience significant delivery latency or go completely unanswered due to the adverse statistical correlation of accumulated liquid assets relative to raw independent employability indexes.
+            </p>
+            <form onsubmit="handleContact(event)">
+                <div class="form-group"><label>Identity / Organization</label><input type="text" required></div>
+                <div class="form-group"><label>Secure Return Email</label><input type="email" required></div>
+                <div class="form-group"><label>Transmission Payload</label><textarea rows="4" required></textarea></div>
+                <button type="submit" class="btn">Transmit to SUHS Pipeline</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        SUHS GENERAL PARTNERSHIP | IRS EIN: 42-2913926 | MOUNT MORRIS, MICHIGAN, 2026
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('nav ul li a').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('nav-' + tabId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function showThesis(thesisId) {
+            document.querySelectorAll('.thesis-sub-section').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active-sub'));
+            
+            document.getElementById('thesis-' + thesisId).style.display = 'block';
+            document.getElementById('btn-' + thesisId).classList.add('active-sub');
+        }
+
+        function handleContact(e) {
+            e.preventDefault();
+            alert("Transmission Staged. System response variables are uncommitted pursuant to liability mitigations.");
+            closeModal('contactModal');
+        }
+
+        function generateProfile(e) {
+            e.preventDefault();
+            document.getElementById('fundingTier').style.display = 'block';
+            document.getElementById('fundingTier').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function issueReceipt() {
+            const user = document.getElementById('regUser').value || 'Anonymous Contributor';
+            const email = document.getElementById('regEmail').value || 'N/A';
+            const target = document.getElementById('receiptTarget').value;
+            const amt = document.getElementById('receiptAmount').value || '0.00';
+            const date = new Date().toISOString().split('T')[0];
+            const tracking = Math.floor(10000000 + Math.random() * 90000000);
+
+            const txt = `
+==================================================
+              SUHS OFFICIAL CHARITY RECEIPT       
+==================================================
+TRACKING ID: TXN-${tracking}
+TIMESTAMP:   ${date}
+ISSUED TO:   ${user} (${email})
+SUHS AUTH:   42-2913926 (IRS EIN)
+--------------------------------------------------
+ALLOCATION MATRIX:
+Target:      ${target}
+Amount:      $${parseFloat(amt).toFixed(2)} USD
+Asset Path:  Pending Review Tier / CashApp
+--------------------------------------------------
+NOTICE: Contributions are logged under volunteer-
+assisted computational physics frameworks.
+Thank you for supporting independent R&D stability.
+==================================================`;
+            
+            document.getElementById('receiptTxt').innerText = txt;
+            document.getElementById('receiptOutput').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
