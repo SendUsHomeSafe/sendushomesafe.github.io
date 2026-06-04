@@ -449,24 +449,52 @@
                     <p style="font-family: monospace; margin: 5px 0;">Account Number: 5183247238073</p>
                 </div>
 
-                <h3>Generate Contribution Receipt</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Target Framework</label>
-                        <select id="receiptTarget">
-                            <option value="-RQPL-Core Framework Evolution"> -RQPL-Core Framework</option>
-                            <option value="AKLM Execution Optimization">AKLM Engine Optimization</option>
-                            <option value="NewGalaxyS Mobile Production Release">NewGalaxyS Edge Deployment</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Amount (USD)</label><input type="number" id="receiptAmount" placeholder="100.00"></div>
-                </div>
-                <button type="button" class="btn" onclick="issueReceipt()">Generate Auditable Receipt</button>
+                <hr style="border: 1px solid var(--border-glow); margin: 40px 0;">
 
-                <div id="receiptOutput" style="display:none;">
-                    <h3>Official Corporate Receipt</h3>
-                    <div class="receipt-box" id="receiptTxt"></div>
-                </div>
+                <h2 style="font-size: 1.8rem; margin-top: 0;">The Catalyst: SUHS Musical Origins</h2>
+                <p>Before the code, there was the sound. This official SUHS music video, <strong>ĄÞ§łrªçłî⁰ⁿ</strong>, is the literal creative catalyst that birthed the NewGalaxyS application.</p>
+                
+                <p>During the production of this visual composition, our Principal Architect was forced to rely on the only free, unlimited cloud-based AI generator available on the market. Generating the required sheer volume of video segments meant enduring agonizing 3-to-5-minute wait times just to render single 5-second clips through trial and error. That extreme friction and bottlenecking proved the absolute necessity of local, unrestricted edge-execution. The frustration of centralized cloud rendering inspired the localized architectural pivot that defines SUHS today.</p>
+                
+                <p class="muted-p">The song was written entirely by the Principal Architect, featuring collaborative integration from SUHS Co-Founder and Partner, <strong>Crash (Clayton Butcher)</strong>. While Crash granted full permission for its integration into the SUHS corporate infrastructure, the track is ultimately slated to be featured on the debut album of the Architect's currently unnamed band.</p>
+
+                <video width="100%" controls style="border: 1px solid var(--border-glow); border-radius: 4px; margin-top: 15px; margin-bottom: 20px; background: #000;">
+                    <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <h3 style="color: var(--text-main);">Official Lyrics</h3>
+                <div class="receipt-box" style="font-family: monospace; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">We all strive to close our eyes
+Our attempt to be there
+Redirect from our demise 
+With contempt that we care
+
+Why lie
+When the truth is too demeaning 
+Why try
+For something that's so defeating 
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in
+
+Claim to want the most from time
+So we lie and sit there
+Keep a noose of our design 
+Hanging by a thin hair
+To discuss the ways of life
+Just repeat what we hear
+If you thought you should think twice 
+Don't think now so it's clear 
+
+Why lie
+When the truth is too demeaning 
+Why try
+For something that's so defeating 
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in</div>
             </div>
         </section>
     </main>
@@ -530,42 +558,11 @@
             closeModal('contactModal');
         }
 
-        // Contributor Profile & Receipt Generation
+        // Contributor Profile Generation
         function generateProfile(e) {
             e.preventDefault();
             document.getElementById('fundingTier').style.display = 'block';
             document.getElementById('fundingTier').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function issueReceipt() {
-            const user = document.getElementById('regUser').value || 'Anonymous Contributor';
-            const email = document.getElementById('regEmail').value || 'N/A';
-            const target = document.getElementById('receiptTarget').value;
-            const amt = document.getElementById('receiptAmount').value || '0.00';
-            const date = new Date().toISOString().split('T')[0];
-            const tracking = Math.floor(10000000 + Math.random() * 90000000);
-
-            const txt = `
-==================================================
-              SUHS OFFICIAL CHARITY RECEIPT       
-==================================================
-TRACKING ID: TXN-${tracking}
-TIMESTAMP:   ${date}
-ISSUED TO:   ${user} (${email})
-SUHS AUTH:   42-2913926 (IRS EIN)
---------------------------------------------------
-ALLOCATION MATRIX:
-Target:      ${target}
-Amount:      $${parseFloat(amt).toFixed(2)} USD
-Asset Path:  Proxy / CashApp (Business Acct. Pending)
---------------------------------------------------
-NOTICE: Contributions are logged under volunteer-
-assisted computational physics frameworks.
-Thank you for supporting independent R&D stability.
-==================================================`;
-            
-            document.getElementById('receiptTxt').innerText = txt;
-            document.getElementById('receiptOutput').style.display = 'block';
         }
 
         // Dynamic Markdown Fetching Engine
