@@ -14,6 +14,7 @@
             --text-muted: #8da2bb;
             --border-glow: #1a294a;
             --success-green: #2ecc71;
+            --warning-orange: #e67e22;
         }
 
         body {
@@ -130,14 +131,14 @@
             color: var(--bg-deep);
         }
 
-        .btn-download {
-            border-color: var(--success-green);
-            color: var(--success-green);
+        .btn-disabled {
+            border-color: #333;
+            color: #666;
+            cursor: not-allowed;
         }
-
-        .btn-download:hover {
-            background-color: var(--success-green);
-            color: var(--bg-deep);
+        .btn-disabled:hover {
+            background-color: transparent;
+            color: #666;
         }
 
         /* Forms styling */
@@ -160,6 +161,11 @@
             color: var(--text-main);
             border-radius: 4px;
             box-sizing: border-box;
+        }
+
+        .form-group input:disabled, .form-group select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .form-row {
@@ -257,6 +263,7 @@
                     <li><a onclick="switchTab('overview')" id="nav-overview" class="active">Overview</a></li>
                     <li><a onclick="switchTab('cosmology')" id="nav-cosmology">Scientific Dossier</a></li>
                     <li><a onclick="switchTab('ai-responses')" id="nav-ai-responses">AI Analysis</a></li>
+                    <li><a onclick="switchTab('musical-origins')" id="nav-musical-origins">Musical Origins</a></li>
                     <li><a onclick="switchTab('network')" id="nav-network">Root Network</a></li>
                     <li><a onclick="switchTab('contribute')" id="nav-contribute">Contributors</a></li>
                     <li><a onclick="openModal('contactModal')">Contact Us</a></li>
@@ -293,7 +300,6 @@
                     <p>NewGalaxyS runs bare-metal on the Snapdragon Hexagon v79 HTP NPU. Because the AI is compiled locally on your device, there are no server upkeep costs. We provide this absolute freedom for a <strong>one-time, reasonable price.</strong> Once installed, the render engine belongs entirely to you. Forever.</p>
                 </div>
             </div>
-
         </section>
 
         <section id="cosmology" class="tab-content">
@@ -313,7 +319,6 @@
                 <div id="manuscript-m1" class="manuscript-box" style="display: block;">
                     <h2>The Quantum Implementation Explanation</h2>
                     <p class="muted-p"><em>Projecting: README.md & Recursive Quantum Paradoxical Loop.md</em></p>
-                    
                     <div id="md-readme" class="md-container">Loading repository configuration data...</div>
                     <hr style="border: 1px solid var(--border-glow); margin: 60px 0;">
                     <div id="md-rqpl" class="md-container">Loading Quantum Loop theory...</div>
@@ -322,21 +327,18 @@
                 <div id="manuscript-m2" class="manuscript-box">
                     <h2>The Manifest: Edge-Executed Cosmological Simulation</h2>
                     <p class="muted-p"><em>Projecting: Manifest.md</em></p>
-                    
                     <div id="md-manifest" class="md-container">Loading Manifest theory data...</div>
                 </div>
 
                 <div id="manuscript-m3" class="manuscript-box">
                     <h2>The Algorithmic Topology of the AKLM Cosmos</h2>
                     <p class="muted-p"><em>Projecting: The Algorithmic Topology of the AKLM Cosmos.md</em></p>
-                    
                     <div id="md-topology" class="md-container">Loading Algorithmic Topology...</div>
                 </div>
 
                 <div id="manuscript-m4" class="manuscript-box">
                     <h2>Supporting Explanations: The Infinite Cycle & Experiential Translations</h2>
                     <p class="muted-p"><em>Projecting: The Infinite Recursive Cycle.md & Spiritual.md</em></p>
-                    
                     <div id="md-cycle" class="md-container">Loading Infinite Cycle logic...</div>
                     <hr style="border: 1px solid var(--border-glow); margin: 60px 0;">
                     <div id="md-spiritual" class="md-container">Loading experiential translation data...</div>
@@ -370,29 +372,146 @@
             </div>
         </section>
 
-        <section id="network" class="tab-content">
+        <section id="musical-origins" class="tab-content">
             <div class="card">
+                <h1>Musical Origins & The Catalyst</h1>
+                <p>Before the code, there was the sound. The tracks below represent the literal creative origins and thematic ideology behind the SUHS corporate infrastructure. Both songs were written and recorded entirely by the Principal Architect, featuring collaborative integration from SUHS Co-Founder and Partner, <strong>Crash (Clayton Butcher)</strong>.</p>
+                <p>While Crash granted full permission for their integration into the SUHS corporate infrastructure, these tracks are ultimately slated to be featured on the debut album of the Architect's currently unnamed band.</p>
+
+                <hr style="border: 1px solid var(--border-glow); margin: 30px 0;">
+
+                <h2 style="color: var(--accent-gold); margin-bottom: 5px;">Reason (Acoustic)</h2>
+                <p class="muted-p" style="margin-top: 0;">A sonic alignment with the company's core mission: breaking through institutional conditioning, questioning the narratives of control, and returning to fundamental truth.</p>
+                
+                <audio controls style="width: 100%; margin-top: 10px; margin-bottom: 20px;">
+                    <source src="./Reason_acoustic.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+
+                <h4 style="margin-bottom: 5px;">Lyrics</h4>
+                <div class="receipt-box" style="font-family: monospace; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">What you know 
+Is what you're told 
+And those who've told you know it can't be 
+What you know 
+Is what you're shown 
+And those who've shown you know they can't see 
+
+So I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+
+Where'd you go 
+The world is cold 
+When everything is done without me 
+Truth was sold 
+To keep control 
+And those who sold it know it's deadly 
+
+But I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+
+You have grown 
+From seeds they've thrown 
+Just like a weed unfortunately 
+Studies show 
+You to and fro 
+When all you need to do is see me 
+
+So I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+I'm gonna need you to come back to me
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard
+
+What you know 
+Is what you're told 
+And those who've told you know it can't be 
+What you know 
+Is what you're shown 
+And those who've shown you know they can't see
+At all</div>
+
+                <hr style="border: 1px solid var(--border-glow); margin: 40px 0;">
+
+                <h2 style="color: var(--accent-gold); margin-bottom: 5px;">ĄÞ§łrªçłî⁰ⁿ</h2>
+                <p class="muted-p" style="margin-top: 0;">The Catalyst: This official SUHS music video is the direct creative spark that birthed the NewGalaxyS application.</p>
+                
+                <p>During the production of this visual composition, the Architect was forced to rely on the only free, unlimited cloud-based AI generator available on the market. Generating the required sheer volume of video segments meant enduring agonizing 3-to-5-minute wait times just to render single 5-second clips through trial and error. That extreme friction and bottlenecking proved the absolute necessity of local, unrestricted edge-execution. The frustration of centralized cloud rendering inspired the localized architectural pivot that defines SUHS today.</p>
+
+                <video width="100%" controls style="border: 1px solid var(--border-glow); border-radius: 4px; margin-top: 15px; margin-bottom: 20px; background: #000;">
+                    <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <h4 style="margin-bottom: 5px;">Lyrics</h4>
+                <div class="receipt-box" style="font-family: monospace; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">We all strive to close our eyes
+Our attempt to be there
+Redirect from our demise 
+With contempt that we care
+
+Why lie
+When the truth is too demeaning 
+Why try
+When something is so defeating 
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in
+
+Claim to want the most from time
+So we lie and sit there
+Keep a noose of our design 
+Hanging by a thin hair
+To discuss the ways of life
+Just repeat what we hear
+If you thought you should think twice 
+Don't think now so it's clear 
+
+Why lie
+When the truth is too demeaning 
+Why try
+When something is so defeating 
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in</div>
+            </div>
+        </section>
+
+        <section id="network" class="tab-content">
+            <div class="card" style="border-color: var(--warning-orange);">
                 <h1>SUHS Alternate Root Domain Gateway</h1>
-                <p>To access the decentralized network ecosystem and resolve custom domains like <code>suhs.root</code> and <code>iam.root</code>, users must run our dedicated local routing controller. This client-side software configures a secure loopback proxy to communicate directly with our authoritative naming databases, eliminating reliance on centralized DNS monopolies.</p>
+                <div style="background: rgba(230, 126, 34, 0.1); border-left: 4px solid var(--warning-orange); padding: 15px; margin-bottom: 20px;">
+                    <h3 style="color: var(--warning-orange); margin-top: 0;">STATUS: IN DESIGN STAGE</h3>
+                    <p style="margin-bottom: 0;">The Domain name routing matrix and resolution application are currently in the initial mapping and architectural design stage and are not yet accessible for public deployment.</p>
+                </div>
+
+                <p>Once live, this decentralized network ecosystem will resolve custom domains like <code>suhs.root</code> and <code>iam.root</code> via our dedicated local routing controller. This client-side software configures a secure loopback proxy to communicate directly with our authoritative naming databases, eliminating reliance on centralized DNS monopolies.</p>
                 
                 <div style="background: var(--bg-deep); padding: 25px; border-radius: 6px; border: 1px solid var(--border-glow); margin: 25px 0; text-align: center;">
                     <h3 style="margin-top:0;">Download Center</h3>
-                    <p class="muted-p">Version 1.0.4-Beta | Includes C++ Low-Level Socket Handlers & Native Android Framework Layers</p>
-                    <a href="#" class="btn btn-download" onclick="alert('Alpha Build Staging: Binary assets compile pipeline executing via GitHub workflows.')">Download SUHS Network Resolver (.APK / .EXE)</a>
+                    <p class="muted-p">Software compilation staging pending backend deployment.</p>
+                    <button class="btn btn-disabled" disabled>Download SUHS Network Resolver (Currently Unavailable)</button>
                 </div>
 
                 <h2>Register Custom Root Domain</h2>
-                <p class="muted-p">Submit an application to broadcast your custom identity directly onto the authoritative domain ledger hosted via our DigitalOcean backend infrastructure.</p>
+                <p class="muted-p">Registrations are temporarily suspended until API synchronization with the DigitalOcean backend infrastructure is complete.</p>
                 
-                <form id="domainForm" onsubmit="alert('Domain request queued for API synchronization.'); event.preventDefault();">
+                <form id="domainForm" onsubmit="event.preventDefault();">
                     <div class="form-row">
                         <div class="form-group">
                             <label>Requested Prefix</label>
-                            <input type="text" placeholder="mybrand" required>
+                            <input type="text" placeholder="mybrand" disabled>
                         </div>
                         <div class="form-group">
                             <label>Root Zone Extension</label>
-                            <select>
+                            <select disabled>
                                 <option>.root (Governing Network Tier)</option>
                                 <option>.suhs (Partnership Core Tier)</option>
                             </select>
@@ -400,9 +519,9 @@
                     </div>
                     <div class="form-group">
                         <label>Target IP Mapping (A Record Destination)</label>
-                        <input type="text" placeholder="192.168.1.1" required>
+                        <input type="text" placeholder="192.168.1.1" disabled>
                     </div>
-                    <button type="submit" class="btn">Submit Domain Registration Request</button>
+                    <button type="submit" class="btn btn-disabled" disabled>Submit Domain Registration Request</button>
                 </form>
             </div>
         </section>
@@ -449,52 +568,23 @@
                     <p style="font-family: monospace; margin: 5px 0;">Account Number: 5183247238073</p>
                 </div>
 
-                <hr style="border: 1px solid var(--border-glow); margin: 40px 0;">
+                <h3>Generate Contribution Receipt</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Target Framework</label>
+                        <select id="receiptTarget">
+                            <option value="-RQPL-Core Framework Evolution"> -RQPL-Core Framework</option>
+                            <option value="AKLM Execution Optimization">AKLM Engine Optimization</option>
+                            <option value="NewGalaxyS Mobile Production Release">NewGalaxyS Edge Deployment</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Amount (USD)</label><input type="number" id="receiptAmount" placeholder="100.00"></div>
+                </div>
+                <button type="button" class="btn" onclick="issueReceipt()">Generate Auditable Ledger</button>
 
-                <h2 style="font-size: 1.8rem; margin-top: 0;">The Catalyst: SUHS Musical Origins</h2>
-                <p>Before the code, there was the sound. This official SUHS music video, <strong>ĄÞ§łrªçłî⁰ⁿ</strong>, is the literal creative catalyst that birthed the NewGalaxyS application.</p>
-                
-                <p>During the production of this visual composition, our Principal Architect was forced to rely on the only free, unlimited cloud-based AI generator available on the market. Generating the required sheer volume of video segments meant enduring agonizing 3-to-5-minute wait times just to render single 5-second clips through trial and error. That extreme friction and bottlenecking proved the absolute necessity of local, unrestricted edge-execution. The frustration of centralized cloud rendering inspired the localized architectural pivot that defines SUHS today.</p>
-                
-                <p class="muted-p">The song was written entirely by the Principal Architect, featuring collaborative integration from SUHS Co-Founder and Partner, <strong>Crash (Clayton Butcher)</strong>. While Crash granted full permission for its integration into the SUHS corporate infrastructure, the track is ultimately slated to be featured on the debut album of the Architect's currently unnamed band.</p>
-
-                <video width="100%" controls style="border: 1px solid var(--border-glow); border-radius: 4px; margin-top: 15px; margin-bottom: 20px; background: #000;">
-                    <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-
-                <h3 style="color: var(--text-main);">Official Lyrics</h3>
-                <div class="receipt-box" style="font-family: monospace; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">We all strive to close our eyes
-Our attempt to be there
-Redirect from our demise 
-With contempt that we care
-
-Why lie
-When the truth is too demeaning 
-Why try
-When something is so defeating 
-Why cry
-For someone we can't redeem and
-Why die
-For something we don't believe in
-
-Claim to want the most from time
-So we lie and sit there
-Keep a noose of our design 
-Hanging by a thin hair
-To discuss the ways of life
-Just repeat what we hear
-If you thought you should think twice 
-Don't think now so it's clear 
-
-Why lie
-When the truth is too demeaning 
-Why try
-When something is so defeating 
-Why cry
-For someone we can't redeem and
-Why die
-For something we don't believe in</div>
+                <div id="receiptOutput" style="display:none;">
+                    <div class="receipt-box" id="receiptTxt"></div>
+                </div>
             </div>
         </section>
     </main>
@@ -563,6 +653,44 @@ For something we don't believe in</div>
             e.preventDefault();
             document.getElementById('fundingTier').style.display = 'block';
             document.getElementById('fundingTier').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function issueReceipt() {
+            const user = document.getElementById('regUser').value || 'Anonymous Contributor';
+            const email = document.getElementById('regEmail').value || 'N/A';
+            const target = document.getElementById('receiptTarget').value;
+            const amt = document.getElementById('receiptAmount').value || '0.00';
+            const date = new Date().toISOString().split('T')[0];
+            const tracking = Math.floor(10000000 + Math.random() * 90000000);
+
+            const txt = `
+==================================================
+        SUHS PENDING CONTRIBUTION LEDGER       
+==================================================
+TRACKING ID: TXN-${tracking}
+TIMESTAMP:   ${date}
+ISSUED TO:   ${user} (${email})
+SUHS AUTH:   42-2913926 (IRS EIN)
+--------------------------------------------------
+ALLOCATION MATRIX:
+Target:      ${target}
+Amount:      $${parseFloat(amt).toFixed(2)} USD
+Asset Path:  Proxy / CashApp (Business Acct. Pending)
+--------------------------------------------------
+*** STATUS: UNVERIFIED / PENDING RECONCILIATION ***
+
+NOTICE: This document is a staging ledger only. It 
+does not serve as proof of payment or tax deduction 
+until manually verified against cryptographic routing 
+logs by SUHS accounting personnel. 
+==================================================`;
+            
+            document.getElementById('receiptTxt').innerText = txt;
+            document.getElementById('receiptOutput').style.display = 'block';
+            
+            document.querySelector("button[onclick='issueReceipt()']").innerText = "Ledger Staged - Awaiting Manual Verification";
+            document.querySelector("button[onclick='issueReceipt()']").classList.add("btn-disabled");
+            document.querySelector("button[onclick='issueReceipt()']").disabled = true;
         }
 
         // Dynamic Markdown Fetching Engine
