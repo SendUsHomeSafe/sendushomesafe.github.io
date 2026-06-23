@@ -849,98 +849,149 @@ logs by SUHS accounting personnel.
         button:hover { 
             background-color: #0056b3; 
         }
-        button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-        }
-        #status {
-            margin-top: 1rem;
-            text-align: center;
-            font-size: 0.95rem;
-            font-weight: 500;
-            min-height: 20px;
-        }
-        .success { color: #4caf50; }
-        .error { color: #f44336; }
-    </style>
-</head>
-<body>
-
-<div class="contact-container">
-    <h2>Contact Support</h2>
-    <!-- The action attribute points directly to your Formspree endpoint -->
-    <form id="support-form" action="https://formspree.io/f/xbdvlpbe" method="POST">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email address</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="subject">Issue / Subject</label>
-            <input type="text" id="subject" name="subject" required>
-        </div>
-        <div class="form-group">
-            <label for="message">How can we help?</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-        </div>
-        <button type="submit" id="submit-button">Send Message</button>
-        <div id="status"></div>
-    </form>
-</div>
-
-<script>
-    const form = document.getElementById('support-form');
-    const status = document.getElementById('status');
-    const submitButton = document.getElementById('submit-button');
-
-    // Hijack the standard form submission to use AJAX instead
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        
-        // Prevent double submissions while processing
-        submitButton.disabled = true;
-        submitButton.textContent = 'Sending...';
-        status.innerHTML = '';
-        status.className = '';
-        
-        const data = new FormData(form);
-        
-        try {
-            const response = await fetch(event.target.action, {
-                method: form.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json' // Forces Formspree to return JSON instead of a redirect
-                }
-            });
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('contactModal')">&times;</span>
+            <h2>Corporate Communications Protocol</h2>
             
-            if (response.ok) {
-                status.innerHTML = "Message sent successfully! We will be in touch.";
-                status.className = "success";
-                form.reset(); // Clear the form
-            } else {
-                const responseData = await response.json();
-                if (Object.hasOwn(responseData, 'errors')) {
-                    status.innerHTML = responseData.errors.map(error => error.message).join(", ");
-                } else {
-                    status.innerHTML = "Oops! There was a problem submitting your form.";
-                }
-                status.className = "error";
-            }
-        } catch (error) {
-            status.innerHTML = "Oops! There was a network error. Please try again.";
-            status.className = "error";
-        } finally {
-            // Re-enable the button regardless of success/failure
-            submitButton.disabled = false;
-            submitButton.textContent = 'Send Message';
-        }
-    });
-</script>
+            <!-- Here is the embedded Formspree form -->
+            <form id="support-form" action="https://formspree.io/f/xbdvlpbe" method="POST">
+                <div class="form-group">
+                    <label for="name">Name / Authorization ID</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Return Protocol (Email Address)</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Vector / Subject</label>
+                    <input type="text" id="subject" name="subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Transmission Data</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+                <button type="submit" id="submit-button" class="btn" style="width: 100%;">Transmit Message</button>
+                <div id="status" style="margin-top: 15px; text-align: center; font-family: monospace; font-size: 0.9rem;"></div>
+            </form>
+            
+        </div>
+    </div>
 
+    <!-- Required JavaScript for the tabs, modals, and the Formspree submission -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Remove active class from all nav links
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            // Highlight selected nav link
+            document.getElementById('nav-' + tabId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Modal Logic
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal if clicked outside of content
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Handle the Formspree Form Submission gracefully
+        const form = document.getElementById('support-form');
+        const status = document.getElementById('status');
+        const submitButton = document.getElementById('submit-button');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Transmitting...';
+            status.innerHTML = '';
+            status.style.color = 'var(--text-main)';
+            
+            const data = new FormData(form);
+            
+            try {
+                const response = await fetch(event.target.action, {
+                    method: form.method,
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    status.innerHTML = "TRANSMISSION SUCCESSFUL. STAND BY FOR RESPONSE.";
+                    status.style.color = "var(--success-green)";
+                    form.reset();
+                } else {
+                    const responseData = await response.json();
+                    if (Object.hasOwn(responseData, 'errors')) {
+                        status.innerHTML = responseData.errors.map(error => error.message).join(", ");
+                    } else {
+                        status.innerHTML = "TRANSMISSION FAILURE: NETWORK ERROR.";
+                    }
+                    status.style.color = "var(--warning-orange)";
+                }
+            } catch (error) {
+                status.innerHTML = "TRANSMISSION FAILURE: SYSTEM OFFLINE.";
+                status.style.color = "var(--warning-orange)";
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Transmit Message';
+            }
+        });
+        
+        // Placeholder functions for the contributor section
+        function generateProfile(event) {
+            event.preventDefault();
+            document.getElementById('fundingTier').style.display = 'block';
+            alert("Contributor Profile Staged Locally.");
+        }
+        
+        function issueReceipt() {
+            const amount = document.getElementById('receiptAmount').value;
+            const target = document.getElementById('receiptTarget').value;
+            const user = document.getElementById('regUser').value || "ANONYMOUS";
+            
+            if(!amount) return alert("Please enter an amount.");
+            
+            const date = new Date().toISOString();
+            const receiptStr = `=================================
+SUHS VERIFIED TRANSACTION LEDGER
+=================================
+TIMESTAMP: ${date}
+NODE_ID:   ${user}
+TARGET:    ${target}
+AMOUNT:    $${parseFloat(amount).toFixed(2)} USD
+STATUS:    PENDING ROUTING VERIFICATION
+=================================`;
+            
+            document.getElementById('receiptOutput').style.display = 'block';
+            document.getElementById('receiptTxt').textContent = receiptStr;
+        }
+        
+        // Placeholders for manuscript toggles
+        function toggleManuscript(id) {}
+        function toggleAiDoc(id) {}
+    </script>
 </body>
     </html>
-</html>
