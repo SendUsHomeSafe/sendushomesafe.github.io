@@ -778,4 +778,169 @@ logs by SUHS accounting personnel.
         };
     </script>
 </body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Send Us Home Safe</title>
+    <style>
+        /* Clean, dark-mode terminal-inspired theme */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .contact-container {
+            background-color: #1e1e1e;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        h2 { 
+            margin-top: 0; 
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        .form-group { 
+            margin-bottom: 1.25rem; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-size: 0.9rem; 
+            font-weight: 500;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            margin-top: 0.5rem;
+        }
+        button:hover { 
+            background-color: #0056b3; 
+        }
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 500;
+            min-height: 20px;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+    </style>
+</head>
+<body>
+
+<div class="contact-container">
+    <h2>Contact Support</h2>
+    <!-- The action attribute points directly to your Formspree endpoint -->
+    <form id="support-form" action="https://formspree.io/f/xbdvlpbe" method="POST">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="subject">Issue / Subject</label>
+            <input type="text" id="subject" name="subject" required>
+        </div>
+        <div class="form-group">
+            <label for="message">How can we help?</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" id="submit-button">Send Message</button>
+        <div id="status"></div>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById('support-form');
+    const status = document.getElementById('status');
+    const submitButton = document.getElementById('submit-button');
+
+    // Hijack the standard form submission to use AJAX instead
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        // Prevent double submissions while processing
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+        status.innerHTML = '';
+        status.className = '';
+        
+        const data = new FormData(form);
+        
+        try {
+            const response = await fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json' // Forces Formspree to return JSON instead of a redirect
+                }
+            });
+            
+            if (response.ok) {
+                status.innerHTML = "Message sent successfully! We will be in touch.";
+                status.className = "success";
+                form.reset(); // Clear the form
+            } else {
+                const responseData = await response.json();
+                if (Object.hasOwn(responseData, 'errors')) {
+                    status.innerHTML = responseData.errors.map(error => error.message).join(", ");
+                } else {
+                    status.innerHTML = "Oops! There was a problem submitting your form.";
+                }
+                status.className = "error";
+            }
+        } catch (error) {
+            status.innerHTML = "Oops! There was a network error. Please try again.";
+            status.className = "error";
+        } finally {
+            // Re-enable the button regardless of success/failure
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send Message';
+        }
+    });
+</script>
+
+</body>
+    </html>
 </html>
