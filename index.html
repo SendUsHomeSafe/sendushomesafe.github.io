@@ -3,50 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SUHS | Mission Control</title>
+  <title>SUHS | Advanced Systems Command</title>
   <meta
     name="description"
-    content="SUHS develops local-first AI systems, runtime orchestration, and advanced recursive computational research."
+    content="SUHS develops local-first artificial intelligence systems, secure runtime orchestration, and advanced recursive computational research."
   />
   <meta name="theme-color" content="#040812" />
   <style>
     :root {
       --bg: #040812;
-      --bg-2: #08101c;
-      --panel: rgba(8, 13, 24, 0.76);
-      --panel-strong: rgba(7, 11, 20, 0.94);
-      --line: rgba(118, 154, 218, 0.13);
-      --line-strong: rgba(118, 154, 218, 0.24);
+      --bg-2: #09111d;
+      --panel: rgba(8, 13, 24, 0.78);
+      --panel-strong: rgba(6, 10, 18, 0.94);
+      --line: rgba(111, 152, 224, 0.14);
+      --line-strong: rgba(111, 152, 224, 0.26);
       --text: #eef4ff;
-      --muted: #9eb0cb;
-      --soft: #c8d4e8;
+      --muted: #9db0cc;
+      --soft: #c8d5e8;
       --gold: #d5b15f;
-      --gold-soft: rgba(213, 177, 95, 0.12);
       --cyan: #7edaff;
-      --cyan-soft: rgba(126, 218, 255, 0.12);
-      --violet: #9c92ff;
-      --violet-soft: rgba(156, 146, 255, 0.12);
+      --violet: #9b91ff;
       --green: #67d89f;
+      --orange: #ffb48d;
+      --shadow: 0 30px 90px rgba(0,0,0,0.42);
       --radius: 24px;
       --radius-sm: 16px;
-      --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
-      --max: 1400px;
+      --max: 1440px;
       --nav-h: 82px;
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       color: var(--text);
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.5;
+      line-height: 1.55;
       overflow-x: hidden;
       background:
-        radial-gradient(circle at 15% 14%, rgba(126,218,255,0.08), transparent 23%),
-        radial-gradient(circle at 83% 18%, rgba(156,146,255,0.08), transparent 22%),
-        radial-gradient(circle at 52% 82%, rgba(213,177,95,0.06), transparent 25%),
-        linear-gradient(180deg, #02060d 0%, #060d18 42%, #040812 100%);
+        radial-gradient(circle at 14% 14%, rgba(126,218,255,0.08), transparent 24%),
+        radial-gradient(circle at 82% 18%, rgba(155,145,255,0.08), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(213,177,95,0.06), transparent 26%),
+        linear-gradient(180deg, #02060d 0%, #07101b 42%, #040812 100%);
     }
 
     a { color: inherit; text-decoration: none; }
@@ -54,15 +53,19 @@
 
     .bg-canvas,
     .grid-layer,
-    .glow-layer {
+    .glow-layer,
+    .scanline-layer {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: -3;
     }
 
+    .bg-canvas { z-index: -4; }
+    .grid-layer { z-index: -3; }
+    .glow-layer { z-index: -2; }
+    .scanline-layer { z-index: -1; }
+
     .grid-layer {
-      z-index: -2;
       opacity: 0.14;
       background-image:
         linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -72,12 +75,24 @@
     }
 
     .glow-layer {
-      z-index: -1;
       filter: blur(28px);
       background:
-        radial-gradient(circle at 22% 16%, rgba(126,218,255,0.10), transparent 22%),
-        radial-gradient(circle at 78% 18%, rgba(156,146,255,0.10), transparent 22%),
-        radial-gradient(circle at 50% 82%, rgba(213,177,95,0.07), transparent 24%);
+        radial-gradient(circle at 20% 14%, rgba(126,218,255,0.10), transparent 22%),
+        radial-gradient(circle at 78% 18%, rgba(155,145,255,0.10), transparent 22%),
+        radial-gradient(circle at 50% 84%, rgba(213,177,95,0.06), transparent 24%);
+    }
+
+    .scanline-layer {
+      opacity: 0.08;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.05) 0px,
+          rgba(255,255,255,0.05) 1px,
+          transparent 2px,
+          transparent 5px
+        );
+      animation: scanDrift 18s linear infinite;
     }
 
     #starCanvas {
@@ -91,7 +106,7 @@
       top: 0;
       z-index: 1000;
       height: var(--nav-h);
-      background: rgba(3, 8, 14, 0.74);
+      background: rgba(3,8,14,0.74);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--line);
     }
@@ -119,9 +134,9 @@
       height: 46px;
       border-radius: 50%;
       position: relative;
-      border: 1px solid rgba(213,177,95,0.42);
+      border: 1px solid rgba(213,177,95,0.40);
       background:
-        radial-gradient(circle at 50% 50%, rgba(213,177,95,0.32), rgba(126,218,255,0.10) 40%, transparent 68%);
+        radial-gradient(circle at 50% 50%, rgba(213,177,95,0.34), rgba(126,218,255,0.10) 40%, transparent 68%);
       box-shadow: inset 0 0 24px rgba(126,218,255,0.08), 0 0 24px rgba(126,218,255,0.08);
     }
 
@@ -186,14 +201,14 @@
     }
 
     .nav-cta:hover {
-      color: #ffe8b2;
+      color: #ffe8b3;
       background: rgba(213,177,95,0.14);
     }
 
     main {
       max-width: var(--max);
       margin: 0 auto;
-      padding: 16px 24px 100px;
+      padding: 16px 24px 110px;
     }
 
     section {
@@ -203,13 +218,13 @@
     .hero {
       position: relative;
       min-height: calc(100vh - 110px);
-      border-radius: 30px;
       overflow: hidden;
+      border-radius: 32px;
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
       background:
-        linear-gradient(180deg, rgba(2,6,12,0.16) 0%, rgba(2,6,12,0.42) 34%, rgba(2,6,12,0.80) 68%, rgba(2,6,12,0.95) 100%),
-        url("./252379.jpeg") center center / cover no-repeat;
+        linear-gradient(180deg, rgba(2,6,12,0.18) 0%, rgba(2,6,12,0.48) 34%, rgba(2,6,12,0.84) 70%, rgba(2,6,12,0.96) 100%),
+        url("./PENUP 20260705 100255.png") center center / cover no-repeat;
     }
 
     .hero::before {
@@ -218,8 +233,17 @@
       inset: 0;
       background:
         radial-gradient(circle at 50% 44%, rgba(255,244,210,0.16), transparent 12%),
-        radial-gradient(circle at 50% 50%, rgba(126,218,255,0.08), transparent 30%),
-        linear-gradient(90deg, rgba(3,7,14,0.84), rgba(3,7,14,0.18) 38%, rgba(3,7,14,0.18) 62%, rgba(3,7,14,0.84));
+        radial-gradient(circle at 50% 50%, rgba(126,218,255,0.08), transparent 32%),
+        linear-gradient(90deg, rgba(3,7,14,0.86), rgba(3,7,14,0.20) 38%, rgba(3,7,14,0.20) 62%, rgba(3,7,14,0.86));
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, transparent 0%, transparent 75%, rgba(0,0,0,0.18) 100%);
       pointer-events: none;
     }
 
@@ -236,7 +260,7 @@
 
     .hero-copy {
       align-self: end;
-      max-width: 800px;
+      max-width: 820px;
     }
 
     .eyebrow {
@@ -264,15 +288,15 @@
 
     h1, h2, h3, h4 {
       margin: 0;
-      line-height: 1.06;
+      line-height: 1.05;
       letter-spacing: -0.02em;
     }
 
     h1 {
       margin-top: 18px;
-      font-size: clamp(3rem, 6vw, 6rem);
+      font-size: clamp(3rem, 6vw, 6.2rem);
       font-weight: 840;
-      max-width: 940px;
+      max-width: 980px;
     }
 
     .hero-gradient {
@@ -284,10 +308,10 @@
 
     .hero-copy p {
       margin: 18px 0 0;
-      font-size: 1.05rem;
+      font-size: 1.06rem;
       color: #d7e3f4;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
       max-width: 760px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
     }
 
     .hero-actions {
@@ -344,7 +368,7 @@
     }
 
     .stat-value {
-      font-size: 1.26rem;
+      font-size: 1.22rem;
       font-weight: 800;
       color: #fff;
     }
@@ -357,18 +381,28 @@
 
     .hero-side {
       display: grid;
-      grid-template-rows: 1fr 250px;
+      grid-template-rows: 1fr auto;
       gap: 14px;
     }
 
     .panel {
       position: relative;
-      background: rgba(7,13,25,0.68);
+      background: rgba(7,13,25,0.70);
       border: 1px solid rgba(255,255,255,0.09);
       border-radius: 18px;
       backdrop-filter: blur(12px);
       box-shadow: 0 18px 40px rgba(0,0,0,0.26);
       overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%),
+        radial-gradient(circle at top right, rgba(126,218,255,0.08), transparent 28%);
+      pointer-events: none;
     }
 
     .panel-head {
@@ -377,6 +411,8 @@
       align-items: center;
       gap: 12px;
       padding: 14px 16px 0;
+      position: relative;
+      z-index: 1;
     }
 
     .panel-title {
@@ -399,6 +435,8 @@
       padding: 0 16px 14px;
       color: #d8e3f4;
       font-size: 0.92rem;
+      position: relative;
+      z-index: 1;
     }
 
     .panel-copy p {
@@ -411,16 +449,20 @@
       min-height: 430px;
       display: block;
       cursor: crosshair;
+      position: relative;
+      z-index: 1;
     }
 
-    .mini-grid {
+    .hero-ops {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 14px;
       padding: 0 16px 16px;
+      position: relative;
+      z-index: 1;
     }
 
-    .mini-box {
+    .ops-box {
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.03);
@@ -428,25 +470,72 @@
       transition: 0.22s ease;
     }
 
-    .mini-box:hover {
+    .ops-box:hover {
       transform: translateY(-2px);
       border-color: rgba(126,218,255,0.36);
       background: rgba(126,218,255,0.07);
     }
 
-    .mini-box h4 {
-      font-size: 0.92rem;
-      margin-bottom: 6px;
+    .ops-kicker {
+      font-size: 0.72rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--cyan);
     }
 
-    .mini-box p {
-      margin: 0;
+    .ops-value {
+      margin-top: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .ops-copy {
+      margin-top: 6px;
       color: var(--muted);
       font-size: 0.85rem;
     }
 
+    .ticker-wrap {
+      margin-top: 14px;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .ticker {
+      display: flex;
+      gap: 42px;
+      width: max-content;
+      padding: 12px 18px;
+      animation: tickerMove 28s linear infinite;
+      white-space: nowrap;
+      color: #d5e0f0;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .ticker span {
+      position: relative;
+      padding-left: 16px;
+    }
+
+    .ticker span::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      margin-top: -3px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
     .section-head {
-      margin: 74px 0 20px;
+      margin: 76px 0 20px;
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 18px;
@@ -460,7 +549,7 @@
 
     .section-head p {
       margin: 10px 0 0;
-      max-width: 900px;
+      max-width: 920px;
       color: var(--muted);
       font-size: 1rem;
     }
@@ -511,7 +600,7 @@
       inset: 0;
       background:
         linear-gradient(135deg, rgba(126,218,255,0.08), transparent 28%, transparent 70%, rgba(213,177,95,0.06)),
-        radial-gradient(circle at top right, rgba(156,146,255,0.10), transparent 24%);
+        radial-gradient(circle at top right, rgba(155,145,255,0.10), transparent 24%);
       pointer-events: none;
     }
 
@@ -519,6 +608,29 @@
       position: relative;
       z-index: 1;
       padding: 24px;
+    }
+
+    .card-body h3 {
+      font-size: 1.12rem;
+      font-weight: 780;
+      margin: 0;
+    }
+
+    .card-body p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .card-body ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .card-body li + li {
+      margin-top: 8px;
     }
 
     .chip {
@@ -533,17 +645,6 @@
       justify-content: center;
       font-weight: 800;
       margin-bottom: 14px;
-    }
-
-    .card-body h3 {
-      font-size: 1.1rem;
-      font-weight: 780;
-    }
-
-    .card-body p {
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
     }
 
     .feature-wrap {
@@ -587,46 +688,61 @@
       color: #fff;
     }
 
-    .signal-grid {
+    .intel-grid {
       display: grid;
       gap: 14px;
     }
 
-    .signal-box {
+    .intel-box {
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(8,14,27,0.72);
       padding: 18px;
       transition: border-color 0.22s ease, transform 0.22s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .signal-box:hover {
+    .intel-box::after {
+      content: "";
+      position: absolute;
+      inset: auto -40% -60% auto;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(126,218,255,0.08), transparent 70%);
+      transform: translate(0,0);
+      pointer-events: none;
+    }
+
+    .intel-box:hover {
       transform: translateY(-2px);
       border-color: rgba(126,218,255,0.34);
     }
 
-    .signal-kicker {
+    .intel-kicker {
       font-size: 0.72rem;
       letter-spacing: 0.11em;
       text-transform: uppercase;
       color: var(--cyan);
     }
 
-    .signal-value {
+    .intel-value {
       margin-top: 10px;
       font-size: 1.42rem;
       font-weight: 800;
     }
 
-    .signal-copy {
+    .intel-copy {
       margin-top: 8px;
       color: var(--muted);
       font-size: 0.92rem;
     }
 
-    .topology-dashboard {
+    .topology-wrap {
       display: grid;
-      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
     }
 
     .topology-box {
@@ -645,7 +761,7 @@
     .topology-box svg {
       display: block;
       width: 100%;
-      height: 250px;
+      height: 260px;
     }
 
     .topology-cap {
@@ -668,16 +784,17 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 16px;
+      margin-top: 18px;
     }
 
     .hover-node {
       position: relative;
-      min-height: 190px;
+      min-height: 210px;
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.08);
       background:
-        radial-gradient(circle at top right, rgba(156,146,255,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(155,145,255,0.12), transparent 30%),
         linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
       padding: 18px;
       transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
@@ -769,7 +886,7 @@
       border-radius: 22px;
       border: 1px solid rgba(126,218,255,0.18);
       background:
-        linear-gradient(135deg, rgba(126,218,255,0.08), rgba(156,146,255,0.08) 55%, rgba(213,177,95,0.08));
+        linear-gradient(135deg, rgba(126,218,255,0.08), rgba(155,145,255,0.08) 55%, rgba(213,177,95,0.08));
       box-shadow: var(--shadow);
     }
 
@@ -782,6 +899,13 @@
       margin: 0;
       color: var(--muted);
       max-width: 900px;
+    }
+
+    .contact-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
     }
 
     footer {
@@ -821,6 +945,11 @@
       animation: dash 14s linear infinite;
     }
 
+    .radar-sweep {
+      transform-origin: 50% 50%;
+      animation: spin 7s linear infinite;
+    }
+
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -836,12 +965,23 @@
       to { stroke-dashoffset: -420; }
     }
 
-    @media (max-width: 1160px) {
+    @keyframes tickerMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes scanDrift {
+      from { transform: translateY(0); }
+      to { transform: translateY(10px); }
+    }
+
+    @media (max-width: 1180px) {
       .hero-grid,
       .feature-wrap,
       .grid-4,
       .grid-3,
       .grid-2,
+      .topology-wrap,
       .hover-grid {
         grid-template-columns: 1fr;
       }
@@ -859,40 +999,18 @@
       }
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 840px) {
       :root { --nav-h: 74px; }
 
-      .nav-wrap {
-        padding: 0 16px;
-      }
-
-      nav {
-        display: none;
-      }
-
-      main {
-        padding: 12px 16px 90px;
-      }
-
-      .hero-grid {
-        padding: 22px;
-      }
-
-      .hero-stats {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 2.55rem;
-      }
-
-      #nodeGraph {
-        min-height: 340px;
-      }
-
-      .brand-sub {
-        white-space: normal;
-      }
+      .nav-wrap { padding: 0 16px; }
+      nav { display: none; }
+      main { padding: 12px 16px 90px; }
+      .hero-grid { padding: 22px; }
+      .hero-stats { grid-template-columns: 1fr; }
+      .hero-ops { grid-template-columns: 1fr; }
+      h1 { font-size: 2.6rem; }
+      #nodeGraph { min-height: 340px; }
+      .brand-sub { white-space: normal; }
     }
   </style>
 </head>
@@ -900,6 +1018,7 @@
   <div class="bg-canvas"><canvas id="starCanvas"></canvas></div>
   <div class="grid-layer"></div>
   <div class="glow-layer"></div>
+  <div class="scanline-layer"></div>
 
   <header>
     <div class="nav-wrap">
@@ -907,14 +1026,15 @@
         <div class="brand-mark" aria-hidden="true"></div>
         <div>
           <div class="brand-title">SUHS</div>
-          <div class="brand-sub">Mission Control · Local AI · RQPL Research</div>
+          <div class="brand-sub">Advanced Systems Command · Local AI · Recursive Research</div>
         </div>
       </a>
 
       <nav aria-label="Primary navigation">
-        <a href="#programs">Programs</a>
-        <a href="#engine">Engine</a>
-        <a href="#topology">Topology</a>
+        <a href="#overview">Overview</a>
+        <a href="#mission">Mission</a>
+        <a href="#products">Products</a>
+        <a href="#capabilities">Capabilities</a>
         <a href="#architecture">Architecture</a>
         <a href="#contact" class="nav-cta">Contact</a>
       </nav>
@@ -925,36 +1045,36 @@
     <section class="hero reveal">
       <div class="hero-grid">
         <div class="hero-copy">
-          <div class="eyebrow">Mission Control</div>
+          <div class="eyebrow">Advanced Systems Command</div>
           <h1>
             <span class="hero-gradient">Local AI systems</span><br />
-            for constrained hardware<br />
-            and recursive computational research.
+            engineered for strategic execution,<br />
+            constrained hardware, and frontier research.
           </h1>
           <p>
-            SUHS develops local-first generative systems, sequential runtime orchestration, and high-fidelity computational frameworks for advanced research programs.
+            SUHS is an advanced systems organization focused on local-first artificial intelligence, secure runtime orchestration, and high-value computational programs built for real deployment conditions.
           </p>
           <p>
-            Product engineering, systems design, topology modeling, and strategic implementation are presented as one operational surface.
+            The company combines product engineering, execution discipline, and long-horizon systems research to build deployable software surfaces while advancing formal work in recursive topology, coordinated state management, and model architecture.
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#engine">Open Visual Engine</a>
-            <a class="btn" href="#architecture">View Architecture</a>
+            <a class="btn btn-primary" href="#products">Explore Programs</a>
+            <a class="btn" href="#architecture">Review Architecture</a>
           </div>
 
           <div class="hero-stats">
             <div class="stat">
-              <div class="stat-value">Local-first</div>
-              <div class="stat-label">Private execution, direct control, persistent access</div>
+              <div class="stat-value">Operational Control</div>
+              <div class="stat-label">Private execution, local ownership, direct device access</div>
             </div>
             <div class="stat">
-              <div class="stat-value">Sequential</div>
-              <div class="stat-label">Graph-aware staging, bounded memory, runtime discipline</div>
+              <div class="stat-value">Execution Discipline</div>
+              <div class="stat-label">Sequential staging, bounded memory, deterministic flow control</div>
             </div>
             <div class="stat">
-              <div class="stat-value">Research-grade</div>
-              <div class="stat-label">Topology, scheduler logic, model mapping, formal systems design</div>
+              <div class="stat-value">Strategic Research</div>
+              <div class="stat-label">Recursive systems, formal topology, and computational modeling</div>
             </div>
           </div>
         </div>
@@ -962,7 +1082,7 @@
         <div class="hero-side">
           <div class="panel">
             <div class="panel-head">
-              <div class="panel-title">System Graph</div>
+              <div class="panel-title">Systems Graph</div>
               <div class="panel-tag">Interactive</div>
             </div>
             <canvas id="nodeGraph"></canvas>
@@ -974,24 +1094,51 @@
           <div class="panel">
             <div class="panel-head">
               <div class="panel-title">Operational Signals</div>
-              <div class="panel-tag">Live View</div>
+              <div class="panel-tag">Command Surface</div>
             </div>
-            <div class="mini-grid">
-              <div class="mini-box">
-                <h4>Runtime</h4>
-                <p>On-device execution and staged pipeline control.</p>
+
+            <div class="hero-ops">
+              <div class="ops-box">
+                <div class="ops-kicker">Priority</div>
+                <div class="ops-value">Local Inference Infrastructure</div>
+                <div class="ops-copy">Execution pathways built around user-owned hardware and controlled deployment envelopes.</div>
               </div>
-              <div class="mini-box">
-                <h4>Topology</h4>
-                <p>Recursive structure, coordination logic, and state continuity.</p>
+
+              <div class="ops-box">
+                <div class="ops-kicker">Directive</div>
+                <div class="ops-value">Runtime Orchestration</div>
+                <div class="ops-copy">Sequential model flow, staged loading behavior, and memory-aware scheduling controls.</div>
               </div>
-              <div class="mini-box">
-                <h4>Visual Engine</h4>
-                <p>Motion, atmosphere, and signal-forward presentation.</p>
+
+              <div class="ops-box">
+                <div class="ops-kicker">Program</div>
+                <div class="ops-value">Recursive Research</div>
+                <div class="ops-copy">Formal systems analysis, topology development, and long-cycle architectural studies.</div>
               </div>
-              <div class="mini-box">
-                <h4>Programs</h4>
-                <p>Research, implementation, and strategic alignment across the stack.</p>
+
+              <div class="ops-box">
+                <div class="ops-kicker">Surface</div>
+                <div class="ops-value">Strategic Presentation</div>
+                <div class="ops-copy">Mission-control interfaces designed for technical review, partner circulation, and executive visibility.</div>
+              </div>
+            </div>
+
+            <div class="ticker-wrap">
+              <div class="ticker">
+                <span>Local AI Deployment</span>
+                <span>Sequential Runtime Control</span>
+                <span>Constrained Hardware Optimization</span>
+                <span>Recursive Computational Research</span>
+                <span>Model Orchestration</span>
+                <span>Systems Visualization</span>
+                <span>Strategic Program Mapping</span>
+                <span>Local AI Deployment</span>
+                <span>Sequential Runtime Control</span>
+                <span>Constrained Hardware Optimization</span>
+                <span>Recursive Computational Research</span>
+                <span>Model Orchestration</span>
+                <span>Systems Visualization</span>
+                <span>Strategic Program Mapping</span>
               </div>
             </div>
           </div>
@@ -999,13 +1146,95 @@
       </div>
     </section>
 
-    <section id="programs">
+    <section id="overview">
       <div class="section-head reveal">
         <div>
-          <div class="pill">Programs</div>
-          <h2>Core domains</h2>
+          <div class="pill">Overview</div>
+          <h2>Company profile</h2>
           <p>
-            Local deployment, orchestration discipline, computational research, and stack-level program design.
+            SUHS operates at the intersection of deployable AI engineering, secure execution design, and advanced computational research. The organization develops local-first intelligent systems that prioritize control, portability, performance discipline, and strategic independence from always-on cloud dependency.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card reveal">
+          <div class="card-body">
+            <h3>SUHS overview</h3>
+            <p>
+              SUHS is structured around a practical thesis: powerful artificial intelligence systems should not require permanent remote dependence to deliver high-value outcomes. The operating focus is on local execution, bounded-resource orchestration, and software architectures that remain effective under real hardware constraints.
+            </p>
+            <p>
+              Alongside commercial execution, SUHS maintains a dedicated research track that develops formal computational frameworks, recursive systems theory, and visualization methods capable of translating complex architecture into actionable technical programs.
+            </p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <h3>Strategic posture</h3>
+            <ul>
+              <li>Build local-first AI systems that preserve ownership, privacy, and operational continuity.</li>
+              <li>Engineer disciplined runtimes for large model workflows on constrained execution surfaces.</li>
+              <li>Maintain a research framework capable of informing future systems architecture and partner programs.</li>
+              <li>Present technical capability through controlled, executive-grade interfaces and documentation.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Mission</div>
+          <h2>Mission and vision</h2>
+          <p>
+            The mission is to deliver advanced local intelligence systems that place meaningful compute capability directly in the hands of end users, technical operators, and strategic collaborators. The vision is a resilient software and research stack in which powerful generative workflows, runtime control, and formal systems design operate as one integrated capability.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">01</div>
+            <h3>Mission statement</h3>
+            <p>
+              Develop deployable local-first AI systems that perform under real-world hardware constraints while preserving control, privacy, and execution integrity.
+            </p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">02</div>
+            <h3>Vision summary</h3>
+            <p>
+              Establish a new class of intelligent software platforms where local inference, disciplined orchestration, and advanced computational research reinforce one another across product and program layers.
+            </p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">03</div>
+            <h3>Operating principle</h3>
+            <p>
+              Treat architecture, runtime sequencing, interface control, and strategic presentation as core system components rather than afterthoughts.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Products</div>
+          <h2>Product and program portfolio</h2>
+          <p>
+            SUHS programs are organized around deployable local intelligence, media-capable execution pipelines, formal research environments, and strategic mapping frameworks for advanced implementation work.
           </p>
         </div>
       </div>
@@ -1013,164 +1242,173 @@
       <div class="grid-4">
         <div class="card reveal">
           <div class="card-body">
-            <div class="chip">01</div>
-            <h3>Local AI Deployment</h3>
-            <p>Generative execution designed for personal hardware, privacy, and user-controlled inference.</p>
+            <div class="chip">A1</div>
+            <h3>Local Intelligence Stack</h3>
+            <p>
+              On-device AI execution surfaces designed for privacy, portability, and direct user control across constrained hardware environments.
+            </p>
           </div>
         </div>
 
         <div class="card reveal">
           <div class="card-body">
-            <div class="chip">02</div>
-            <h3>Runtime Orchestration</h3>
-            <p>Sequential graph execution, staged loading, and device-aware memory management.</p>
+            <div class="chip">B2</div>
+            <h3>Media Generation Pipeline</h3>
+            <p>
+              Sequential orchestration frameworks for high-value creative and generative workflows where memory pressure and runtime order materially affect results.
+            </p>
           </div>
         </div>
 
         <div class="card reveal">
           <div class="card-body">
-            <div class="chip">03</div>
-            <h3>Computational Research</h3>
-            <p>Recursive topology, temporal coordination, singular-state framing, and systems analysis.</p>
+            <div class="chip">C3</div>
+            <h3>Research Systems</h3>
+            <p>
+              Formal modeling environments for recursive topology, coordinated state logic, and high-level architectural analysis.
+            </p>
           </div>
         </div>
 
         <div class="card reveal">
           <div class="card-body">
-            <div class="chip">04</div>
-            <h3>Strategic Mapping</h3>
-            <p>Program structure spanning product layers, research layers, infrastructure, and implementation pathways.</p>
+            <div class="chip">D4</div>
+            <h3>Strategic Programs</h3>
+            <p>
+              Technical positioning, implementation frameworks, and partner-facing materials built for complex cross-domain initiatives.
+            </p>
           </div>
         </div>
       </div>
-    </section>
 
-    <section id="engine">
-      <div class="section-head reveal">
-        <div>
-          <div class="pill">Engine</div>
-          <h2>Visual engine</h2>
-          <p>
-            Cinematic media, animated topology, and live signal behavior integrated into the primary surface.
-          </p>
-        </div>
-      </div>
-
-      <div class="feature-wrap">
+      <div class="feature-wrap" style="margin-top: 18px;">
         <div class="card reveal">
           <div class="card-body">
-            <h3 style="margin-bottom:16px;">Abstraction</h3>
+            <h3 style="margin-bottom:16px;">Visual command surface</h3>
             <div class="video-shell">
               <video autoplay muted loop playsinline controls preload="metadata">
                 <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
               <div class="video-overlay">
-                <strong>Signal visualization</strong>
-                Motion, density, and atmosphere embedded in the primary interface.
+                <strong>Abstraction</strong>
+                High-density visual signaling for product atmosphere, program identity, and technical brand presence.
               </div>
             </div>
           </div>
         </div>
 
-        <div class="signal-grid">
-          <div class="signal-box reveal">
-            <div class="signal-kicker">Execution Model</div>
-            <div class="signal-value">Sequential</div>
-            <div class="signal-copy">Heavy components are staged in order rather than loaded simultaneously.</div>
+        <div class="intel-grid">
+          <div class="intel-box reveal">
+            <div class="intel-kicker">Execution Model</div>
+            <div class="intel-value">Sequential</div>
+            <div class="intel-copy">Heavy components are staged in order rather than loaded simultaneously, enabling disciplined operation under resource constraints.</div>
           </div>
 
-          <div class="signal-box reveal">
-            <div class="signal-kicker">Interface Model</div>
-            <div class="signal-value">Interactive</div>
-            <div class="signal-copy">Node graphs and responsive topology keep the surface active under inspection.</div>
+          <div class="intel-box reveal">
+            <div class="intel-kicker">Deployment Model</div>
+            <div class="intel-value">Local-first</div>
+            <div class="intel-copy">Primary value is pushed toward the edge, reducing dependence on persistent external inference infrastructure.</div>
           </div>
 
-          <div class="signal-box reveal">
-            <div class="signal-kicker">Presentation Model</div>
-            <div class="signal-value">Executive</div>
-            <div class="signal-copy">Formal tone, compact language, and controlled visual density.</div>
+          <div class="intel-box reveal">
+            <div class="intel-kicker">Program Model</div>
+            <div class="intel-value">Integrated</div>
+            <div class="intel-copy">Commercial software, runtime architecture, research systems, and strategic implementation are treated as one coordinated stack.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="topology">
+    <section id="capabilities">
       <div class="section-head reveal">
         <div>
-          <div class="pill">Topology</div>
-          <h2>Interactive topology</h2>
+          <div class="pill">Capabilities</div>
+          <h2>Systems capabilities</h2>
           <p>
-            Recursive geometry, execution chains, and hover-responsive state surfaces.
+            Mission-critical local execution, orchestrated model flow, recursive systems analysis, and command-surface visualization form the core of the SUHS capability set.
           </p>
         </div>
       </div>
 
-      <div class="grid-2">
-        <div class="topology-dashboard">
-          <div class="topology-box reveal">
-            <svg viewBox="0 0 520 250" aria-hidden="true">
-              <defs>
-                <linearGradient id="topoA" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#7edaff"/>
-                  <stop offset="52%" stop-color="#efd792"/>
-                  <stop offset="100%" stop-color="#9c92ff"/>
-                </linearGradient>
-              </defs>
-              <ellipse cx="185" cy="125" rx="104" ry="60" fill="none" stroke="url(#topoA)" stroke-width="2.2"/>
-              <ellipse cx="335" cy="125" rx="104" ry="60" fill="none" stroke="url(#topoA)" stroke-width="2.2"/>
-              <path d="M58 125 C125 82, 155 82, 260 125 S395 168, 462 125" fill="none" stroke="rgba(126,218,255,0.48)" stroke-width="2" class="flow"/>
-              <path d="M58 125 C125 168, 155 168, 260 125 S395 82, 462 125" fill="none" stroke="rgba(213,177,95,0.48)" stroke-width="2" class="flow"/>
-              <circle cx="260" cy="125" r="16" fill="#fff0c0" class="pulse"/>
-              <circle cx="260" cy="125" r="30" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.2"/>
-            </svg>
-            <div class="topology-cap">
-              <h3>Recursive loop geometry</h3>
-              <p>Bidirectional return paths, singular convergence, and continual system motion.</p>
-            </div>
-          </div>
-
-          <div class="topology-box reveal">
-            <svg viewBox="0 0 520 250" aria-hidden="true">
-              <rect x="42" y="100" width="72" height="50" rx="12" fill="rgba(126,218,255,0.10)" stroke="rgba(126,218,255,0.28)"/>
-              <rect x="156" y="76" width="86" height="98" rx="12" fill="rgba(156,146,255,0.10)" stroke="rgba(156,146,255,0.28)"/>
-              <rect x="286" y="62" width="92" height="126" rx="12" fill="rgba(213,177,95,0.10)" stroke="rgba(213,177,95,0.28)"/>
-              <rect x="420" y="100" width="56" height="50" rx="12" fill="rgba(103,216,159,0.12)" stroke="rgba(103,216,159,0.28)"/>
-              <path d="M114 125 H156" stroke="rgba(126,218,255,0.48)" stroke-width="2.4" class="flow"/>
-              <path d="M242 125 H286" stroke="rgba(213,177,95,0.48)" stroke-width="2.4" class="flow"/>
-              <path d="M378 125 H420" stroke="rgba(103,216,159,0.48)" stroke-width="2.4" class="flow"/>
-            </svg>
-            <div class="topology-cap">
-              <h3>Execution chain</h3>
-              <p>Input, staged processing, runtime environment, and output mapped as one sequence.</p>
-            </div>
+      <div class="topology-wrap">
+        <div class="topology-box reveal">
+          <svg viewBox="0 0 620 260" aria-hidden="true">
+            <defs>
+              <linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7edaff"/>
+                <stop offset="52%" stop-color="#efd792"/>
+                <stop offset="100%" stop-color="#9b91ff"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="620" height="260" fill="rgba(8,14,27,0.72)"></rect>
+            <circle cx="310" cy="130" r="86" fill="none" stroke="rgba(255,255,255,0.10)"/>
+            <circle cx="310" cy="130" r="58" fill="none" stroke="rgba(255,255,255,0.08)"/>
+            <circle cx="310" cy="130" r="30" fill="none" stroke="rgba(255,255,255,0.08)"/>
+            <line x1="40" y1="130" x2="580" y2="130" stroke="rgba(255,255,255,0.06)"/>
+            <line x1="310" y1="20" x2="310" y2="240" stroke="rgba(255,255,255,0.06)"/>
+            <path d="M310 130 L310 32 A98 98 0 0 1 390 72 Z" fill="rgba(126,218,255,0.12)" class="radar-sweep"/>
+            <circle cx="248" cy="88" r="5" fill="#7edaff" class="pulse"/>
+            <circle cx="382" cy="104" r="5" fill="#67d89f" class="pulse"/>
+            <circle cx="330" cy="182" r="5" fill="#efd792" class="pulse"/>
+            <circle cx="274" cy="154" r="5" fill="#9b91ff" class="pulse"/>
+            <path d="M110 210 C180 160, 240 160, 310 130 S450 100, 530 44" fill="none" stroke="url(#radarGrad)" stroke-width="2.4" class="flow"/>
+          </svg>
+          <div class="topology-cap">
+            <h3>Operational sensing</h3>
+            <p>Signal concentration, directional sweep behavior, and monitored state activity mapped as a command-layer surface.</p>
           </div>
         </div>
 
-        <div class="hover-grid">
-          <div class="hover-node reveal" data-detail="A higher-dimensional unresolved state containing latent conditions prior to distributed execution.">
-            <div class="node-kicker">Container</div>
-            <h3>Latent substrate</h3>
-            <p>Pre-execution structure, unresolved possibility, and global system context.</p>
+        <div class="topology-box reveal">
+          <svg viewBox="0 0 620 260" aria-hidden="true">
+            <defs>
+              <linearGradient id="execGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7edaff"/>
+                <stop offset="100%" stop-color="#67d89f"/>
+              </linearGradient>
+            </defs>
+            <rect x="54" y="104" width="84" height="52" rx="14" fill="rgba(126,218,255,0.10)" stroke="rgba(126,218,255,0.26)"/>
+            <rect x="190" y="82" width="108" height="96" rx="14" fill="rgba(155,145,255,0.10)" stroke="rgba(155,145,255,0.26)"/>
+            <rect x="340" y="68" width="116" height="124" rx="14" fill="rgba(213,177,95,0.10)" stroke="rgba(213,177,95,0.26)"/>
+            <rect x="502" y="104" width="64" height="52" rx="14" fill="rgba(103,216,159,0.12)" stroke="rgba(103,216,159,0.28)"/>
+            <path d="M138 130 H190" stroke="url(#execGrad)" stroke-width="2.8" class="flow"/>
+            <path d="M298 130 H340" stroke="url(#execGrad)" stroke-width="2.8" class="flow"/>
+            <path d="M456 130 H502" stroke="url(#execGrad)" stroke-width="2.8" class="flow"/>
+            <circle cx="190" cy="130" r="3.5" fill="#7edaff" class="pulse"/>
+            <circle cx="340" cy="130" r="3.5" fill="#efd792" class="pulse"/>
+            <circle cx="502" cy="130" r="3.5" fill="#67d89f" class="pulse"/>
+          </svg>
+          <div class="topology-cap">
+            <h3>Execution chain</h3>
+            <p>Input, staged processing, runtime environment, and output aligned as one controlled operational sequence.</p>
           </div>
+        </div>
+      </div>
 
-          <div class="hover-node reveal" data-detail="A constrained runtime surface where only necessary local state is rendered at full fidelity.">
-            <div class="node-kicker">Canvas</div>
-            <h3>Local execution</h3>
-            <p>Materialized runtime behavior, bounded rendering, and hardened continuity.</p>
-          </div>
+      <div class="hover-grid">
+        <div class="hover-node reveal" data-detail="Local execution surfaces prioritize control, privacy, and deployment resilience on user-owned hardware.">
+          <div class="node-kicker">Capability 01</div>
+          <h3>Local execution fabric</h3>
+          <p>Deployment architecture centered on on-device intelligence and bounded runtime conditions.</p>
+        </div>
 
-          <div class="hover-node reveal" data-detail="A live current-state anchor that recursively constrains adjacent temporal or logical branches.">
-            <div class="node-kicker">Scheduler</div>
-            <h3>State coordination</h3>
-            <p>Current-state alignment for continuity, reconciliation, and active control.</p>
-          </div>
+        <div class="hover-node reveal" data-detail="Runtime behavior is managed as an ordered process with explicit sequencing, staging, and load discipline.">
+          <div class="node-kicker">Capability 02</div>
+          <h3>Orchestration engine</h3>
+          <p>Sequential graph control for heavy model workflows and memory-constrained systems.</p>
+        </div>
 
-          <div class="hover-node reveal" data-detail="Localized observer traces operating inside the wider distributed execution graph.">
-            <div class="node-kicker">Thread</div>
-            <h3>Observer path</h3>
-            <p>Sequential experiential tracks embedded in the broader system manifold.</p>
-          </div>
+        <div class="hover-node reveal" data-detail="Research programs formalize recursive structure, coordinated state logic, and topological system analysis.">
+          <div class="node-kicker">Capability 03</div>
+          <h3>Formal research systems</h3>
+          <p>Recursive computational frameworks developed for long-horizon architecture work.</p>
+        </div>
+
+        <div class="hover-node reveal" data-detail="Technical capability is translated into executive-grade surfaces, program documents, and partner-facing architecture language.">
+          <div class="node-kicker">Capability 04</div>
+          <h3>Strategic command surfaces</h3>
+          <p>Controlled presentation layers for review, circulation, and implementation programs.</p>
         </div>
       </div>
     </section>
@@ -1179,9 +1417,9 @@
       <div class="section-head reveal">
         <div>
           <div class="pill">Architecture</div>
-          <h2>Mission control stack</h2>
+          <h2>Operating architecture</h2>
           <p>
-            Product, runtime, research, and strategic implementation layers aligned on one board.
+            SUHS aligns commercial software, runtime control, research frameworks, and strategic implementation under a single operating model.
           </p>
         </div>
       </div>
@@ -1191,30 +1429,42 @@
           <h3 style="margin-bottom:16px;">Operational architecture board</h3>
           <div class="mapping-list">
             <div class="mapping-row">
-              <h4>Commercial Layer</h4>
-              <p>Local generative products, private workflows, user-owned inference, and deployable mobile execution.</p>
+              <h4>Corporate Layer</h4>
+              <p>Company identity, strategic positioning, program framing, and executive communications aligned around advanced systems leadership.</p>
             </div>
+
+            <div class="mapping-row">
+              <h4>Product Layer</h4>
+              <p>Local AI applications, user-owned inference pathways, media-capable workflows, and deployable software surfaces for constrained environments.</p>
+            </div>
+
             <div class="mapping-row">
               <h4>Runtime Layer</h4>
-              <p>Sequential graph loading, staging discipline, memory-bounded orchestration, and device-aware scheduling.</p>
+              <p>Sequential graph loading, staging discipline, device-aware scheduling, and memory-bounded orchestration for large model execution.</p>
             </div>
+
             <div class="mapping-row">
               <h4>Research Layer</h4>
-              <p>Recursive topology, singular-state framing, temporal coordination, and formal systems analysis.</p>
+              <p>Recursive topology, coordinated state logic, formal systems analysis, and high-order computational modeling.</p>
             </div>
+
             <div class="mapping-row">
               <h4>Strategic Layer</h4>
-              <p>Implementation pathways, collaborator alignment, and large-scale technical program structure.</p>
+              <p>Implementation pathways, collaborator alignment, partner review materials, and large-scale technical program structure.</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="contact-card reveal" id="contact">
-        <h3>Contact</h3>
+        <h3>Contact and strategic engagement</h3>
         <p>
-          Strategic review, implementation discussions, research alignment, and collaboration inquiries.
+          SUHS supports strategic review, technical collaboration, program alignment, and architecture-level discussions for qualified partners, operators, and research stakeholders.
         </p>
+        <div class="contact-actions">
+          <a class="btn btn-primary" href="https://github.com/SendUsHomeSafe/sendushomesafe.github.io" target="_blank" rel="noopener">Repository</a>
+          <a class="btn" href="https://sendushomesafe.github.io" target="_blank" rel="noopener">Live Site</a>
+        </div>
       </div>
     </section>
   </main>
@@ -1222,7 +1472,7 @@
   <footer>
     <div class="footer-line">
       <div>© 2026 SUHS. All rights reserved.</div>
-      <div>Mission Control · Local AI · Recursive Systems Research</div>
+      <div>Advanced Systems Command · Local AI · Recursive Computational Research</div>
     </div>
   </footer>
 
@@ -1243,7 +1493,7 @@
       stars = Array.from({ length: Math.floor((sw * sh) / 12000) }, () => ({
         x: Math.random() * sw,
         y: Math.random() * sh,
-        r: Math.random() * 1.7 + 0.2,
+        r: Math.random() * 1.8 + 0.2,
         a: Math.random() * 0.7 + 0.12,
         s: Math.random() * 0.24 + 0.03
       }));
@@ -1269,7 +1519,7 @@
         sw * 0.5, sh * 0.16, Math.max(sw, sh) * 0.26
       );
       glow.addColorStop(0, "rgba(126,218,255,0.07)");
-      glow.addColorStop(0.4, "rgba(156,146,255,0.04)");
+      glow.addColorStop(0.4, "rgba(155,145,255,0.04)");
       glow.addColorStop(1, "rgba(0,0,0,0)");
       starCtx.fillStyle = glow;
       starCtx.fillRect(0, 0, sw, sh);
@@ -1298,17 +1548,17 @@
     let t = 0;
 
     const nodes = [
-      { x: 0.14, y: 0.26, r: 8, label: "Local Runtime", detail: "On-device execution and user-controlled operation.", color: "#7edaff" },
-      { x: 0.33, y: 0.18, r: 7, label: "Model Shards", detail: "Sequential loading and bounded memory flow.", color: "#9c92ff" },
-      { x: 0.52, y: 0.28, r: 9, label: "Singular Core", detail: "Central state model and high-order coordination.", color: "#efd792" },
-      { x: 0.70, y: 0.20, r: 7, label: "Thread Logic", detail: "Parallel continuity and scheduler control.", color: "#67d89f" },
-      { x: 0.83, y: 0.34, r: 7, label: "State Anchor", detail: "Live current-state stabilization.", color: "#7edaff" },
-      { x: 0.22, y: 0.58, r: 8, label: "Visual Engine", detail: "Media, signal design, and surface communication.", color: "#ffb98e" },
-      { x: 0.44, y: 0.52, r: 8, label: "Topology", detail: "Recursive structure and paradox management.", color: "#9c92ff" },
-      { x: 0.64, y: 0.60, r: 8, label: "Stack Mapping", detail: "Layer alignment across runtime and research.", color: "#efd792" },
-      { x: 0.82, y: 0.72, r: 9, label: "Programs", detail: "Strategic implementation pathways.", color: "#67d89f" },
-      { x: 0.34, y: 0.78, r: 8, label: "Product Layer", detail: "Commercial deployment and public-facing systems.", color: "#7edaff" },
-      { x: 0.56, y: 0.80, r: 7, label: "Research Layer", detail: "Formal theory, simulation, and analysis.", color: "#9c92ff" }
+      { x: 0.12, y: 0.24, r: 8, label: "Local Runtime", detail: "On-device execution and deployment control.", color: "#7edaff" },
+      { x: 0.31, y: 0.16, r: 7, label: "Model Shards", detail: "Sequential loading and bounded memory flow.", color: "#9b91ff" },
+      { x: 0.52, y: 0.26, r: 9, label: "Core State", detail: "Central coordination and state management.", color: "#efd792" },
+      { x: 0.70, y: 0.18, r: 7, label: "Thread Logic", detail: "Continuity control and scheduler behavior.", color: "#67d89f" },
+      { x: 0.84, y: 0.34, r: 7, label: "State Anchor", detail: "Live current-state stabilization.", color: "#7edaff" },
+      { x: 0.21, y: 0.58, r: 8, label: "Visual Engine", detail: "Media, signal design, and command-surface presentation.", color: "#ffb48d" },
+      { x: 0.44, y: 0.52, r: 8, label: "Topology", detail: "Recursive structure and high-order systems logic.", color: "#9b91ff" },
+      { x: 0.66, y: 0.60, r: 8, label: "Stack Mapping", detail: "Layer alignment across product and research.", color: "#efd792" },
+      { x: 0.84, y: 0.72, r: 9, label: "Programs", detail: "Strategic implementation and partner pathways.", color: "#67d89f" },
+      { x: 0.34, y: 0.78, r: 8, label: "Product Layer", detail: "Commercial deployment and user-facing systems.", color: "#7edaff" },
+      { x: 0.56, y: 0.80, r: 7, label: "Research Layer", detail: "Formal theory, simulation, and analysis.", color: "#9b91ff" }
     ];
 
     const edges = [
