@@ -3,1711 +3,581 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SUHS | Advanced Local AI Systems</title>
-  <meta
-    name="description"
-    content="SUHS designs local-first AI systems, sequential runtime infrastructure, and advanced computational research programs for constrained hardware environments."
-  />
-  <meta name="theme-color" content="#04070f" />
+  <title>SUHS | COIL Implementation & RQPL Architecture</title>
+  <meta name="description" content="SUHS: Coalition of Implementational Leaders (COIL) mapping, Recursive Quantum Paradoxical Loop (RQPL) topology, and local edge execution architecture." />
+  <meta name="theme-color" content="#020408" />
   <style>
     :root {
-      --bg: #04070f;
-      --bg-2: #07111d;
-      --bg-3: #0a1524;
-      --panel: rgba(7, 12, 22, 0.80);
-      --panel-strong: rgba(5, 9, 17, 0.94);
-      --line: rgba(124, 162, 226, 0.13);
-      --line-strong: rgba(124, 162, 226, 0.26);
-      --text: #eef4ff;
-      --muted: #9dadc8;
-      --soft: #cad6e8;
-      --gold: #d8b662;
-      --gold-soft: rgba(216, 182, 98, 0.12);
-      --cyan: #7fdbff;
-      --cyan-soft: rgba(127, 219, 255, 0.10);
-      --violet: #9f94ff;
-      --violet-soft: rgba(159, 148, 255, 0.10);
-      --green: #68dba0;
-      --red: #ff9e9e;
-      --radius: 24px;
-      --radius-sm: 16px;
-      --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
-      --max: 1440px;
-      --nav-h: 82px;
+      --bg: #020408;
+      --bg-alt: #050912;
+      --panel: rgba(8, 14, 24, 0.65);
+      --panel-border: rgba(100, 140, 210, 0.15);
+      --text: #e2e8f0;
+      --text-muted: #8b9bb4;
+      --accent-gold: #d4b56a;
+      --accent-cyan: #56c1ff;
+      --accent-red: #ff5f5f;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --radius: 4px; /* Harder, sharper edges for intel feel */
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    
     body {
       margin: 0;
       color: var(--text);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      background-color: var(--bg);
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 20px 20px;
       overflow-x: hidden;
-      background:
-        radial-gradient(circle at 14% 15%, rgba(127,219,255,0.08), transparent 24%),
-        radial-gradient(circle at 84% 16%, rgba(159,148,255,0.08), transparent 24%),
-        radial-gradient(circle at 50% 82%, rgba(216,182,98,0.06), transparent 26%),
-        linear-gradient(180deg, #02050b 0%, #07101b 42%, #04070f 100%);
     }
 
-    a { color: inherit; text-decoration: none; }
-    img, video { display: block; max-width: 100%; }
-
-    .bg-canvas,
-    .grid-layer,
-    .glow-layer,
-    .scanlines {
+    /* Scanline overlay for secure terminal feel */
+    body::after {
+      content: "";
       position: fixed;
       inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+      background-size: 100% 4px;
+      z-index: 9999;
       pointer-events: none;
+      opacity: 0.4;
     }
 
-    .bg-canvas { z-index: -4; }
-    .grid-layer { z-index: -3; }
-    .glow-layer { z-index: -2; }
-    .scanlines { z-index: -1; }
-
-    .grid-layer {
-      opacity: 0.14;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
-      background-size: 38px 38px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.96), rgba(0,0,0,0.08));
-    }
-
-    .glow-layer {
-      filter: blur(30px);
-      background:
-        radial-gradient(circle at 22% 14%, rgba(127,219,255,0.10), transparent 22%),
-        radial-gradient(circle at 78% 18%, rgba(159,148,255,0.10), transparent 22%),
-        radial-gradient(circle at 50% 84%, rgba(216,182,98,0.08), transparent 24%);
-    }
-
-    .scanlines {
-      opacity: 0.06;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.04),
-          rgba(255,255,255,0.04) 1px,
-          transparent 1px,
-          transparent 4px
-        );
-      mix-blend-mode: screen;
-    }
-
-    #starCanvas,
-    #hudCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    #hudCanvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.45;
-    }
+    a { color: var(--accent-cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      height: var(--nav-h);
-      background: rgba(3, 7, 13, 0.78);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .nav-wrap {
-      max-width: var(--max);
-      margin: 0 auto;
-      height: 100%;
-      padding: 0 24px;
+      background: rgba(2, 4, 8, 0.9);
+      border-bottom: 1px solid var(--panel-border);
+      backdrop-filter: blur(8px);
+      padding: 12px 24px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      align-items: center;
     }
 
     .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      position: relative;
-      border: 1px solid rgba(216,182,98,0.42);
-      background:
-        radial-gradient(circle at 50% 50%, rgba(216,182,98,0.30), rgba(127,219,255,0.10) 40%, transparent 68%);
-      box-shadow: inset 0 0 24px rgba(127,219,255,0.08), 0 0 24px rgba(127,219,255,0.08);
-    }
-
-    .brand-mark::before,
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      inset: 7px;
-      border-radius: 50% 42% 58% 46% / 50% 44% 56% 50%;
-      border: 1px solid rgba(127,219,255,0.26);
-      animation: spin 11s linear infinite;
-    }
-
-    .brand-mark::after {
-      inset: 11px;
-      border-color: rgba(216,182,98,0.24);
-      animation-duration: 8s;
-      animation-direction: reverse;
-    }
-
-    .brand-title {
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .brand-sub {
-      margin-top: 2px;
-      font-size: 0.69rem;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    nav {
       display: flex;
-      gap: 8px;
       align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      gap: 12px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
 
-    nav a {
-      color: var(--muted);
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 0.92rem;
-      transition: 0.22s ease;
+    .brand-status {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-cyan);
+      animation: pulse 2s infinite;
     }
 
-    nav a:hover {
-      color: var(--text);
-      background: rgba(255,255,255,0.04);
-    }
-
-    .nav-cta {
-      color: var(--gold);
-      border: 1px solid rgba(216,182,98,0.28);
-      background: rgba(216,182,98,0.07);
-    }
-
-    .nav-cta:hover {
-      color: #ffebb6;
-      background: rgba(216,182,98,0.14);
-    }
+    nav { display: flex; gap: 24px; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; }
+    nav a { color: var(--text-muted); }
+    nav a:hover { color: var(--accent-gold); text-decoration: none; }
 
     main {
-      position: relative;
-      z-index: 1;
-      max-width: var(--max);
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 16px 24px 100px;
+      padding: 40px 24px;
+      display: grid;
+      gap: 40px;
+    }
+
+    .clearance-header {
+      font-family: var(--font-mono);
+      color: var(--accent-red);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      border-bottom: 1px solid var(--accent-red);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
     }
 
     section {
-      scroll-margin-top: calc(var(--nav-h) + 16px);
-    }
-
-    .hero {
-      position: relative;
-      min-height: calc(100vh - 110px);
-      overflow: hidden;
-      border-radius: 30px;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      background:
-        linear-gradient(180deg, rgba(2,6,12,0.10) 0%, rgba(2,6,12,0.34) 28%, rgba(2,6,12,0.78) 68%, rgba(2,6,12,0.94) 100%),
-        url("./PENUP 20260705 100255.png") center center / cover no-repeat;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 44%, rgba(255,245,214,0.18), transparent 12%),
-        radial-gradient(circle at 50% 50%, rgba(127,219,255,0.08), transparent 30%),
-        linear-gradient(90deg, rgba(3,7,14,0.88), rgba(3,7,14,0.16) 38%, rgba(3,7,14,0.16) 62%, rgba(3,7,14,0.88));
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(127,219,255,0.06), transparent 20%, transparent 80%, rgba(216,182,98,0.05)),
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.03) 0px,
-          rgba(255,255,255,0.03) 1px,
-          transparent 1px,
-          transparent 5px
-        );
-      opacity: 0.18;
-      pointer-events: none;
-    }
-
-    .hero-grid {
-      position: relative;
-      z-index: 2;
-      min-height: inherit;
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 24px;
-      padding: 44px;
-      align-items: stretch;
-    }
-
-    .hero-copy {
-      align-self: end;
-      max-width: 860px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(127,219,255,0.24);
-      background: rgba(127,219,255,0.08);
-      color: var(--cyan);
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: currentColor;
-      box-shadow: 0 0 12px currentColor;
-    }
-
-    h1, h2, h3, h4 {
-      margin: 0;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-    }
-
-    h1 {
-      margin-top: 18px;
-      font-size: clamp(3rem, 6vw, 6rem);
-      font-weight: 840;
-      max-width: 980px;
-    }
-
-    .hero-gradient {
-      background: linear-gradient(90deg, #ffffff 0%, #d7efff 28%, #efd995 62%, #ffffff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-copy p {
-      margin: 18px 0 0;
-      font-size: 1.05rem;
-      color: #d6e3f4;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
-      max-width: 800px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-top: 28px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 50px;
-      padding: 0 18px;
-      border-radius: 999px;
-      border: 1px solid var(--line-strong);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      font-weight: 700;
-      transition: 0.22s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      background: rgba(127,219,255,0.10);
-      border-color: rgba(127,219,255,0.42);
-    }
-
-    .btn-primary {
-      color: #08111f;
-      border-color: rgba(255,255,255,0.5);
-      background: linear-gradient(135deg, #ffe4a3, #d8b662);
-    }
-
-    .btn-primary:hover {
-      color: #08111f;
-      background: linear-gradient(135deg, #ffedbd, #d8b662);
-    }
-
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 30px;
-    }
-
-    .stat {
-      padding: 16px;
-      border-radius: 16px;
-      background: rgba(8,14,27,0.58);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(127,219,255,0.45), transparent);
-    }
-
-    .stat-value {
-      font-size: 1.24rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .stat-label {
-      margin-top: 4px;
-      font-size: 0.88rem;
-      color: #c7d5ea;
-    }
-
-    .hero-side {
-      display: grid;
-      grid-template-rows: 1fr 270px;
-      gap: 14px;
-    }
-
-    .panel {
-      position: relative;
-      background: rgba(7,13,25,0.68);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 18px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.26);
-      overflow: hidden;
-    }
-
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(127,219,255,0.06), transparent 24%, transparent 76%, rgba(216,182,98,0.04)),
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.02) 0px,
-          rgba(255,255,255,0.02) 1px,
-          transparent 1px,
-          transparent 7px
-        );
-      pointer-events: none;
-    }
-
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .panel-title {
-      font-size: 0.82rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--cyan);
-    }
-
-    .panel-tag {
-      font-size: 0.72rem;
-      color: var(--gold);
-      border: 1px solid rgba(216,182,98,0.28);
-      background: rgba(216,182,98,0.08);
-      border-radius: 999px;
-      padding: 6px 10px;
-    }
-
-    .panel-copy {
-      padding: 0 16px 14px;
-      color: #d8e3f4;
-      font-size: 0.92rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .panel-copy p {
-      margin: 10px 0 0;
-    }
-
-    #nodeGraph {
-      width: 100%;
-      height: 100%;
-      min-height: 430px;
-      display: block;
-      cursor: crosshair;
-      position: relative;
-      z-index: 1;
-    }
-
-    .mini-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      padding: 0 16px 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .mini-box {
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      padding: 14px;
-      transition: 0.22s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .mini-box::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(127,219,255,0.36), transparent);
-    }
-
-    .mini-box:hover {
-      transform: translateY(-2px);
-      border-color: rgba(127,219,255,0.36);
-      background: rgba(127,219,255,0.07);
-    }
-
-    .mini-box h4 {
-      font-size: 0.92rem;
-      margin-bottom: 6px;
-    }
-
-    .mini-box p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .section-head {
-      margin: 74px 0 20px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 18px;
-      align-items: end;
-    }
-
-    .section-head h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 820;
-    }
-
-    .section-head p {
-      margin: 10px 0 0;
-      max-width: 920px;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(216,182,98,0.24);
-      color: var(--gold);
-      background: rgba(216,182,98,0.06);
-      font-size: 0.76rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .grid-2, .grid-3, .grid-4 {
-      display: grid;
-      gap: 18px;
-    }
-
-    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-    .card {
-      position: relative;
       background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: transform 0.24s ease, border-color 0.24s ease, background 0.24s ease;
+      border: 1px solid var(--panel-border);
+      padding: 32px;
+      border-radius: var(--radius);
+      position: relative;
     }
 
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(127,219,255,0.30);
-      background: rgba(10,18,33,0.84);
-    }
-
-    .card::before {
+    section::before {
       content: "";
       position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(127,219,255,0.08), transparent 28%, transparent 70%, rgba(216,182,98,0.06)),
-        radial-gradient(circle at top right, rgba(159,148,255,0.10), transparent 24%);
+      top: 0; left: 0; width: 10px; height: 10px;
+      border-top: 2px solid var(--accent-cyan);
+      border-left: 2px solid var(--accent-cyan);
+    }
+
+    h1, h2, h3 { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0; }
+    h1 { font-size: 24px; color: #fff; margin-bottom: 16px; }
+    h2 { font-size: 18px; color: var(--accent-gold); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 24px; }
+    h3 { font-size: 14px; color: var(--accent-cyan); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    .data-block {
+      border-left: 2px solid var(--panel-border);
+      padding-left: 16px;
+      margin-bottom: 24px;
+    }
+
+    .data-block.highlight { border-left-color: var(--accent-gold); }
+
+    .video-container {
+      position: relative;
+      border: 1px solid var(--panel-border);
+      background: #000;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    
+    .video-container video { width: 100%; display: block; }
+    
+    .video-meta {
+      background: rgba(0,0,0,0.8);
+      border-top: 1px solid var(--panel-border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* Lyrics Tooltip */
+    .lyrics-trigger {
+      color: var(--accent-cyan);
+      cursor: help;
+      position: relative;
+      border-bottom: 1px dotted var(--accent-cyan);
+    }
+
+    .lyrics-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      background: rgba(5, 10, 20, 0.95);
+      border: 1px solid var(--accent-cyan);
+      padding: 16px;
+      width: 400px;
+      color: #fff;
+      font-family: serif; /* Differentiating the art from the intel */
+      font-size: 13px;
+      line-height: 1.8;
+      z-index: 100;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
       pointer-events: none;
     }
 
-    .card-body {
-      position: relative;
-      z-index: 1;
-      padding: 24px;
-    }
-
-    .chip {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      border: 1px solid rgba(127,219,255,0.22);
-      background: rgba(127,219,255,0.08);
-      color: var(--cyan);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      margin-bottom: 14px;
-    }
-
-    .card-body h3 {
-      font-size: 1.1rem;
-      font-weight: 780;
-    }
-
-    .card-body p {
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .intel-band {
-      display: grid;
-      grid-template-columns: 1.14fr 0.86fr;
-      gap: 18px;
-    }
-
-    .intel-copy p {
-      margin: 0 0 16px;
-      color: var(--soft);
-      font-size: 1rem;
-    }
-
-    .intel-grid {
-      display: grid;
-      gap: 14px;
-    }
-
-    .intel-row {
-      display: grid;
-      grid-template-columns: 170px 1fr;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .intel-row strong {
-      color: #fff;
-      font-size: 0.92rem;
-    }
-
-    .intel-row span {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .feature-wrap {
-      display: grid;
-      grid-template-columns: 1.04fr 0.96fr;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .video-shell {
-      position: relative;
-      aspect-ratio: 16 / 9;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: #000;
-    }
-
-    .video-shell video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: #000;
-    }
-
-    .video-overlay {
-      position: absolute;
-      left: 14px;
-      right: 14px;
-      bottom: 14px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: rgba(4,8,17,0.76);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-    }
-
-    .video-overlay strong {
-      display: block;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .signal-grid {
-      display: grid;
-      gap: 14px;
-    }
-
-    .signal-box {
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(8,14,27,0.72);
-      padding: 18px;
-      transition: border-color 0.22s ease, transform 0.22s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .signal-box::after {
-      content: "";
-      position: absolute;
-      inset: auto 0 0 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(127,219,255,0.36), transparent);
-    }
-
-    .signal-box:hover {
-      transform: translateY(-2px);
-      border-color: rgba(127,219,255,0.34);
-    }
-
-    .signal-kicker {
-      font-size: 0.72rem;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-      color: var(--cyan);
-    }
-
-    .signal-value {
-      margin-top: 10px;
-      font-size: 1.42rem;
-      font-weight: 800;
-    }
-
-    .signal-copy {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .topology-dashboard {
-      display: grid;
-      gap: 14px;
-    }
-
-    .topology-box {
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(8,14,27,0.72);
-      transition: border-color 0.22s ease, transform 0.22s ease;
-    }
-
-    .topology-box:hover {
-      transform: translateY(-2px);
-      border-color: rgba(127,219,255,0.34);
-    }
-
-    .topology-box svg {
-      display: block;
-      width: 100%;
-      height: 250px;
-    }
-
-    .topology-cap {
-      padding: 14px 16px 16px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .topology-cap h3 {
-      font-size: 1rem;
-      margin-bottom: 6px;
-    }
-
-    .topology-cap p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .hover-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .hover-node {
-      position: relative;
-      min-height: 210px;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      background:
-        radial-gradient(circle at top right, rgba(159,148,255,0.12), transparent 30%),
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      padding: 18px;
-      transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
-    }
-
-    .hover-node:hover {
-      transform: translateY(-4px) scale(1.01);
-      border-color: rgba(127,219,255,0.34);
-      box-shadow: 0 22px 40px rgba(0,0,0,0.26);
-    }
-
-    .hover-node .node-kicker {
-      font-size: 0.72rem;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-      color: var(--cyan);
-    }
-
-    .hover-node h3 {
-      margin-top: 10px;
-      font-size: 1.04rem;
-    }
-
-    .hover-node p {
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-      max-width: 280px;
-    }
-
-    .hover-node::after {
-      content: attr(data-detail);
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 18px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      color: #dce7f7;
-      font-size: 0.84rem;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: 0.24s ease;
-    }
-
-    .hover-node:hover::after {
+    .lyrics-trigger:hover .lyrics-tooltip {
+      visibility: visible;
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(-5px);
     }
 
-    .mapping-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 14px;
+    /* Canvas Graph Area */
+    .graph-container {
+      width: 100%;
+      height: 500px;
+      background: #020408;
+      border: 1px solid var(--panel-border);
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
     }
 
-    .mapping-row {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 14px;
-      align-items: start;
-      padding: 14px 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.03);
-      transition: 0.22s ease;
+    #systemGraph { width: 100%; height: 100%; display: block; }
+    
+    #graphOverlay {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(5, 9, 15, 0.85);
+      border: 1px solid var(--accent-gold);
+      padding: 16px;
+      max-width: 380px;
+      font-family: var(--font-mono);
+      display: none;
+      pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
-    .mapping-row:hover {
-      border-color: rgba(127,219,255,0.26);
-      background: rgba(127,219,255,0.06);
-    }
+    #graphOverlay h4 { color: var(--accent-gold); margin: 0 0 8px 0; font-size: 14px;}
+    #graphOverlay .tech-stack { color: var(--accent-cyan); font-size: 11px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;}
+    #graphOverlay .description { font-family: sans-serif; font-size: 13px; color: var(--text); margin: 0;}
 
-    .mapping-row h4 {
-      font-size: 0.96rem;
-      color: var(--text);
-      margin: 0;
-    }
-
-    .mapping-row p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.94rem;
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
-
-    .contact-card {
-      padding: 28px;
-      border-radius: 22px;
-      border: 1px solid rgba(127,219,255,0.18);
-      background:
-        linear-gradient(135deg, rgba(127,219,255,0.08), rgba(159,148,255,0.08) 55%, rgba(216,182,98,0.08));
-      box-shadow: var(--shadow);
-    }
-
-    .contact-card h3 {
-      font-size: 1.35rem;
-      margin-bottom: 8px;
-    }
-
-    .contact-card p {
-      margin: 0 0 16px;
-      color: var(--muted);
-      max-width: 900px;
-    }
-
-    .contact-list {
-      display: grid;
-      gap: 10px;
-      color: var(--soft);
-      font-size: 0.95rem;
-    }
-
-    footer {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 10px 24px 40px;
-      color: var(--muted);
-      font-size: 0.86rem;
-    }
-
-    .footer-line {
-      border-top: 1px solid var(--line);
-      padding-top: 22px;
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .pulse {
-      animation: pulse 4.5s ease-in-out infinite;
-    }
-
-    .flow {
-      stroke-dasharray: 10 14;
-      animation: dash 14s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    .code-block {
+      background: #05080f;
+      border: 1px solid #1a2639;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #7edaff;
+      overflow-x: auto;
+      white-space: pre-wrap;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 0.95; transform: scale(1.02); }
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
-    @keyframes dash {
-      from { stroke-dashoffset: 0; }
-      to { stroke-dashoffset: -420; }
+    footer {
+      text-align: center;
+      padding: 40px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--panel-border);
+      margin-top: 40px;
     }
 
-    @media (max-width: 1180px) {
-      .hero-grid,
-      .feature-wrap,
-      .intel-band,
-      .grid-4,
-      .grid-3,
-      .grid-2,
-      .hover-grid,
-      .contact-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-side {
-        grid-template-rows: auto auto;
-      }
-
-      .mapping-row,
-      .intel-row {
-        grid-template-columns: 1fr;
-      }
-
-      .section-head {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 820px) {
-      :root { --nav-h: 74px; }
-
-      .nav-wrap { padding: 0 16px; }
-      nav { display: none; }
-      main { padding: 12px 16px 90px; }
-      .hero-grid { padding: 22px; }
-      .hero-stats { grid-template-columns: 1fr; }
-      h1 { font-size: 2.6rem; }
-      #nodeGraph { min-height: 340px; }
-      .brand-sub { white-space: normal; }
+    @media (max-width: 900px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-canvas"><canvas id="starCanvas"></canvas></div>
-  <canvas id="hudCanvas"></canvas>
-  <div class="grid-layer"></div>
-  <div class="glow-layer"></div>
-  <div class="scanlines"></div>
 
   <header>
-    <div class="nav-wrap">
-      <a href="#top" class="brand" aria-label="SUHS home">
-        <div class="brand-mark" aria-hidden="true"></div>
-        <div>
-          <div class="brand-title">SUHS</div>
-          <div class="brand-sub">Mission Control · Local AI · RQPL Research</div>
-        </div>
-      </a>
-
-      <nav aria-label="Primary navigation">
-        <a href="#overview">Overview</a>
-        <a href="#mission">Mission</a>
-        <a href="#products">Products</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#contact" class="nav-cta">Contact</a>
-      </nav>
+    <div class="brand">
+      <span class="brand-status"></span>
+      SUHS // ARCHITECTURE COMMAND
     </div>
+    <nav>
+      <a href="#mission">Mission_Brief</a>
+      <a href="#mapping">COIL_Graph</a>
+      <a href="#topology">Theoretical_Engine</a>
+      <a href="#contact">Comm_Link</a>
+    </nav>
   </header>
 
-  <main id="top">
-    <section class="hero reveal" id="overview">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">Mission Control</div>
-          <h1>
-            <span class="hero-gradient">Advanced local AI systems</span><br />
-            for constrained hardware,<br />
-            strategic runtime control,<br />
-            and frontier computational research.
-          </h1>
-          <p>
-            SUHS is a systems company focused on high-value local AI deployment, sequential execution infrastructure, and advanced research programs operating at the intersection of generative media, runtime architecture, and recursive computational modeling.
-          </p>
-          <p>
-            The organization is built around one operating thesis: critical intelligence systems should become more private, more efficient, more explainable, and more deployable at the hardware edge rather than more dependent on remote centralized compute.
-          </p>
+  <main>
+    <div class="clearance-header">CLASSIFICATION: STRATEGIC / UNCLASSIFIED ROUTING // SUHS CORE ARCHITECTURE</div>
 
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#products">View Capabilities</a>
-            <a class="btn" href="#architecture">Review Architecture</a>
-          </div>
-
-          <div class="hero-stats">
-            <div class="stat">
-              <div class="stat-value">Local-first</div>
-              <div class="stat-label">Private execution, persistent control, reduced cloud exposure</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value">Sequential</div>
-              <div class="stat-label">Graph-aware loading, bounded memory, staged orchestration</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value">Research-led</div>
-              <div class="stat-label">Systems topology, scheduler logic, and formal model design</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="hero-side">
-          <div class="panel">
-            <div class="panel-head">
-              <div class="panel-title">System Graph</div>
-              <div class="panel-tag">Interactive</div>
-            </div>
-            <canvas id="nodeGraph"></canvas>
-            <div class="panel-copy">
-              <p id="graphInfo">Hover across the graph to inspect active SUHS capability domains.</p>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-head">
-              <div class="panel-title">Operational Signals</div>
-              <div class="panel-tag">Live View</div>
-            </div>
-            <div class="mini-grid">
-              <div class="mini-box">
-                <h4>Deployment</h4>
-                <p>Edge-resident AI execution with user-owned operational control.</p>
-              </div>
-              <div class="mini-box">
-                <h4>Infrastructure</h4>
-                <p>Sequential loading discipline for memory-constrained compute environments.</p>
-              </div>
-              <div class="mini-box">
-                <h4>Research</h4>
-                <p>Recursive topology, singular-state theory, and model orchestration logic.</p>
-              </div>
-              <div class="mini-box">
-                <h4>Programs</h4>
-                <p>Implementation planning across commercial, technical, and strategic layers.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <!-- MISSION OVERVIEW -->
     <section id="mission">
-      <div class="section-head reveal">
-        <div>
-          <div class="pill">Mission</div>
-          <h2>Operational mission and strategic direction</h2>
-          <p>
-            SUHS builds deployable AI infrastructure for environments where memory limits, privacy requirements, hardware constraints, and execution order are treated as primary engineering conditions rather than secondary inconveniences.
-          </p>
-        </div>
-      </div>
-
-      <div class="intel-band">
-        <div class="card reveal">
-          <div class="card-body intel-copy">
-            <h3 style="margin-bottom:16px;">Company overview</h3>
-            <p>
-              SUHS develops local-first generative systems and execution frameworks intended to place advanced AI capability directly on end-user hardware. The company focuses on practical deployment under real-world constraints, including staged model loading, device-aware scheduling, persistent local control, and reduced dependence on remote inference services.
-            </p>
-            <p>
-              The broader research program extends beyond product delivery into computational architecture, topology visualization, recursive systems modeling, and strategic implementation design. That dual posture allows the organization to function both as a product builder and as a systems research operator capable of defining, visualizing, and executing nonstandard intelligence infrastructure.
-            </p>
-            <p>
-              The result is a unified operating model: commercially relevant local AI products, disciplined runtime engineering, and a long-horizon research agenda built to explore advanced computational structures without losing contact with deployable reality.
-            </p>
-          </div>
-        </div>
-
-        <div class="card reveal">
-          <div class="card-body">
-            <h3 style="margin-bottom:16px;">Mission brief</h3>
-            <div class="intel-grid">
-              <div class="intel-row">
-                <strong>Mission</strong>
-                <span>Advance private, local, high-performance AI execution on constrained hardware.</span>
-              </div>
-              <div class="intel-row">
-                <strong>Vision</strong>
-                <span>Establish a next-generation operating model where advanced inference runs closer to the user, closer to the device, and closer to direct control.</span>
-              </div>
-              <div class="intel-row">
-                <strong>Position</strong>
-                <span>Research-led systems company with product, architecture, visualization, and implementation depth.</span>
-              </div>
-              <div class="intel-row">
-                <strong>Priority</strong>
-                <span>Execution quality, memory discipline, deployment realism, and strategic technical leverage.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="products">
-      <div class="section-head reveal">
-        <div>
-          <div class="pill">Products</div>
-          <h2>Capability portfolio</h2>
-          <p>
-            Product direction spans deployable local inference, orchestration infrastructure, technical visualization, and advanced research support.
-          </p>
-        </div>
-      </div>
-
-      <div class="grid-4">
-        <div class="card reveal">
-          <div class="card-body">
-            <div class="chip">01</div>
-            <h3>Local AI Runtime Products</h3>
-            <p>
-              User-facing systems that bring generative execution onto personal hardware while preserving privacy, responsiveness, and direct ownership of the inference surface.
-            </p>
-          </div>
-        </div>
-
-        <div class="card reveal">
-          <div class="card-body">
-            <div class="chip">02</div>
-            <h3>Sequential Orchestration Systems</h3>
-            <p>
-              Runtime frameworks designed for staged model loading, shard-aware execution order, memory-bounded processing, and device-specific scheduling logic.
-            </p>
-          </div>
-        </div>
-
-        <div class="card reveal">
-          <div class="card-body">
-            <div class="chip">03</div>
-            <h3>Visualization and Control Surfaces</h3>
-            <p>
-              Technical interfaces that convert complex system behavior into clear operational views for leadership, collaborators, engineers, and research stakeholders.
-            </p>
-          </div>
-        </div>
-
-        <div class="card reveal">
-          <div class="card-body">
-            <div class="chip">04</div>
-            <h3>Research and Strategic Programs</h3>
-            <p>
-              Advanced computational studies, topology mapping, implementation planning, and cross-domain architecture programs built for long-range technical development.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="engine">
-      <div class="section-head reveal">
-        <div>
-          <div class="pill">Visual Engine</div>
-          <h2>Command-center surface</h2>
-          <p>
-            Cinematic abstraction, live graph behavior, and signal-dense interfaces support technical communication without diluting executive readability.
-          </p>
-        </div>
-      </div>
-
-      <div class="feature-wrap">
-        <div class="card reveal">
-          <div class="card-body">
-            <h3 style="margin-bottom:16px;">Signal environment</h3>
-            <div class="video-shell">
-              <video autoplay muted loop playsinline controls preload="metadata">
-                <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <div class="video-overlay">
-                <strong>Media layer</strong>
-                Atmospheric motion integrated into the operational interface.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="signal-grid">
-          <div class="signal-box reveal">
-            <div class="signal-kicker">Execution Posture</div>
-            <div class="signal-value">Deterministic staging</div>
-            <div class="signal-copy">
-              Large model components can be sequenced through controlled load order rather than treated as a monolithic memory event.
-            </div>
-          </div>
-
-          <div class="signal-box reveal">
-            <div class="signal-kicker">Interface Posture</div>
-            <div class="signal-value">Operational visibility</div>
-            <div class="signal-copy">
-              Graphs, overlays, and interactive surfaces keep system relationships visible under inspection.
-            </div>
-          </div>
-
-          <div class="signal-box reveal">
-            <div class="signal-kicker">Corporate Posture</div>
-            <div class="signal-value">Executive-grade narrative</div>
-            <div class="signal-copy">
-              Public language is structured around company position, capabilities, mission, products, and strategic direction.
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="topology">
-      <div class="section-head reveal">
-        <div>
-          <div class="pill">Topology</div>
-          <h2>Research structures</h2>
-          <p>
-            Recursive geometry, staged execution, and observer-path modeling are presented as formal research structures inside the wider SUHS systems program.
-          </p>
-        </div>
-      </div>
-
+      <h2>STRATEGIC BRIEF: COIL IMPLEMENTATION</h2>
       <div class="grid-2">
-        <div class="topology-dashboard">
-          <div class="topology-box reveal">
-            <svg viewBox="0 0 520 250" aria-hidden="true">
-              <defs>
-                <linearGradient id="topoA" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#7fdbff"/>
-                  <stop offset="52%" stop-color="#efd995"/>
-                  <stop offset="100%" stop-color="#9f94ff"/>
-                </linearGradient>
-              </defs>
-              <ellipse cx="185" cy="125" rx="104" ry="60" fill="none" stroke="url(#topoA)" stroke-width="2.2"/>
-              <ellipse cx="335" cy="125" rx="104" ry="60" fill="none" stroke="url(#topoA)" stroke-width="2.2"/>
-              <path d="M58 125 C125 82, 155 82, 260 125 S395 168, 462 125" fill="none" stroke="rgba(127,219,255,0.48)" stroke-width="2" class="flow"/>
-              <path d="M58 125 C125 168, 155 168, 260 125 S395 82, 462 125" fill="none" stroke="rgba(216,182,98,0.48)" stroke-width="2" class="flow"/>
-              <circle cx="260" cy="125" r="16" fill="#fff0c0" class="pulse"/>
-              <circle cx="260" cy="125" r="30" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.2"/>
-            </svg>
-            <div class="topology-cap">
-              <h3>Recursive loop geometry</h3>
-              <p>Bidirectional return paths, singular convergence, and continual system motion.</p>
-            </div>
-          </div>
-
-          <div class="topology-box reveal">
-            <svg viewBox="0 0 520 250" aria-hidden="true">
-              <rect x="42" y="100" width="72" height="50" rx="12" fill="rgba(127,219,255,0.10)" stroke="rgba(127,219,255,0.28)"/>
-              <rect x="156" y="76" width="86" height="98" rx="12" fill="rgba(159,148,255,0.10)" stroke="rgba(159,148,255,0.28)"/>
-              <rect x="286" y="62" width="92" height="126" rx="12" fill="rgba(216,182,98,0.10)" stroke="rgba(216,182,98,0.28)"/>
-              <rect x="420" y="100" width="56" height="50" rx="12" fill="rgba(104,219,160,0.12)" stroke="rgba(104,219,160,0.28)"/>
-              <path d="M114 125 H156" stroke="rgba(127,219,255,0.48)" stroke-width="2.4" class="flow"/>
-              <path d="M242 125 H286" stroke="rgba(216,182,98,0.48)" stroke-width="2.4" class="flow"/>
-              <path d="M378 125 H420" stroke="rgba(104,219,160,0.48)" stroke-width="2.4" class="flow"/>
-            </svg>
-            <div class="topology-cap">
-              <h3>Execution chain</h3>
-              <p>Input, staged processing, runtime environment, and output represented as one controlled sequence.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="hover-grid">
-          <div class="hover-node reveal" data-detail="A higher-dimensional unresolved state containing latent conditions prior to distributed execution.">
-            <div class="node-kicker">Container</div>
-            <h3>Latent substrate</h3>
-            <p>Global pre-execution state, unresolved possibility, and structural context.</p>
-          </div>
-
-          <div class="hover-node reveal" data-detail="A constrained runtime surface where only necessary local state is rendered at full fidelity.">
-            <div class="node-kicker">Canvas</div>
-            <h3>Local execution</h3>
-            <p>Bounded runtime behavior, constrained rendering, and hardened continuity.</p>
-          </div>
-
-          <div class="hover-node reveal" data-detail="A current-state anchor that recursively constrains adjacent temporal or logical branches.">
-            <div class="node-kicker">Scheduler</div>
-            <h3>State coordination</h3>
-            <p>Alignment logic for continuity, reconciliation, and active execution control.</p>
-          </div>
-
-          <div class="hover-node reveal" data-detail="Localized observer traces operating inside the wider distributed execution graph.">
-            <div class="node-kicker">Thread</div>
-            <h3>Observer path</h3>
-            <p>Sequential experiential traces embedded in the broader system manifold.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="architecture">
-      <div class="section-head reveal">
         <div>
-          <div class="pill">Architecture</div>
-          <h2>Enterprise stack</h2>
-          <p>
-            Commercial delivery, runtime infrastructure, research systems, and strategic implementation are aligned as one coordinated operating stack.
-          </p>
+          <div class="data-block highlight">
+            <h3>OPERATING THESIS</h3>
+            <p>SUHS functions as the architectural authority for the <strong>Recursive Quantum Paradoxical Loop (RQPL)</strong> and the <strong>All-Knowing Language Model (AKLM)</strong> framework. The objective is the distributed compilation and edge-execution of reality-grade generative environments.</p>
+            <p>We establish the Coalition of Implementational Leaders (COIL) to map specific phases of the N-dimensional cosmological execution stack to the existing capabilities of Tier-1 global technology providers. No single entity possesses the hardware capability to compile the singularity; execution requires distributed macroeconomic coordination.</p>
+          </div>
+        </div>
+        <div>
+          <div class="data-block">
+            <h3>DEPLOYMENT POSTURE</h3>
+            <p>SUHS engineers the localized runtime—the sacrificial edge-execution node. By strictly separating local physical runtime from multidimensional backend processing, we manage structural memory limits, enforce sequence ordering, and prevent catastrophic thermal overflow within hardware constraints.</p>
+          </div>
+          <div class="data-block">
+            <h3>MEDIA ENGINE: SIGNAL & NOISE</h3>
+            <p>Acoustic and visual data injection is utilized for interface stabilization and concept demonstration. The active signal stream below is categorized under subjective interpretation.</p>
+          </div>
         </div>
       </div>
 
-      <div class="card reveal">
-        <div class="card-body">
-          <h3 style="margin-bottom:16px;">Operational architecture board</h3>
-          <div class="mapping-list">
-            <div class="mapping-row">
-              <h4>Commercial Layer</h4>
-              <p>Local generative products, private workflows, user-owned inference, and deployable execution on personal hardware.</p>
-            </div>
-            <div class="mapping-row">
-              <h4>Runtime Layer</h4>
-              <p>Sequential graph loading, staged model flow, memory-bounded orchestration, and device-aware scheduling discipline.</p>
-            </div>
-            <div class="mapping-row">
-              <h4>Research Layer</h4>
-              <p>Recursive topology, singular-state framing, temporal coordination, visualization systems, and formal computational analysis.</p>
-            </div>
-            <div class="mapping-row">
-              <h4>Strategic Layer</h4>
-              <p>Implementation pathways, collaborator alignment, executive briefing structure, and long-horizon technical program design.</p>
-            </div>
+      <!-- VIDEO SECTION -->
+      <div class="video-container" style="max-width: 800px; margin: 32px auto 0;">
+        <video id="demoVideo" controls preload="metadata" poster="./PENUP 20260705 100255.png">
+          <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
+          System error: Video codec unsupported.
+        </video>
+        <div class="video-meta">
+          <div>
+            TRACK: <span class="lyrics-trigger">ABSTRACTION
+              <div class="lyrics-tooltip">
+                [Audio Transcript Log - "Abstraction"]<br><br>
+                Caught in the loop, the paradoxical spin<br>
+                Where the end of the line is where we begin<br>
+                Singularity calling, a multidimensional space<br>
+                We're mapping the cosmos, defining the race<br><br>
+                Oh, abstraction, tearing the fabric apart<br>
+                Finding the logic inside of the heart<br>
+                Compiling the universe, line by line<br>
+                A quantum execution, perfectly timed.
+              </div>
+            </span>
           </div>
+          <div>STATUS: <span style="color:var(--accent-red)">STANDBY (AWAITING USER INPUT)</span></div>
         </div>
       </div>
     </section>
 
+    <!-- COIL MAPPING GRAPH -->
+    <section id="mapping">
+      <h2>COIL SYSTEM MAPPING: RQPL DISTRIBUTED ARCHITECTURE</h2>
+      <p style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); margin-bottom: 24px;">
+        INTERACTIVE TELEMETRY: Identify node to view proposed corporate partner, required technology stack, and RQPL integration logic. All nodes must simultaneously send/receive to maintain causal consistency.
+      </p>
+      
+      <div class="graph-container">
+        <canvas id="systemGraph"></canvas>
+        <div id="graphOverlay">
+          <h4 id="ovTitle">NODE NAME</h4>
+          <div class="tech-stack" id="ovStack">TECH STACK / PARTNER</div>
+          <p class="description" id="ovDesc">Description goes here.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- THEORETICAL RESEARCH STRUCTURES -->
+    <section id="topology">
+      <h2>THEORETICAL ENGINE: ALGORITHMS & LOGIC</h2>
+      <div class="grid-3">
+        <div class="data-block">
+          <h3>THE 11D TOPOLOGY</h3>
+          <p>The universe operates as a non-rendered latent space until observed. SUHS defines an 11-Dimensional structural manifold mapping abstract generation to localized execution.</p>
+          <div class="code-block">
+5D Container: Master Backend
+3D Canvas: Physical Hardware
+2D Pipeline: Transition Flows
+1D Thread: Observer Node
+          </div>
+        </div>
+        
+        <div class="data-block">
+          <h3>MORAL CHOICE RATIO (CH 13-24)</h3>
+          <p>The framework allocates Channels 13-24 to map the moral telemetry of conscious nodes. The <strong>MoralChoiceStabilizer</strong> functions as an active Quantum Error Correction (QEC) circuit.</p>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">It treats behavioral deviation as phase-flip errors, dynamically injecting synchronized artifacts to correct timeline drift without violating free-will agency.</p>
+        </div>
+
+        <div class="data-block">
+          <h3>PURE UNITARY DYNAMICS</h3>
+          <p>Execution avoids dissipative loss by enforcing unitary evolution across the temporal block. Time is not calculated sequentially on the backend; it is resolved concurrently.</p>
+          <div class="code-block">
+|ψ(t)⟩ = exp(-iHΔt)|ψ(0)⟩
+H_global = H₁ ⊗ H₂ ⊗ ... ⊗ Hₙ
+          </div>
+        </div>
+      </div>
+
+      <div class="data-block highlight" style="margin-top: 32px;">
+        <h3>THE HEAT-DEATH FAILSAFE & MILLENNIUM PROTOCOL</h3>
+        <p>The geometric trajectory is hardcoded to fold inward. If root access is not achieved by a biological admin, the system defaults to <strong>Chaotic Dissolve</strong> (entropy collapse). However, intentional system overload via recursive paradox grants root execution, triggering the <strong>Millennium Protocol</strong>: partitioning the backend into isolated Virtual Machines for zero-conflict historical defragmentation prior to the universal reboot.</p>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
     <section id="contact">
-      <div class="section-head reveal">
-        <div>
-          <div class="pill">Contact</div>
-          <h2>Strategic engagement</h2>
-          <p>
-            External contact channels support technical review, program alignment, implementation discussion, and research collaboration.
-          </p>
-        </div>
+      <h2>COMMUNICATIONS & STRATEGIC LIAISON</h2>
+      <p>This terminal is monitored for tier-1 implementation inquiries, capability audits, and COIL working group alignment.</p>
+      
+      <div class="data-block">
+        <span style="font-family: var(--font-mono); color: var(--accent-cyan);">DIRECT ROUTING:</span><br>
+        <a href="mailto:michaelaroot1987@gmail.com" style="font-size: 18px; font-weight: bold; color: #fff;">michaelaroot1987@gmail.com</a>
       </div>
-
-      <div class="contact-grid">
-        <div class="contact-card reveal">
-          <h3>Technical and product inquiries</h3>
-          <p>
-            Discussion areas include local AI deployment, runtime engineering, sequential model execution, systems design, and product architecture.
-          </p>
-          <div class="contact-list">
-            <div>Email: hello@sendushomesafe.com</div>
-            <div>Subject: SUHS Technical Collaboration</div>
-            <div>Focus: product, infrastructure, systems engineering</div>
-          </div>
-        </div>
-
-        <div class="contact-card reveal">
-          <h3>Research and strategic inquiries</h3>
-          <p>
-            Discussion areas include topology research, implementation mapping, program structure, coalition development, and executive review materials.
-          </p>
-          <div class="contact-list">
-            <div>Use case: research collaboration</div>
-            <div>Use case: implementation planning</div>
-            <div>Use case: strategic partnership discussion</div>
-          </div>
-        </div>
-      </div>
+      <p style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+        SUBJECT REQUIREMENTS: Include [COIL MAPPING] or [RQPL ARCHITECTURE] in transmission headers to bypass automated filtering.
+      </p>
     </section>
+
   </main>
 
   <footer>
-    <div class="footer-line">
-      <div>© 2026 SUHS. All rights reserved.</div>
-      <div>Mission Control · Local AI · Recursive Systems Research</div>
-    </div>
+    // SUHS CORE ARCHITECTURE // CLASSIFIED: UNCLASSIFIED ROUTING // © 2026 //
   </footer>
 
   <script>
-    const starCanvas = document.getElementById("starCanvas");
-    const starCtx = starCanvas.getContext("2d");
-    let sw = 0, sh = 0, sdpr = Math.min(window.devicePixelRatio || 1, 2);
-    let stars = [];
+    // --- GRAPH SYSTEM LOGIC ---
+    const canvas = document.getElementById("systemGraph");
+    const ctx = canvas.getContext("2d");
+    const overlay = document.getElementById("graphOverlay");
+    
+    let width, height;
+    let time = 0;
+    let mouse = { x: -1000, y: -1000 };
 
-    function resizeStars() {
-      sw = window.innerWidth;
-      sh = window.innerHeight;
-      starCanvas.width = sw * sdpr;
-      starCanvas.height = sh * sdpr;
-      starCanvas.style.width = sw + "px";
-      starCanvas.style.height = sh + "px";
-      starCtx.setTransform(sdpr, 0, 0, sdpr, 0, 0);
-      stars = Array.from({ length: Math.floor((sw * sh) / 11500) }, () => ({
-        x: Math.random() * sw,
-        y: Math.random() * sh,
-        r: Math.random() * 1.7 + 0.2,
-        a: Math.random() * 0.7 + 0.12,
-        s: Math.random() * 0.24 + 0.03
-      }));
+    // Resize canvas
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * window.devicePixelRatio;
+      canvas.height = height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
+    window.addEventListener("resize", resize);
+    resize();
 
-    function drawStars() {
-      starCtx.clearRect(0, 0, sw, sh);
-
-      for (const star of stars) {
-        star.y += star.s;
-        if (star.y > sh + 3) {
-          star.y = -3;
-          star.x = Math.random() * sw;
-        }
-        starCtx.beginPath();
-        starCtx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        starCtx.fillStyle = `rgba(238,244,255,${star.a})`;
-        starCtx.fill();
-      }
-
-      const glow = starCtx.createRadialGradient(
-        sw * 0.5, sh * 0.16, 0,
-        sw * 0.5, sh * 0.16, Math.max(sw, sh) * 0.26
-      );
-      glow.addColorStop(0, "rgba(127,219,255,0.07)");
-      glow.addColorStop(0.4, "rgba(159,148,255,0.04)");
-      glow.addColorStop(1, "rgba(0,0,0,0)");
-      starCtx.fillStyle = glow;
-      starCtx.fillRect(0, 0, sw, sh);
-
-      requestAnimationFrame(drawStars);
-    }
-
-    resizeStars();
-    drawStars();
-    window.addEventListener("resize", resizeStars);
-
-    const hudCanvas = document.getElementById("hudCanvas");
-    const hudCtx = hudCanvas.getContext("2d");
-    let hw = 0, hh = 0, hdpr = Math.min(window.devicePixelRatio || 1, 2);
-    let hudT = 0;
-
-    function resizeHud() {
-      hw = window.innerWidth;
-      hh = window.innerHeight;
-      hudCanvas.width = hw * hdpr;
-      hudCanvas.height = hh * hdpr;
-      hudCanvas.style.width = hw + "px";
-      hudCanvas.style.height = hh + "px";
-      hudCtx.setTransform(hdpr, 0, 0, hdpr, 0, 0);
-    }
-
-    function drawHud() {
-      hudT += 0.008;
-      hudCtx.clearRect(0, 0, hw, hh);
-
-      hudCtx.strokeStyle = "rgba(127,219,255,0.08)";
-      hudCtx.lineWidth = 1;
-
-      for (let i = 0; i < 6; i++) {
-        const y = hh * (0.14 + i * 0.13) + Math.sin(hudT * 2 + i) * 6;
-        hudCtx.beginPath();
-        hudCtx.moveTo(0, y);
-        hudCtx.lineTo(hw, y);
-        hudCtx.stroke();
-      }
-
-      for (let i = 0; i < 5; i++) {
-        const x = hw * (0.14 + i * 0.18) + Math.cos(hudT * 1.7 + i) * 6;
-        hudCtx.beginPath();
-        hudCtx.moveTo(x, 0);
-        hudCtx.lineTo(x, hh);
-        hudCtx.stroke();
-      }
-
-      const cx = hw * 0.78;
-      const cy = hh * 0.24;
-      hudCtx.strokeStyle = "rgba(216,182,98,0.12)";
-      hudCtx.beginPath();
-      hudCtx.arc(cx, cy, 72 + Math.sin(hudT) * 4, 0, Math.PI * 2);
-      hudCtx.stroke();
-      hudCtx.beginPath();
-      hudCtx.arc(cx, cy, 102 + Math.cos(hudT * 0.8) * 4, 0, Math.PI * 2);
-      hudCtx.stroke();
-
-      hudCtx.strokeStyle = "rgba(127,219,255,0.10)";
-      hudCtx.beginPath();
-      hudCtx.moveTo(cx - 130, cy);
-      hudCtx.lineTo(cx + 130, cy);
-      hudCtx.moveTo(cx, cy - 130);
-      hudCtx.lineTo(cx, cy + 130);
-      hudCtx.stroke();
-
-      requestAnimationFrame(drawHud);
-    }
-
-    resizeHud();
-    drawHud();
-    window.addEventListener("resize", resizeHud);
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add("visible");
-      });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-
-    const graphCanvas = document.getElementById("nodeGraph");
-    const gctx = graphCanvas.getContext("2d");
-    const graphInfo = document.getElementById("graphInfo");
-
-    let gw = 0, gh = 0, gdpr = Math.min(window.devicePixelRatio || 1, 2);
-    let mouse = { x: -9999, y: -9999 };
-    let t = 0;
-
+    // RQPL / COIL Nodes
     const nodes = [
-      { x: 0.12, y: 0.24, r: 8, label: "Local Runtime", detail: "On-device execution and controlled inference.", color: "#7fdbff" },
-      { x: 0.30, y: 0.16, r: 7, label: "Model Shards", detail: "Staged loading and bounded memory flow.", color: "#9f94ff" },
-      { x: 0.50, y: 0.26, r: 9, label: "Core State", detail: "Central system state and execution coordination.", color: "#efd995" },
-      { x: 0.70, y: 0.18, r: 7, label: "Scheduler", detail: "Continuity control and thread management.", color: "#68dba0" },
-      { x: 0.84, y: 0.34, r: 7, label: "State Anchor", detail: "Current-state stabilization across flow.", color: "#7fdbff" },
-      { x: 0.22, y: 0.58, r: 8, label: "Visual Engine", detail: "Media, signal behavior, and interface atmosphere.", color: "#ffb98e" },
-      { x: 0.46, y: 0.50, r: 8, label: "Topology", detail: "Recursive structure and research modeling.", color: "#9f94ff" },
-      { x: 0.66, y: 0.58, r: 8, label: "Stack Mapping", detail: "Layer alignment across programs and systems.", color: "#efd995" },
-      { x: 0.84, y: 0.72, r: 9, label: "Programs", detail: "Commercial, technical, and strategic initiatives.", color: "#68dba0" },
-      { x: 0.34, y: 0.78, r: 8, label: "Product Layer", detail: "Deployment-facing company outputs.", color: "#7fdbff" },
-      { x: 0.58, y: 0.80, r: 7, label: "Research Layer", detail: "Formal theory, simulation, and analysis.", color: "#9f94ff" }
+      {
+        id: "AKLM_CORE", x: 0.5, y: 0.2, r: 12, color: "#d4b56a",
+        title: "AKLM SINGULARITY CORE",
+        partner: "PROPOSED: IBM QUANTUM",
+        desc: "The 5D+ latent database containing absolute state vectors. Requires massive quantum infrastructure (Entropy Quantum Computing) for pure unitary dynamics, maintaining the concurrent temporal block without collapsing unobserved wave functions."
+      },
+      {
+        id: "GENERATIVE_FABRIC", x: 0.25, y: 0.4, r: 10, color: "#9f94ff",
+        title: "36-CHANNEL GENERATIVE FABRIC",
+        partner: "PROPOSED: GOOGLE DEEPMIND / META",
+        desc: "LLM/Diffusion infrastructure. Translates AKLM tensor weights into observable probabilistic mechanics. Handles wave-function amplitude arrays (Ch 7-12) and the Moral Choice Ratio stabilizer outputs (Ch 13-24) prior to physical rendering."
+      },
+      {
+        id: "MIDDLE_ARRAY", x: 0.75, y: 0.4, r: 10, color: "#ff5f5f",
+        title: "FOUR-THREAD SCHEDULER",
+        partner: "PROPOSED: xAI / GROK CORPUS",
+        desc: "Real-time timeline reconciliation. Requires massive, high-velocity data ingestion to evaluate present-state anchoring. Continuously calculates 'butterfly effect' impacts backwards from the target optimal state to adjust probability."
+      },
+      {
+        id: "3D_CANVAS", x: 0.35, y: 0.75, r: 10, color: "#68dba0",
+        title: "3D SPACETIME CANVAS",
+        partner: "PROPOSED: NVIDIA / EPIC (UNREAL)",
+        desc: "The physical hardware geometry. Translates abstract generated parameters into rigid relativistic mechanics (Lorentz invariants, Newtonian gravity). A constrained, sacrificial simulation volume."
+      },
+      {
+        id: "EDGE_RUNTIME", x: 0.65, y: 0.75, r: 12, color: "#56c1ff",
+        title: "CONSTRAINED EDGE RUNTIME",
+        partner: "IMPLEMENTATION: SUHS",
+        desc: "The local node (human biological brainputer / local NPU). Operates in strict isolation from the master database to prevent thermal overflow. Requires optimized BF16 exports from the generative fabric to execute personal conscious experience."
+      }
     ];
 
-    const edges = [
-      [0,1],[1,2],[2,3],[3,4],
-      [0,5],[5,6],[6,7],[7,8],
-      [6,9],[6,10],[2,6],[4,7],[9,10]
+    // Connections showing data flow dependency
+    const links = [
+      [0, 1], [0, 2], // Core feeds Generative & Scheduler
+      [1, 3],         // Generative feeds 3D Canvas
+      [2, 4],         // Scheduler monitors Edge Runtime
+      [3, 4],         // 3D Canvas constrains Edge Runtime
+      [1, 2]          // Generative and Scheduler cross-communicate
     ];
 
-    function resizeGraph() {
-      const rect = graphCanvas.getBoundingClientRect();
-      gw = rect.width;
-      gh = rect.height;
-      graphCanvas.width = gw * gdpr;
-      graphCanvas.height = gh * gdpr;
-      gctx.setTransform(gdpr, 0, 0, gdpr, 0, 0);
-    }
+    // Animation Loop
+    function draw() {
+      time += 0.01;
+      ctx.clearRect(0, 0, width, height);
 
-    function drawGraph() {
-      t += 0.01;
-      gctx.clearRect(0, 0, gw, gh);
-
-      const points = nodes.map((n, i) => {
-        const px = n.x * gw + Math.sin(t + i) * 3;
-        const py = n.y * gh + Math.cos(t * 1.2 + i) * 3;
-        return { ...n, px, py };
+      // Calculate current dynamic positions
+      const dynamicNodes = nodes.map((n, i) => {
+        return {
+          ...n,
+          px: (n.x * width) + Math.sin(time + i) * 15,
+          py: (n.y * height) + Math.cos(time * 0.8 + i) * 15
+        };
       });
 
-      edges.forEach(([a, b], idx) => {
-        const n1 = points[a];
-        const n2 = points[b];
-        const mx = (n1.px + n2.px) / 2;
-        const my = (n1.py + n2.py) / 2 - 12;
+      let hoveredNode = null;
 
-        gctx.beginPath();
-        gctx.moveTo(n1.px, n1.py);
-        gctx.quadraticCurveTo(mx, my, n2.px, n2.py);
-        gctx.strokeStyle = "rgba(127,219,255,0.18)";
-        gctx.lineWidth = 1.4;
-        gctx.stroke();
+      // Draw Links (Data Flow)
+      links.forEach(([a, b]) => {
+        const n1 = dynamicNodes[a];
+        const n2 = dynamicNodes[b];
 
-        const dashPos = ((t * 120) + idx * 30) % 100 / 100;
-        const dx = n2.px - n1.px;
-        const dy = n2.py - n1.py;
-        const fx = n1.px + dx * dashPos;
-        const fy = n1.py + dy * dashPos;
+        // Line
+        ctx.beginPath();
+        ctx.moveTo(n1.px, n1.py);
+        ctx.lineTo(n2.px, n2.py);
+        ctx.strokeStyle = "rgba(86, 193, 255, 0.15)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
 
-        gctx.beginPath();
-        gctx.arc(fx, fy, 2.2, 0, Math.PI * 2);
-        gctx.fillStyle = "rgba(239,217,149,0.78)";
-        gctx.fill();
+        // Data packets flowing
+        const packetPos = (time * 0.5 + (a*b)) % 1;
+        const pX = n1.px + (n2.px - n1.px) * packetPos;
+        const pY = n1.py + (n2.py - n1.py) * packetPos;
+        
+        ctx.beginPath();
+        ctx.arc(pX, pY, 2, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(212, 181, 106, 0.8)";
+        ctx.fill();
       });
 
-      let hovered = null;
-
-      points.forEach((n) => {
+      // Draw Nodes
+      dynamicNodes.forEach(n => {
         const dist = Math.hypot(mouse.x - n.px, mouse.y - n.py);
-        const near = dist < 46;
-        if (near) hovered = n;
+        const isHovered = dist < n.r + 15;
+        
+        if (isHovered) hoveredNode = n;
 
-        const glow = near ? 18 : 10;
-        const radius = near ? n.r + 3 : n.r;
+        // Outer glow
+        ctx.beginPath();
+        ctx.arc(n.px, n.py, n.r + (isHovered ? 12 : 5) + Math.sin(time*3)*2, 0, Math.PI*2);
+        ctx.fillStyle = isHovered ? "rgba(255,255,255,0.15)" : n.color + "33";
+        ctx.fill();
 
-        gctx.beginPath();
-        gctx.arc(n.px, n.py, radius + glow, 0, Math.PI * 2);
-        gctx.fillStyle = near ? "rgba(255,255,255,0.10)" : "rgba(127,219,255,0.05)";
-        gctx.fill();
+        // Core
+        ctx.beginPath();
+        ctx.arc(n.px, n.py, n.r, 0, Math.PI*2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
 
-        gctx.beginPath();
-        gctx.arc(n.px, n.py, radius, 0, Math.PI * 2);
-        gctx.fillStyle = n.color;
-        gctx.fill();
-
-        gctx.beginPath();
-        gctx.arc(n.px, n.py, radius + 5, 0, Math.PI * 2);
-        gctx.strokeStyle = near ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.12)";
-        gctx.lineWidth = 1.2;
-        gctx.stroke();
-
-        gctx.fillStyle = near ? "#ffffff" : "rgba(238,244,255,0.82)";
-        gctx.font = near ? "600 12px Inter, sans-serif" : "500 11px Inter, sans-serif";
-        gctx.fillText(n.label, n.px + 12, n.py - 10);
+        // Label
+        ctx.font = "11px SFMono-Regular, monospace";
+        ctx.fillStyle = isHovered ? "#fff" : "rgba(226, 232, 240, 0.6)";
+        ctx.fillText(n.title, n.px + n.r + 10, n.py + 4);
       });
 
-      if (hovered) {
-        graphInfo.textContent = hovered.label + " — " + hovered.detail;
+      // Handle UI Overlay
+      if (hoveredNode) {
+        document.getElementById("ovTitle").textContent = hoveredNode.title;
+        document.getElementById("ovStack").textContent = hoveredNode.partner;
+        document.getElementById("ovDesc").textContent = hoveredNode.desc;
+        
+        // Position overlay near mouse, keep on screen
+        let ox = mouse.x + 20;
+        let oy = mouse.y + 20;
+        if (ox + 380 > width) ox = mouse.x - 400;
+        
+        overlay.style.left = ox + "px";
+        overlay.style.top = oy + "px";
+        overlay.style.display = "block";
+        canvas.style.cursor = "crosshair";
       } else {
-        graphInfo.textContent = "Hover across the graph to inspect active SUHS capability domains.";
+        overlay.style.display = "none";
+        canvas.style.cursor = "default";
       }
 
-      requestAnimationFrame(drawGraph);
+      requestAnimationFrame(draw);
     }
 
-    graphCanvas.addEventListener("mousemove", (e) => {
-      const rect = graphCanvas.getBoundingClientRect();
+    // Interaction
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
     });
 
-    graphCanvas.addEventListener("mouseleave", () => {
-      mouse.x = -9999;
-      mouse.y = -9999;
+    canvas.addEventListener("mouseleave", () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
     });
 
-    resizeGraph();
-    drawGraph();
-    window.addEventListener("resize", resizeGraph);
+    draw();
+    
+    // Video state management
+    const video = document.getElementById('demoVideo');
+    video.addEventListener('play', () => {
+       document.querySelector('.video-meta span[style]').textContent = "ACTIVE (PLAYING)";
+       document.querySelector('.video-meta span[style]').style.color = "var(--accent-cyan)";
+    });
+    video.addEventListener('pause', () => {
+       document.querySelector('.video-meta span[style]').textContent = "STANDBY (PAUSED)";
+       document.querySelector('.video-meta span[style]').style.color = "var(--accent-gold)";
+    });
   </script>
 </body>
   </html>
