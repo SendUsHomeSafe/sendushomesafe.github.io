@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SUHS | Special Systems Directorate</title>
+  <meta name="description" content="SUHS builds local AI systems, quantum-first execution architecture, recursive cosmological research, and advanced implementation platforms." />
+  <meta name="theme-color" content="#02050b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #02050b;
+      --bg-2: #06101c;
+      --bg-3: #081827;
+      --panel: rgba(6, 10, 18, 0.78);
+      --panel-2: rgba(9, 16, 28, 0.86);
+      --panel-3: rgba(10, 19, 33, 0.96);
+      --line: rgba(153, 190, 255, 0.12);
+      --line-2: rgba(153, 190, 255, 0.24);
+      --soft-line: rgba(255, 255, 255, 0.06);
+      --text: #edf5ff;
+      --soft: #d8e5f8;
+      --muted: #97a9c5;
+      --faint: #6e7f99;
+      --gold: #e2c27a;
+      --gold-2: #fff0bf;
+      --cyan: #84dfff;
+      --cyan-2: #baf0ff;
+      --violet: #a8a1ff;
+      --green: #86e5af;
+      --red: #ff9090;
+      --radius: 24px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+      --max: 1560px;
+      --nav-h: 84px;
+      --banner-ratio: 4 / 1;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 10%, rgba(132,223,255,0.11), transparent 18%),
+        radial-gradient(circle at 82% 14%, rgba(168,161,255,0.10), transparent 22%),
+        radial-gradient(circle at 48% 82%, rgba(226,194,122,0.08), transparent 24%),
+        linear-gradient(180deg, #010307 0%, #050b13 35%, #06111d 60%, #02050b 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img, video, audio, canvas, svg { display: block; max-width: 100%; }
+
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -42px;
+      background: #fff;
+      color: #000;
+      padding: 10px 14px;
+      border-radius: 10px;
+      z-index: 3000;
+      transition: top .2s ease;
+    }
+
+    .skip-link:focus { top: 12px; }
+
+    #spaceCanvas,
+    #hudCanvas,
+    .grid-overlay,
+    .scan-overlay,
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    #spaceCanvas { z-index: -5; }
+    #hudCanvas { z-index: -4; opacity: .7; }
+    .grid-overlay {
+      z-index: -3;
+      opacity: .18;
+      background-image:
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,.2));
+    }
+
+    .scan-overlay {
+      z-index: -2;
+      opacity: .08;
+      background: repeating-linear-gradient(to bottom, rgba(255,255,255,.16), rgba(255,255,255,.16) 1px, transparent 1px, transparent 5px);
+      mix-blend-mode: screen;
+    }
+
+    .vignette {
+      z-index: -1;
+      background:
+        radial-gradient(circle at center, transparent 45%, rgba(0,0,0,.22) 80%, rgba(0,0,0,.5) 100%);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1400;
+      height: var(--nav-h);
+      background: rgba(3, 8, 15, 0.72);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-wrap {
+      max-width: var(--max);
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      position: relative;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, rgba(226,194,122,.33), rgba(132,223,255,.12) 45%, transparent 68%);
+      border: 1px solid rgba(226,194,122,.32);
+      box-shadow: inset 0 0 22px rgba(132,223,255,.18), 0 0 18px rgba(132,223,255,.1);
+      overflow: hidden;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(132,223,255,.28);
+      border-radius: 50%;
+      animation: spin 8s linear infinite;
+    }
+
+    .brand-mark::after {
+      inset: 13px;
+      border-color: rgba(226,194,122,.26);
+      animation-duration: 5.5s;
+      animation-direction: reverse;
+    }
+
+    .brand-title {
+      font-family: Orbitron, Inter, sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .66rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a,
+    .drawer a {
+      color: var(--muted);
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: .2s ease;
+      font-size: .92rem;
+    }
+
+    .nav-links a:hover,
+    .drawer a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+    }
+
+    .nav-links .cta,
+    .drawer .cta {
+      color: var(--gold);
+      background: rgba(226,194,122,.08);
+      border: 1px solid rgba(226,194,122,.2);
+    }
+
+    .mobile-toggle {
+      display: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1490;
+      background: rgba(0,0,0,.46);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(380px, 92vw);
+      height: 100vh;
+      z-index: 1500;
+      transform: translateX(100%);
+      transition: transform .28s ease;
+      background: linear-gradient(180deg, rgba(4,8,14,.98), rgba(6,13,23,.98));
+      border-left: 1px solid var(--line);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: -24px 0 60px rgba(0,0,0,.4);
+    }
+
+    .drawer-open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-open .drawer-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .drawer-close {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .drawer .section-label {
+      color: var(--gold);
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin: 8px 0 6px;
+    }
+
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 24px 110px;
+      position: relative;
+      z-index: 1;
+    }
+
+    section { scroll-margin-top: calc(var(--nav-h) + 12px); }
+
+    .top-banner,
+    .bottom-banner {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.02);
+      aspect-ratio: var(--banner-ratio);
+      min-height: 180px;
+    }
+
+    .banner-bg {
+      position: absolute;
+      inset: -5%;
+      background-position: center;
+      background-size: cover;
+      filter: blur(24px) saturate(1.15);
+      transform: scale(1.08);
+      opacity: .54;
+    }
+
+    .banner-mask {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(2,5,11,.08), rgba(2,5,11,.28)),
+        radial-gradient(circle at center, rgba(255,255,255,.08), transparent 40%);
+    }
+
+    .banner-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      filter: saturate(1.08) contrast(1.05);
+    }
+
+    .hero-shell {
+      margin-top: 16px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(2,5,11,.72), rgba(2,5,11,.68) 35%, rgba(2,5,11,.86) 100%);
+    }
+
+    .hero-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(132,223,255,.10), transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(168,161,255,.10), transparent 26%),
+        radial-gradient(circle at 52% 100%, rgba(226,194,122,.08), transparent 36%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      padding: 32px;
+      min-height: 72vh;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .intel-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(132,223,255,.26);
+      background: rgba(132,223,255,.07);
+      color: var(--cyan);
+      font-size: .76rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .intel-tag::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .hero-quote {
+      font-family: Orbitron, Inter, sans-serif;
+      font-size: clamp(2.4rem, 6vw, 5.5rem);
+      line-height: .98;
+      letter-spacing: -.04em;
+      margin: 0;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff 0%, #dff4ff 35%, #ffe7a4 68%, #ffffff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 24px rgba(255,255,255,.08);
+    }
+
+    .hero-copy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .hero-note,
+    .hero-metric,
+    .panel,
+    .card,
+    .doc-card,
+    .media-card,
+    .algorithm-card,
+    .company-card,
+    .archive-card,
+    .password-card,
+    .bottom-trigger-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-note::before,
+    .hero-metric::before,
+    .panel::before,
+    .card::before,
+    .doc-card::before,
+    .media-card::before,
+    .algorithm-card::before,
+    .company-card::before,
+    .archive-card::before,
+    .password-card::before,
+    .bottom-trigger-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(132,223,255,.06), transparent 30%, transparent 70%, rgba(226,194,122,.06)),
+        radial-gradient(circle at top right, rgba(168,161,255,.10), transparent 25%),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,.018) 0px, rgba(255,255,255,.018) 1px, transparent 1px, transparent 7px);
+      pointer-events: none;
+    }
+
+    .hero-note,
+    .hero-metric,
+    .panel,
+    .card,
+    .doc-card,
+    .media-card,
+    .algorithm-card,
+    .company-card,
+    .archive-card,
+    .password-card,
+    .bottom-trigger-card {
+      padding: 20px;
+    }
+
+    .hero-note h2,
+    .hero-metric h3,
+    .panel h3,
+    .card h3,
+    .media-card h3,
+    .algorithm-card h3,
+    .company-card h3,
+    .archive-card h3,
+    .password-card h3,
+    .bottom-trigger-card h3 {
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-note p,
+    .hero-metric p,
+    .panel p,
+    .card p,
+    .media-card p,
+    .algorithm-card p,
+    .company-card p,
+    .archive-card p,
+    .password-card p,
+    .bottom-trigger-card p {
+      position: relative;
+      z-index: 1;
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 14px;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .summary-stack {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .hero-metric .label {
+      font-size: .72rem;
+      color: var(--cyan);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-metric .value {
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .hero-signal {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      min-height: 280px;
+      border: 1px solid rgba(255,255,255,.08);
+      background:
+        linear-gradient(180deg, rgba(2,5,11,.15), rgba(2,5,11,.74)),
+        radial-gradient(circle at center, rgba(132,223,255,.12), transparent 26%),
+        radial-gradient(circle at 50% 50%, rgba(226,194,122,.08), transparent 12%);
+    }
+
+    .rings {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(132,223,255,.18);
+      animation: spin 20s linear infinite;
+    }
+
+    .ring.r1 { width: 120px; height: 120px; }
+    .ring.r2 { width: 190px; height: 190px; animation-duration: 16s; animation-direction: reverse; border-color: rgba(226,194,122,.16); }
+    .ring.r3 { width: 270px; height: 270px; animation-duration: 28s; }
+    .ring.r4 { width: 340px; height: 340px; animation-duration: 34s; animation-direction: reverse; border-color: rgba(168,161,255,.18); }
+
+    .core-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #fff, var(--gold));
+      box-shadow: 0 0 22px rgba(226,194,122,.6), 0 0 42px rgba(132,223,255,.18);
+      animation: pulse 3.4s ease-in-out infinite;
+    }
+
+    .floating-glyph {
+      position: absolute;
+      color: rgba(237,245,255,.15);
+      font-family: Orbitron, Inter, sans-serif;
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      animation: drift 12s ease-in-out infinite;
+    }
+
+    .g1 { top: 16%; left: 12%; animation-delay: -1s; }
+    .g2 { top: 26%; right: 12%; animation-delay: -3s; }
+    .g3 { bottom: 24%; left: 18%; animation-delay: -5s; }
+    .g4 { bottom: 15%; right: 16%; animation-delay: -2s; }
+
+    .section-head {
+      margin: 72px 0 18px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(226,194,122,.07);
+      color: var(--gold);
+      border: 1px solid rgba(226,194,122,.18);
+      font-size: .72rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .section-head h2 {
+      margin: 10px 0 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.02;
+      font-weight: 900;
+      letter-spacing: -.03em;
+    }
+
+    .section-head p {
+      margin: 10px 0 0;
+      max-width: 980px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .stat-id {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(132,223,255,.2);
+      background: rgba(132,223,255,.08);
+      color: var(--cyan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Orbitron, Inter, sans-serif;
+      font-size: .9rem;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .corp-block p,
+    .corp-block h3 {
+      position: relative;
+      z-index: 1;
+    }
+
+    .corp-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .intel-rows {
+      display: grid;
+      gap: 12px;
+    }
+
+    .intel-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      position: relative;
+      z-index: 1;
+    }
+
+    .intel-row strong {
+      color: var(--text);
+      font-size: .9rem;
+    }
+
+    .intel-row span {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .video-shell {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #000;
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-shell video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .video-top-left-trigger {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 3;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(226,194,122,.22);
+      background: rgba(3,8,15,.82);
+      color: var(--gold-2);
+      font-size: .78rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: help;
+      backdrop-filter: blur(10px);
+      max-width: 280px;
+    }
+
+    .hover-intel {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 10px);
+      width: min(360px, 78vw);
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(132,223,255,.22);
+      background: rgba(5,9,16,.96);
+      color: var(--soft);
+      font-size: .84rem;
+      line-height: 1.55;
+      box-shadow: 0 18px 44px rgba(0,0,0,.34);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: .22s ease;
+    }
+
+    .video-top-left-trigger:hover .hover-intel,
+    .video-top-left-trigger:focus-within .hover-intel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-overlay-bottom {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 2;
+      display: grid;
+      gap: 10px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(3,8,15,.76);
+      backdrop-filter: blur(12px);
+    }
+
+    .song-title-wrap {
+      display: inline-block;
+      width: fit-content;
+      position: relative;
+    }
+
+    .song-title {
+      font-family: Orbitron, Inter, sans-serif;
+      font-size: 1.15rem;
+      color: var(--gold-2);
+      letter-spacing: .08em;
+      cursor: help;
+      border-bottom: 1px dashed rgba(255,255,255,.34);
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .lyrics-panel {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 10px);
+      width: min(520px, 82vw);
+      max-height: 60vh;
+      overflow: auto;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(132,223,255,.22);
+      background: rgba(4,8,14,.97);
+      box-shadow: 0 18px 44px rgba(0,0,0,.34);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: .22s ease;
+      font-size: .9rem;
+      line-height: 1.6;
+      white-space: pre-line;
+      color: var(--soft);
+    }
+
+    .song-title-wrap:hover .lyrics-panel,
+    .song-title-wrap:focus-within .lyrics-panel {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .credits {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 8px 14px;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+
+    .download-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-weight: 700;
+      transition: .2s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(132,223,255,.26);
+      background: rgba(132,223,255,.1);
+    }
+
+    .btn.primary {
+      color: #07111d;
+      background: linear-gradient(135deg, #fff0bf, #e2c27a);
+      border-color: rgba(255,255,255,.2);
+    }
+
+    .btn.primary:hover {
+      background: linear-gradient(135deg, #fff7d8, #e2c27a);
+    }
+
+    .map-layout {
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .graph-panel {
+      min-height: 660px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 14px;
+    }
+
+    .graph-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .graph-top h3 {
+      font-size: 1.05rem;
+    }
+
+    .graph-tag {
+      font-size: .72rem;
+      color: var(--cyan);
+      border: 1px solid rgba(132,223,255,.22);
+      background: rgba(132,223,255,.07);
+      border-radius: 999px;
+      padding: 7px 10px;
+    }
+
+    #mapCanvas {
+      width: 100%;
+      min-height: 430px;
+      height: 430px;
+      display: block;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.06);
+      background:
+        radial-gradient(circle at center, rgba(132,223,255,.08), transparent 25%),
+        linear-gradient(180deg, rgba(2,5,11,.5), rgba(2,5,11,.18));
+    }
+
+    .map-public-copy {
+      position: relative;
+      z-index: 1;
+      color: var(--soft);
+      font-size: .94rem;
+      min-height: 44px;
+    }
+
+    .node-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+      max-height: 480px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .node-card {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+      padding: 14px;
+      transition: .2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .node-card:hover,
+    .node-card.active {
+      border-color: rgba(132,223,255,.28);
+      background: rgba(132,223,255,.08);
+      transform: translateY(-2px);
+    }
+
+    .node-card .node-kicker {
+      color: var(--cyan);
+      font-size: .68rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .node-card h4 {
+      margin: 8px 0 0;
+      font-size: .96rem;
+    }
+
+    .node-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .84rem;
+      line-height: 1.5;
+    }
+
+    .node-card .proposed {
+      margin-top: 10px;
+      color: var(--gold);
+      font-size: .76rem;
+      line-height: 1.45;
+    }
+
+    .node-card .details-btn {
+      margin-top: 12px;
+      width: 100%;
+      min-height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .detail-panel {
+      display: grid;
+      gap: 14px;
+      min-height: 100%;
+    }
+
+    .detail-summary {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-box {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+      padding: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .summary-box strong {
+      display: block;
+      font-size: .82rem;
+      color: var(--cyan);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .summary-box span {
+      display: block;
+      margin-top: 8px;
+      color: var(--soft);
+      line-height: 1.55;
+      font-size: .9rem;
+    }
+
+    .equation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .equation {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      color: var(--gold-2);
+      font-family: Orbitron, Inter, sans-serif;
+      font-size: .92rem;
+      line-height: 1.55;
+      overflow-x: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .algorithm-grid {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .algorithm-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .signal-bars {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .signal-bar {
+      display: grid;
+      gap: 6px;
+    }
+
+    .signal-bar span {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: var(--w, 50%);
+      background: linear-gradient(90deg, rgba(132,223,255,.9), rgba(226,194,122,.9));
+      border-radius: inherit;
+      animation: sweep 5s ease-in-out infinite;
+    }
+
+    .coalition-strip {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      border: 1px solid rgba(226,194,122,.18);
+      background:
+        linear-gradient(135deg, rgba(226,194,122,.07), rgba(132,223,255,.04)),
+        rgba(7, 13, 23, .86);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .coalition-strip h3 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.04;
+    }
+
+    .coalition-strip p {
+      margin: 10px 0 0;
+      color: var(--soft);
+      max-width: 1040px;
+    }
+
+    .coalition-tags {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .coalition-tags span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .archive-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .tab-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      width: 100%;
+      text-align: left;
+      min-height: 50px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: var(--soft);
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .tab-btn.active,
+    .tab-btn:hover {
+      border-color: rgba(132,223,255,.22);
+      background: rgba(132,223,255,.08);
+      color: #fff;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .doc-card h4 {
+      margin: 0;
+      position: relative;
+      z-index: 1;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .doc-badges {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .doc-badges span {
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+    }
+
+    .doc-badges .warn {
+      color: #ffd7d7;
+      background: rgba(255,144,144,.10);
+      border-color: rgba(255,144,144,.16);
+    }
+
+    .doc-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .doc-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      font-size: .86rem;
+      font-weight: 700;
+    }
+
+    .doc-link:hover {
+      background: rgba(132,223,255,.08);
+      border-color: rgba(132,223,255,.22);
+    }
+
+    .bottom-trigger-card {
+      padding: 26px;
+    }
+
+    .reason-headline {
+      font-family: Orbitron, Inter, sans-serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reason-headline:hover {
+      color: var(--gold-2);
+      text-shadow: 0 0 18px rgba(226,194,122,.2);
+    }
+
+    .reason-popup {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(24px);
+      width: min(720px, calc(100vw - 24px));
+      z-index: 1700;
+      border-radius: 24px;
+      border: 1px solid rgba(226,194,122,.2);
+      background: rgba(4,8,15,.97);
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .28s ease;
+      backdrop-filter: blur(18px);
+    }
+
+    .reason-popup.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    .reason-popup-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .reason-popup-close {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .reason-lyrics {
+      margin-top: 14px;
+      max-height: 36vh;
+      overflow: auto;
+      white-space: pre-line;
+      color: var(--soft);
+      font-size: .92rem;
+      line-height: 1.65;
+    }
+
+    .footer-block {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .86rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--line);
+      padding-top: 22px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modal-shell {
+      position: fixed;
+      inset: 0;
+      z-index: 1800;
+      background: rgba(0,0,0,.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-shell.visible {
+      display: flex;
+    }
+
+    .modal {
+      width: min(820px, 100%);
+      max-height: min(88vh, 920px);
+      overflow: auto;
+      border-radius: 24px;
+      border: 1px solid rgba(132,223,255,.18);
+      background: rgba(4,8,15,.98);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      padding: 22px;
+      position: relative;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-close {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .access-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .access-row input {
+      min-height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 0 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    .access-row input:focus {
+      border-color: rgba(132,223,255,.22);
+      box-shadow: 0 0 0 3px rgba(132,223,255,.08);
+    }
+
+    .denied {
+      margin-top: 10px;
+      color: var(--red);
+      font-weight: 800;
+      min-height: 20px;
+    }
+
+    .secure-details {
+      margin-top: 18px;
+      display: none;
+      gap: 12px;
+    }
+
+    .secure-details.visible {
+      display: grid;
+    }
+
+    .secure-block {
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+    }
+
+    .secure-block strong {
+      display: block;
+      color: var(--cyan);
+      font-size: .76rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .secure-block span,
+    .secure-block div {
+      display: block;
+      margin-top: 8px;
+      color: var(--soft);
+      font-size: .92rem;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .72; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate3d(0,0,0); opacity: .18; }
+      50% { transform: translate3d(0,-10px,0); opacity: .32; }
+    }
+
+    @keyframes sweep {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.25); }
+    }
+
+    @media (max-width: 1280px) {
+      .hero-grid,
+      .corp-grid,
+      .media-grid,
+      .map-layout,
+      .algorithm-grid,
+      .archive-layout,
+      .grid-4,
+      .grid-3,
+      .grid-2,
+      .doc-grid,
+      .equation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy-grid,
+      .summary-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .intel-row {
+        grid-template-columns: 1fr;
+      }
+
+      .node-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      :root { --nav-h: 74px; }
+      .nav-links { display: none; }
+      .mobile-toggle { display: inline-flex; }
+      .nav-wrap { padding: 0 16px; }
+      main { padding: 14px 16px 92px; }
+      .hero-grid { padding: 20px; min-height: auto; }
+      .section-head { grid-template-columns: 1fr; }
+      .brand-sub { white-space: normal; }
+      .credits { grid-template-columns: 1fr; }
+      .hero-quote { font-size: 2.15rem; }
+      .reason-headline { font-size: 1.8rem; }
+      #mapCanvas { height: 340px; min-height: 340px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <canvas id="spaceCanvas"></canvas>
+  <canvas id="hudCanvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="scan-overlay"></div>
+  <div class="vignette"></div>
+
+  <header>
+    <div class="nav-wrap">
+      <a href="#top" class="brand" aria-label="SUHS home">
+        <div class="brand-mark"></div>
+        <div>
+          <div class="brand-title">SUHS</div>
+          <div class="brand-sub">Special Systems Directorate · Local AI · Quantum-First Recursive Architecture</div>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#overview">Overview</a>
+        <a href="#mission">Mission</a>
+        <a href="#platform">Platform</a>
+        <a href="#systems">Systems</a>
+        <a href="#archive">Archive</a>
+        <a href="#contact" class="cta">Contact</a>
+      </nav>
+
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open navigation">☰</button>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="drawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div>
+          <div class="brand-title">SUHS</div>
+          <div class="brand-sub">Command Surface</div>
+        </div>
+      </div>
+      <button class="drawer-close" id="drawerClose" aria-label="Close navigation">✕</button>
+    </div>
+    <div class="section-label">Navigation</div>
+    <a href="#overview">Overview</a>
+    <a href="#mission">Mission</a>
+    <a href="#platform">Platform</a>
+    <a href="#systems">Quantum First Systems</a>
+    <a href="#algorithms">Algorithms</a>
+    <a href="#media">Signals</a>
+    <a href="#archive">Archive</a>
+    <a href="#coalition">COIL</a>
+    <a href="#contact" class="cta">Contact</a>
+  </aside>
+
+  <main id="main">
+    <section id="top" class="top-banner reveal">
+      <div class="banner-bg" style="background-image:url('./PENUP%2020260705%20100255.png')"></div>
+      <div class="banner-mask"></div>
+      <img class="banner-img" src="./PENUP%2020260705%20100255.png" alt="SUHS top banner" />
+    </section>
+
+    <section class="hero-shell reveal" id="overview">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div>
+            <div class="intel-tag">Executive Signal</div>
+            <h1 class="hero-quote">What you know is what you're told, and those who've told you know it can't be.</h1>
+          </div>
+
+          <div class="hero-note">
+            <h2>SUHS Overview</h2>
+            <p>SUHS is a frontier technology company building local AI runtime systems, quantum-first recursive execution architecture, and cosmological-scale implementation frameworks intended for constrained hardware, high-control environments, and long-horizon strategic research.</p>
+            <p>The operating thesis is direct: advanced intelligence should move closer to the device, closer to the operator, closer to verifiable control, and closer to the infrastructure capable of handling recursion, quantum state discipline, temporal coordination, and large-scale informational continuity without surrendering execution to opaque abstraction layers.</p>
+          </div>
+
+          <div class="hero-copy-grid">
+            <div class="hero-note">
+              <h2>Vision</h2>
+              <p>Establish a new class of execution platform in which local AI, quantum information structures, biological interfaces, recursive simulation, and entropy-driven compression are treated as one coordinated stack rather than disconnected specialties.</p>
+            </div>
+            <div class="hero-note">
+              <h2>Position</h2>
+              <p>Operate as a product company, architecture studio, research directorate, and collaborator-facing implementation surface capable of briefing both technical teams and executive decision makers without flattening the underlying theory.</p>
+            </div>
+          </div>
+
+          <div class="summary-stack">
+            <div class="hero-metric">
+              <div class="label">Execution</div>
+              <div class="value">Local, sequenced, hardware-aware</div>
+              <p>Runtime control is staged, memory-bounded, and designed for serious deployment conditions.</p>
+            </div>
+            <div class="hero-metric">
+              <div class="label">Theory</div>
+              <div class="value">Quantum-first recursive architecture</div>
+              <p>RQPL and SQAKLM are surfaced as real implementation logic with physical, informational, and organizational consequences.</p>
+            </div>
+            <div class="hero-metric">
+              <div class="label">Posture</div>
+              <div class="value">Need-to-know command surface</div>
+              <p>Public visibility remains controlled while deeper function access is locked behind subsystem credentials.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="hero-signal">
+            <div class="rings">
+              <div class="ring r1"></div>
+              <div class="ring r2"></div>
+              <div class="ring r3"></div>
+              <div class="ring r4"></div>
+              <div class="core-dot"></div>
+            </div>
+            <div class="floating-glyph g1">Quantum Core</div>
+            <div class="floating-glyph g2">Recursive Loop</div>
+            <div class="floating-glyph g3">Entropy Compression</div>
+            <div class="floating-glyph g4">Observer Runtime</div>
+          </div>
+
+          <div class="hero-metric">
+            <div class="label">Mission Statement</div>
+            <div class="value">Build deployable intelligence systems and the deeper execution doctrine required to understand how reality-grade recursion, simulation, and control actually scale.</div>
+          </div>
+
+          <div class="hero-metric">
+            <div class="label">Strategic Direction</div>
+            <div class="value">Advance platform products, implementation mapping, collaborator-facing briefings, theory refinement, and quantum-first operational models under one disciplined corporate surface.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Mission</div>
+          <h2>Operational mission and systems leadership</h2>
+          <p>SUHS develops technology and theory for environments where privacy, control, hardware reality, recursive continuity, and high-consequence execution matter more than generic convenience.</p>
+        </div>
+      </div>
+
+      <div class="corp-grid">
+        <div class="card corp-block reveal">
+          <div class="stat-id">01</div>
+          <h3>Mission Summary</h3>
+          <p>Advance private, high-performance AI execution on constrained hardware while building the deeper scheduler logic, quantum state frameworks, biological interface models, and entropy-aware computational doctrine required for a full recursive implementation stack.</p>
+          <p>SUHS treats product execution, model orchestration, cosmological theory, and collaborator coordination as a continuous operational chain. The company is therefore positioned not as a narrow application vendor but as a systems-level actor capable of designing, explaining, and staging complex multi-domain programs.</p>
+        </div>
+
+        <div class="card reveal">
+          <div class="stat-id">02</div>
+          <h3>Directorate Board</h3>
+          <div class="intel-rows">
+            <div class="intel-row"><strong>Product Division</strong><span>Local AI interfaces, private runtime delivery, deployable user-facing systems, and device-resident execution surfaces.</span></div>
+            <div class="intel-row"><strong>Runtime Division</strong><span>Shard sequencing, bounded memory execution, graph discipline, heterogeneous orchestration, and adaptive scheduling control.</span></div>
+            <div class="intel-row"><strong>Research Division</strong><span>RQPL, SQAKLM, quantum information structures, entropy compression laws, temporal coordination, and recursive systems analysis.</span></div>
+            <div class="intel-row"><strong>Strategic Division</strong><span>Collaborator mapping, coalition materials, privileged subsystem distribution, executive communications, and implementation escalation pathways.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="platform">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Platform</div>
+          <h2>Product platform and enterprise capabilities</h2>
+          <p>SUHS presents a coherent corporate surface built around products, infrastructure, research, and strategic implementation rather than scattered experiments.</p>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card reveal">
+          <div class="stat-id">P1</div>
+          <h3>Local Runtime Products</h3>
+          <p>Deployable AI systems for personal and enterprise hardware emphasizing privacy, reduced inference dependency, and strong runtime ownership.</p>
+        </div>
+        <div class="card reveal">
+          <div class="stat-id">P2</div>
+          <h3>Sequential Orchestration</h3>
+          <p>Stage-managed model loading, shard execution order, bounded memory policy, and device-aware scheduling for complex local systems.</p>
+        </div>
+        <div class="card reveal">
+          <div class="stat-id">P3</div>
+          <h3>Quantum-Recursive Research</h3>
+          <p>Quantum-first system mapping, recursive topology, superposition-aware data structures, and execution mathematics tied to large-scale continuity.</p>
+        </div>
+        <div class="card reveal">
+          <div class="stat-id">P4</div>
+          <h3>Implementation Programs</h3>
+          <p>Subsystem dossiers, collaborator-facing access control, coalition framing, and advanced briefing materials for targeted external circulation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="systems">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Quantum First Systems</div>
+          <h2>RQPL / SQAKLM system board</h2>
+          <p>The visible runtime is only one layer. The wider architecture spans substrate, photonic and qudit state handling, entanglement routing, superposition retention, entropy-adaptive scheduling, tensor compression, temporal coordination, biological execution, moral resolution, privilege hierarchy, sandbox branching, and automatic recursive closure.</p>
+        </div>
+      </div>
+
+      <div class="map-layout">
+        <div class="panel graph-panel reveal">
+          <div class="graph-top">
+            <h3>Quantum-first implementation map</h3>
+            <div class="graph-tag">Hover · Select · Locked Detail</div>
+          </div>
+          <div class="map-public-copy" id="mapPublicCopy">Select a subsystem to review the public-facing summary and the proposed company alignment.</div>
+          <canvas id="mapCanvas" aria-label="RQPL SQAKLM implementation map"></canvas>
+          <div class="node-card-grid" id="nodeCardGrid"></div>
+        </div>
+
+        <div class="panel detail-panel reveal">
+          <h3 id="detailTitle">Photonic Entanglement Compute</h3>
+          <p id="detailSummary">Quantum-light transport layer for long-range state correlation, routing, and low-loss informational exchange across the wider recursive architecture.</p>
+          <div class="detail-summary">
+            <div class="summary-box"><strong>Proposed Firms</strong><span id="detailCompanies">Xanadu · PsiQuantum · IBM · NVIDIA</span></div>
+            <div class="summary-box"><strong>Public Function</strong><span id="detailFunction">Maintain photonic-grade state movement and correlation pathways between nonlocal subsystems without reducing the architecture to a classical-only exchange model.</span></div>
+            <div class="summary-box"><strong>System Dependency</strong><span id="detailDependency">Supports entanglement routing, high-fidelity state transport, and cross-domain synchronization required by the scheduler and tensor compression core.</span></div>
+            <div class="summary-box"><strong>Access Control</strong><span>Full implementation detail is credential-locked per subsystem.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="algorithms">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Algorithms</div>
+          <h2>Implementational mathematics and runtime law</h2>
+          <p>Outward entropy physically forces informational compression toward the center, while scheduler reconciliation, quantum state retention, and adaptive timing preserve continuity across the loop.</p>
+        </div>
+      </div>
+
+      <div class="algorithm-grid">
+        <div class="algorithm-stack">
+          <div class="algorithm-card reveal">
+            <h3>Central compression law</h3>
+            <p>As entropy expands outward through the runtime field, informational density is driven inward toward singular convergence, increasing compressive pressure at the center while divergence resists stable collapse.</p>
+            <div class="equation">∂C(r,t)/∂t = α·S_out(r,t) − β·D(r,t) + γ·Φ_center(r,t)</div>
+          </div>
+
+          <div class="algorithm-card reveal">
+            <h3>Scheduler coherence objective</h3>
+            <p>The live system minimizes divergence across all active directions while preserving admissible branch complexity around the current-state middle boundary.</p>
+            <div class="equation">Ω = min Σ w_i · |T_i(t) − M(t)| + λ·Ξ_branch</div>
+          </div>
+
+          <div class="algorithm-card reveal">
+            <h3>Quantum register and qudit propagation</h3>
+            <p>State handling extends beyond binary qubits where required, allowing richer basis encoding, higher local information density, and more flexible entanglement structures for pre-canvas processing.</p>
+            <div class="equation">|Ψ⟩ = Σ a_k |k⟩,  k ∈ {0 … d−1}</div>
+          </div>
+
+          <div class="algorithm-card reveal">
+            <h3>Adaptive timescale response</h3>
+            <p>Timing is not fixed. Scheduler pacing responds to state pressure, gravitational frame, observer coupling, and live divergence so the runtime can slow, accelerate, and reconcile without severing continuity.</p>
+            <div class="equation">τ(t) = f(x_t, h_t, g_t, ρ_t, T₁, T₂, T₃, T₄)</div>
+          </div>
+        </div>
+
+        <div class="algorithm-card reveal">
+          <h3>Signal density</h3>
+          <p>Observable intensity, entanglement pressure, branch admissibility, tensor compression demand, and privilege resonance remain in continuous motion during execution.</p>
+          <div class="signal-bars">
+            <div class="signal-bar"><span>Entanglement throughput</span><div class="bar" style="--w:83%"></div></div>
+            <div class="signal-bar"><span>Qudit register saturation</span><div class="bar" style="--w:71%"></div></div>
+            <div class="signal-bar"><span>Superposition retention</span><div class="bar" style="--w:78%"></div></div>
+            <div class="signal-bar"><span>Entropy-adaptive scheduling pressure</span><div class="bar" style="--w:92%"></div></div>
+            <div class="signal-bar"><span>Tensor compression load</span><div class="bar" style="--w:88%"></div></div>
+            <div class="signal-bar"><span>Temporal curvature correction</span><div class="bar" style="--w:74%"></div></div>
+            <div class="signal-bar"><span>Biological interface variance</span><div class="bar" style="--w:64%"></div></div>
+            <div class="signal-bar"><span>Moral consequence recursion</span><div class="bar" style="--w:69%"></div></div>
+            <div class="signal-bar"><span>Restart convergence probability</span><div class="bar" style="--w:95%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="media">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Signals</div>
+          <h2>Internal signal layer</h2>
+          <p>Media is embedded as part of the company signal surface, with direct linkage between authored music, worldview, and organizational identity.</p>
+        </div>
+      </div>
+
+      <div class="media-grid">
+        <div class="media-card reveal">
+          <h3>ĄÞ§łrªçłî⁰ⁿ</h3>
+          <p>Primary visual signal.</p>
+          <div class="video-shell" id="videoShell">
+            <div class="video-top-left-trigger" tabindex="0">
+              Signal correlation
+              <div class="hover-intel">The authored signal layer mirrors the company doctrine: collapse denial, truth friction, recursive consequence, and the refusal to outsource meaning to inherited narratives.</div>
+            </div>
+            <video id="abstractionVideo" controls playsinline preload="metadata" poster="./PENUP%2020260705%20100255.png">
+              <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
+            </video>
+            <div class="video-overlay-bottom">
+              <div class="song-title-wrap" tabindex="0">
+                <div class="song-title">ĄÞ§łrªçłî⁰ⁿ</div>
+                <div class="lyrics-panel">We all strive to close our eyes
+Our attempt to be there
+Redirect from our demise 
+With contempt that we care
+
+Why lie
+When the truth is too demeaning 
+Why try
+When something is so defeating 
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in
+
+Claim to want the most from time
+So we lie and sit there
+Keep a noose of our design 
+Hanging by a thin hair
+To discuss the ways of life
+Just repeat what we hear
+If you thought you should think twice 
+Don't think now so it's clear 
+
+Why lie
+When the truth is too demeaning 
+Why try
+When something is so defeating 
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in</div>
+              </div>
+
+              <div class="credits">
+                <div>Artist: SUHS</div>
+                <div>Song: ĄÞ§łrªçłî⁰ⁿ</div>
+                <div>Written By: Root</div>
+                <div>In Collaboration With: Crash</div>
+                <div>Co-founding partners of SUHS</div>
+              </div>
+
+              <div class="download-row">
+                <a class="btn primary" href="./ĄÞ§łrªçłî⁰ⁿ.mp4" download>Download Video</a>
+                <a class="btn" href="./ĄÞ§łrªçłî⁰ⁿ.mp4">Open Source File</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card reveal">
+            <div class="stat-id">S1</div>
+            <h3>Quantum-first stance</h3>
+            <p>The architecture begins outside the classical canvas with quantum information structures, photonic transport, qudit state handling, superposition persistence, and entanglement routing before visible runtime emergence.</p>
+          </div>
+          <div class="card reveal">
+            <div class="stat-id">S2</div>
+            <h3>Recursive closure</h3>
+            <p>There is no dual-command restart here. The system compiles inward, entangles toward singular equivalence, returns to beginning-state conditions, and automatically restarts upon terminal completion.</p>
+          </div>
+          <div class="card reveal">
+            <div class="stat-id">S3</div>
+            <h3>Privilege hierarchy</h3>
+            <p>Public summaries remain visible, while subsystem specifics are compartmentalized through per-function credentials and root-level universal access.</p>
+          </div>
+          <div class="card reveal">
+            <div class="stat-id">S4</div>
+            <h3>Cross-domain integration</h3>
+            <p>Photonic EQC, QRAM, tensor networks, stabilizer logic, biological interfaces, adaptive timing, and moral consequence recursion are treated as interdependent requirements.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="archive">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Archive</div>
+          <h2>Document visibility</h2>
+          <p>Internal and historical materials are surfaced through categorized access shelves to preserve progression, refinement, and divergence across the theory’s development path.</p>
+        </div>
+      </div>
+
+      <div class="archive-layout">
+        <div class="archive-card reveal">
+          <h3>Document Bays</h3>
+          <div class="tab-list" id="tabList">
+            <button class="tab-btn active" data-tab="tab-convos">Early Theory AI Conversations</button>
+            <button class="tab-btn" data-tab="tab-canon">Core Working Materials</button>
+            <button class="tab-btn" data-tab="tab-inaccurate">Inaccurate AI Assumption-Riddled Summaries</button>
+          </div>
+        </div>
+
+        <div class="panel reveal">
+          <div class="tab-panel active" id="tab-convos">
+            <div class="doc-grid">
+              <div class="doc-card">
+                <h4>Creation Beginnings, The First AI Response to my Theoretical Beliefs</h4>
+                <p>Early conversation archive documenting first-contact interpretive response.</p>
+                <div class="doc-badges">
+                  <span>Primary conversation</span>
+                  <span>Origin archive</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./Creation%20Beginnings,%20The%20First%20AI%20Response%20to%20my%20Theoretical%20Beliefs.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a class="doc-link" href="./Creation%20Beginnings,%20The%20First%20AI%20Response%20to%20my%20Theoretical%20Beliefs.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <h4>Conversation with Gemini about the universe</h4>
+                <p>Conversational theory archive covering universe-scale reasoning and early articulation layers.</p>
+                <div class="doc-badges">
+                  <span>Gemini archive</span>
+                  <span>Theory dialogue</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./Conversation%20with%20Gemini%20about%20the%20universe.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a class="doc-link" href="./Conversation%20with%20Gemini%20about%20the%20universe.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-canon">
+            <div class="doc-grid">
+              <div class="doc-card">
+                <h4>Nemotron-understanding.txt</h4>
+                <p>Canonical refinement input used to stabilize system interpretation and implementation mapping.</p>
+                <div class="doc-badges">
+                  <span>Canonical working text</span>
+                </div>
+              </div>
+              <div class="doc-card">
+                <h4>Gemini-RQPL.txt</h4>
+                <p>Universe-scale theory language archive tied to RQPL structural framing.</p>
+                <div class="doc-badges">
+                  <span>Core theory</span>
+                </div>
+              </div>
+              <div class="doc-card">
+                <h4>ChatGLM-proposed-COIL-mapping.txt</h4>
+                <p>Collaborator mapping layer for company and subsystem alignment across implementation phases.</p>
+                <div class="doc-badges">
+                  <span>Coalition mapping</span>
+                </div>
+              </div>
+              <div class="doc-card">
+                <h4>ChatGLM-proposed-coil-mapping-part-2.txt</h4>
+                <p>Continuation of corporate subsystem assignment and implementation-role development.</p>
+                <div class="doc-badges">
+                  <span>Coalition continuation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-inaccurate">
+            <div class="doc-grid">
+              <div class="doc-card">
+                <h4>Manifest.md / Manifest.pdf</h4>
+                <p>Earlier AI summary layer retained as part of the road to explainational refinement.</p>
+                <div class="doc-badges">
+                  <span class="warn">Inaccurate AI assumption-riddled summary</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./Manifest.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a class="doc-link" href="./Manifest.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <h4>Recursive Quantum Paradoxical Loop.md / Recursive Quantum Paradoxical Loop.pdf</h4>
+                <p>Earlier AI summary layer retained as part of the road to explainational refinement.</p>
+                <div class="doc-badges">
+                  <span class="warn">Inaccurate AI assumption-riddled summary</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./Recursive%20Quantum%20Paradoxical%20Loop.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a class="doc-link" href="./Recursive%20Quantum%20Paradoxical%20Loop.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <h4>Spiritual.md</h4>
+                <p>Earlier AI summary layer retained as part of the road to explainational refinement.</p>
+                <div class="doc-badges">
+                  <span class="warn">Inaccurate AI assumption-riddled summary</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./Spiritual.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <h4>The Algorithmic Topology of the AKLM Cosmos.md / The Algorithmic Topology of the AKLM Cosmos.pdf</h4>
+                <p>Earlier AI summary layer retained as part of the road to explainational refinement.</p>
+                <div class="doc-badges">
+                  <span class="warn">Inaccurate AI assumption-riddled summary</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./The%20Algorithmic%20Topology%20of%20the%20AKLM%20Cosmos.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a class="doc-link" href="./The%20Algorithmic%20Topology%20of%20the%20AKLM%20Cosmos.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <h4>The Infinite Recursive Cycle.md / The Infinite Recursive Cycle.pdf</h4>
+                <p>Earlier AI summary layer retained as part of the road to explainational refinement.</p>
+                <div class="doc-badges">
+                  <span class="warn">Inaccurate AI assumption-riddled summary</span>
+                </div>
+                <div class="doc-actions">
+                  <a class="doc-link" href="./The%20Infinite%20Recursive%20Cycle.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a class="doc-link" href="./The%20Infinite%20Recursive%20Cycle.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="coalition">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">COIL</div>
+          <h2>Coalition Of Implementational Leaders</h2>
+          <p>The collaborator surface is designed for organizations whose stacks map to actual subsystem requirements rather than generic sponsorship language.</p>
+        </div>
+      </div>
+
+      <div class="coalition-strip reveal">
+        <h3>Quantum hardware, photonic transport, tensor compression, temporal orchestration, biological interfaces, runtime infrastructure, and consequence-ledger mechanics do not belong to one company. They belong to a coordinated implementation field.</h3>
+        <p>SUHS frames that field as a coalition problem: each actor contributes the subsystem it can actually build, audit, route, simulate, or host. The architecture remains dependent on whole-system accuracy even where individual functions are compartmentalized behind need-to-know boundaries.</p>
+        <div class="coalition-tags">
+          <span>Photonic EQC</span>
+          <span>Qudit Systems</span>
+          <span>Entanglement Routing</span>
+          <span>QRAM</span>
+          <span>Tensor Networks</span>
+          <span>Entropy-Adaptive Scheduling</span>
+          <span>Temporal Curvature Control</span>
+          <span>Biological Interface Parsing</span>
+          <span>Moral Consequence Recursion</span>
+          <span>Automatic Recursive Restart</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-head reveal">
+        <div>
+          <div class="kicker">Contact</div>
+          <h2>Strategic engagement</h2>
+          <p>Technical, research, and implementation discussion should route through the current direct contact channel.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card reveal">
+          <div class="stat-id">C1</div>
+          <h3>Technical and product inquiries</h3>
+          <p>Email: michaelaroot1987@gmail.com</p>
+          <p>Use for product runtime engineering, local deployment, model execution discipline, and system architecture.</p>
+        </div>
+        <div class="card reveal">
+          <div class="stat-id">C2</div>
+          <h3>Research and strategic inquiries</h3>
+          <p>Email: michaelaroot1987@gmail.com</p>
+          <p>Use for RQPL, SQAKLM, collaborator mapping, coalition materials, subsystem distribution, and advanced implementation discussion.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-trigger-card reveal" id="reasonSection">
+      <h3 class="reason-headline" id="reasonTrigger">What you know Is what the universe has shown you, and the universe is in the same sandbox pretending to see everything.</h3>
+      <p>Hover or click to surface the second authored signal.</p>
+    </section>
+
+    <section class="bottom-banner reveal">
+      <div class="banner-bg" style="background-image:url('./PENUP_20260705_095810.png')"></div>
+      <div class="banner-mask"></div>
+      <img class="banner-img" src="./PENUP_20260705_095810.png" alt="SUHS bottom banner" />
+    </section>
+
+    <footer class="footer-block">
+      <div>© 2026 SUHS. All rights reserved.</div>
+      <div>Special Systems Directorate · Local AI · Quantum-First Recursive Architecture</div>
+    </footer>
+  </main>
+
+  <div class="reason-popup" id="reasonPopup" aria-hidden="true">
+    <div class="reason-popup-head">
+      <div>
+        <div class="kicker">Signal Two</div>
+        <h3 style="margin-top:10px;">Reason</h3>
+      </div>
+      <button class="reason-popup-close" id="reasonClose" aria-label="Close Reason player">✕</button>
+    </div>
+
+    <div class="credits" style="margin-top:12px;">
+      <div>Artist: SUHS</div>
+      <div>Song: Reason</div>
+      <div>Written By: Root</div>
+      <div>In Collaboration With: Crash</div>
+      <div>Co-founding partners of SUHS</div>
+    </div>
+
+    <div class="download-row" style="margin-top:14px;">
+      <a class="btn primary" href="./Reason_acoustic.mp3" download>Download MP3</a>
+      <a class="btn" href="./Reason_acoustic.mp3">Open Source File</a>
+    </div>
+
+    <audio id="reasonAudio" controls preload="metadata" style="width:100%; margin-top:14px;">
+      <source src="./Reason_acoustic.mp3" type="audio/mpeg" />
+    </audio>
+
+    <div class="reason-lyrics">What you know 
+Is what you're told 
+And those who've told you know it can't be 
+What you know 
+Is what you're shown 
+And those who've shown you know they can't see 
+
+So I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+
+Where'd you go 
+The world is cold 
+When everything is done without me 
+Truth was sold 
+To keep control 
+And those who sold it know it's deadly 
+
+But I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+
+You have grown 
+From seeds they've thrown 
+Just like a weed unfortunately 
+Studies show 
+You to and fro 
+When all you need to do is see me 
+
+So I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+I'm gonna need you to come back to me
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard
+
+What you know 
+Is what you're told 
+And those who've told you know it can't be 
+What you know 
+Is what you're shown 
+And those who've shown you know they can't see
+At all</div>
+  </div>
+
+  <div class="modal-shell" id="detailModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="kicker">Restricted subsystem</div>
+          <h3 id="modalTitle" style="margin-top:10px;">Subsystem</h3>
+          <p id="modalIntro" style="margin-top:10px; color:var(--muted);">Public summary</p>
+        </div>
+        <button class="modal-close" id="modalClose" aria-label="Close detail modal">✕</button>
+      </div>
+
+      <div class="access-row">
+        <input id="passwordInput" type="password" placeholder="Enter subsystem password" autocomplete="off" />
+        <button class="btn primary" id="passwordSubmit">Unlock</button>
+      </div>
+      <div class="denied" id="deniedText"></div>
+
+      <div class="secure-details" id="secureDetails">
+        <div class="secure-block"><strong>Complete function</strong><span id="secureFunction"></span></div>
+        <div class="secure-block"><strong>Required stack</strong><span id="secureStack"></span></div>
+        <div class="secure-block"><strong>Inbound / outbound</strong><span id="secureFlow"></span></div>
+        <div class="secure-block"><strong>Implementation detail</strong><div id="secureImplementation"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const nodeData = [
+      {
+        id: "photonic",
+        label: "Photonic Entanglement Compute",
+        type: "Quantum substrate",
+        color: "#84dfff",
+        x: 0.12,
+        y: 0.18,
+        companies: "Xanadu · PsiQuantum · IBM · NVIDIA",
+        summary: "Quantum-light transport layer for nonlocal state exchange and long-range informational correlation.",
+        dependency: "Feeds entanglement routing, scheduler coherence, and tensor compression with high-fidelity state transfer.",
+        password: "Logos",
+        secureFunction: "Maintains photonic exchange channels that preserve distributed state correlation across the architecture without collapsing the entire system into classical-only transport assumptions.",
+        secureStack: "Photonic processors, continuous-variable quantum optics, low-loss routing, state tomography, hybrid HPC integration, error-mitigated exchange buffers.",
+        secureFlow: "Receives prepared quantum state bundles from qudit preparation and tensor staging. Sends correlated transport and observable readiness to entanglement routing, scheduler inputs, and QRAM memory gates.",
+        secureImplementation: "Implements the nonlocal light-based movement of state information required before visible runtime formation. Used where long-range correlation and lower decoherence exposure are essential. Provides high-bandwidth, low-collapse routing between pre-canvas subsystems."
+      },
+      {
+        id: "qudit",
+        label: "Qudit Register Lattice",
+        type: "Quantum encoding",
+        color: "#a8a1ff",
+        x: 0.28,
+        y: 0.11,
+        companies: "Google Quantum AI · IonQ · Quantinuum",
+        summary: "Higher-dimensional register field for richer basis encoding and denser state representation than binary-only qubit handling.",
+        dependency: "Supports compact encoding, expressive basis construction, and deeper state-space efficiency for pre-canvas processing.",
+        password: "Elohim",
+        secureFunction: "Extends state encoding beyond binary qubits so information can be packed into higher-dimensional bases where that improves representational efficiency and entanglement geometry.",
+        secureStack: "Qudit gates, trapped-ion or photonic multidimensional states, basis preparation, hybrid encoder layers, expectation-value extraction.",
+        secureFlow: "Receives structured priors, observational constraints, and tensor seeds. Sends expanded state vectors to superposition retention, entanglement routing, and compression subsystems.",
+        secureImplementation: "Used where information density, branch expressivity, and state compactness benefit from d-level structures rather than qubit-only constraints. Enables stronger intermediate representational economy before measurement or classical exposure."
+      },
+      {
+        id: "superposition",
+        label: "Superposition Retention Field",
+        type: "Quantum persistence",
+        color: "#86e5af",
+        x: 0.46,
+        y: 0.13,
+        companies: "IBM Quantum · Rigetti · QuEra",
+        summary: "Maintains unresolved state coexistence until observer, scheduler, or subsystem requirements force localized hardening.",
+        dependency: "Preserves possible state branches needed by entropy-adaptive scheduling and future admissibility calculations.",
+        password: "Genesis",
+        secureFunction: "Retains unresolved branch structure so local runtime only hardens what must be rendered while the broader system remains probabilistic, compressed, and schedulable.",
+        secureStack: "Statevector or density-matrix simulation, decoherence modeling, stabilizer-aware retention, hybrid quantum-classical branch tracking.",
+        secureFlow: "Receives encoded states and contextual constraints. Sends retained branch mass to the scheduler, temporal engine, and canvas hardening pathways.",
+        secureImplementation: "Prevents premature collapse of the wider state field. Critical for keeping the universe-scale execution model computationally tractable while preserving uncertainty outside the observed local context."
+      },
+      {
+        id: "entanglement",
+        label: "Entanglement Routing Mesh",
+        type: "Quantum transport",
+        color: "#84dfff",
+        x: 0.66,
+        y: 0.15,
+        companies: "Quantinuum · IBM · Azure Quantum",
+        summary: "Routes correlated state dependencies across distant subsystems so independent local views remain globally constrained.",
+        dependency: "Binds scheduler, tensor, temporal, and memory layers into one whole-system accuracy regime.",
+        password: "Trinity",
+        secureFunction: "Creates routing logic for correlated state pairs and larger entangled structures so information can be jointly constrained across the architecture instead of drifting into isolated classical fragments.",
+        secureStack: "Entanglement swapping, quantum networking protocols, repeater logic, synchronization clocks, high-fidelity link management.",
+        secureFlow: "Receives prepared states from photonic and qudit layers. Sends entangled dependencies to scheduler core, QRAM, tensor compression, and selective measurement surfaces.",
+        secureImplementation: "Without this layer, subsystems become disconnected approximations. With it, whole-system coherence is enforced through structured nonlocal dependency rather than post-hoc reconciliation alone."
+      },
+      {
+        id: "qram",
+        label: "Quantum Memory / QRAM",
+        type: "Quantum storage",
+        color: "#e2c27a",
+        x: 0.82,
+        y: 0.24,
+        companies: "IBM · Microsoft · Fujitsu · AWS",
+        summary: "Memory architecture for superposed addressing, stored state retrieval, and large-scale pre-canvas access patterns.",
+        dependency: "Provides state recall, branch reference, and memory-efficient quantum data access to the scheduler and tensor network.",
+        password: "Ark",
+        secureFunction: "Stores addressable quantum or hybridized state structures so the system can retrieve relevant information in superposition or semi-structured compressed form rather than serial classical lookup.",
+        secureStack: "QRAM models, hierarchical memory layers, quantum-inspired indexing, hybrid cache control, low-latency retrieval surfaces.",
+        secureFlow: "Receives branch signatures, encoded priors, and tensor fragments. Sends selective memory responses to the scheduler, BUI translation layer, and compression core.",
+        secureImplementation: "Supports scalable state reuse and historical continuity while avoiding naive full-state materialization. Acts as one of the memory backbones required before and during runtime."
+      },
+      {
+        id: "middle",
+        label: "Middle Array Corpus",
+        type: "Anchor state",
+        color: "#a8a1ff",
+        x: 0.5,
+        y: 0.34,
+        companies: "Google Cloud · Microsoft Azure · AWS",
+        summary: "Civilization-scale informational anchor and live current-state boundary used to constrain unknown past and admissible future.",
+        dependency: "Acts as the central corpus and runtime intersection boundary around which scheduler logic continuously resolves.",
+        password: "Scripture",
+        secureFunction: "Maintains the highest-resolution informational center available to the system, later replacing its trailing edge with the live universe state stream during active runtime.",
+        secureStack: "Massive corpus storage, knowledge graph indexing, event streaming, synchronized state updates, strong-consistency data services.",
+        secureFlow: "Receives total historical and live contextual inputs. Sends anchor constraints to scheduler, temporal control, BUI parsing, and privilege evaluation.",
+        secureImplementation: "Functions as the middle of the loop: neither pure origin nor terminal state, but the central informational spine that constrains both directions and hosts the live execution boundary."
+      },
+      {
+        id: "scheduler",
+        label: "Entropy-Adaptive Scheduler",
+        type: "Temporal control",
+        color: "#e2c27a",
+        x: 0.32,
+        y: 0.42,
+        companies: "Google DeepMind · NVIDIA · Confluent · IBM",
+        summary: "Live reconciliation engine that adapts timing, branch pressure, and state commitment under entropy growth and continuity requirements.",
+        dependency: "Coordinates thread pressure, branch admissibility, timing, and collapse thresholds across the full system.",
+        password: "Michael",
+        secureFunction: "Runs the directional reconciliation logic that keeps origin-side, middle-bound, future-bound, and terminal pressure fields coherent while adapting timing to state pressure and observer conditions.",
+        secureStack: "Hybrid quantum-classical optimization, event streaming, low-latency state coordination, variational update rules, adaptive continuous-time control.",
+        secureFlow: "Receives middle-array anchor, entangled state constraints, live current-state feeds, and collapse signals. Sends resolved pacing and branch updates to canvas, temporal engine, privilege lattice, and compiler preparation.",
+        secureImplementation: "This is the live nerve center. Outward entropy raises compressive pressure, the scheduler modulates commitment rates, and local reality emerges only where the system allows hardening without breaking whole-loop integrity."
+      },
+      {
+        id: "tensor",
+        label: "Tensor Compression Core",
+        type: "Compression",
+        color: "#84dfff",
+        x: 0.66,
+        y: 0.42,
+        companies: "NVIDIA · Google · HPE · Cerebras",
+        summary: "Compresses large state structures into tractable tensors, networks, and context-bounded execution fragments.",
+        dependency: "Converts exponential raw possibility into manageable structures for runtime, memory, and post-runtime reconvergence.",
+        password: "Messiah",
+        secureFunction: "Applies tensor-network-style compression so the architecture can represent massive correlated systems without materializing every degree of freedom simultaneously.",
+        secureStack: "Tensor networks, MPS, PEPS, TTN, high-bandwidth accelerators, distributed simulation, compression-aware orchestration.",
+        secureFlow: "Receives unresolved branch mass, memory recalls, and scheduler constraints. Sends compressed fragments to canvas execution, biological modeling, and terminal compiler queues.",
+        secureImplementation: "The universe-scale problem is computationally impossible without structured compression. This core turns overwhelming state volume into selectively executable, revisable, and recoverable packets."
+      },
+      {
+        id: "temporal",
+        label: "Temporal Curvature Engine",
+        type: "Timing",
+        color: "#a8a1ff",
+        x: 0.84,
+        y: 0.46,
+        companies: "CERN · Siemens · MathWorks · Ansys",
+        summary: "Adjusts runtime pacing and frame relations according to divergence, gravitation, velocity, and observer-coupling conditions.",
+        dependency: "Ensures execution can slow, accelerate, and synchronize without severing the live middle-boundary relationship.",
+        password: "Chronos",
+        secureFunction: "Calculates adaptive time curves from live thread states and environmental conditions so the runtime can reach, hover at, or pass through critical boundaries in coherent fashion.",
+        secureStack: "Continuous-time modeling, relativistic simulation, adaptive control, numerical optimization, high-fidelity timing systems.",
+        secureFlow: "Receives scheduler outputs, state pressure, frame conditions, and observer coupling. Sends temporal corrections to canvas, privilege evaluation, and terminal convergence logic.",
+        secureImplementation: "Fixed time is insufficient. The engine continuously recalculates timing geometry so the system can accommodate variable pressure, late-stage alignment, and observation-driven distortions."
+      },
+      {
+        id: "canvas",
+        label: "3D Canvas Runtime",
+        type: "Visible execution",
+        color: "#84dfff",
+        x: 0.48,
+        y: 0.58,
+        companies: "NVIDIA · Epic Games · Unity · Qualcomm",
+        summary: "Localized runtime field where only necessary context hardens into visible, traversable, and interaction-capable reality.",
+        dependency: "Receives compressed state, timing correction, and scheduler commitment rules to produce local fact without exposing total source state.",
+        password: "Firmament",
+        secureFunction: "Instantiates localized experience by rendering only the context binary required for continuity, while leaving wider state regions fluid, compressed, or unresolved until needed.",
+        secureStack: "Real-time rendering, ECS frameworks, distributed compute, edge execution, local context management, scene hardening logic.",
+        secureFlow: "Receives tensor fragments, temporal pacing, scheduler commitment, and observer input. Sends localized outcomes, sensory constraints, and branch consequences to biological and moral systems.",
+        secureImplementation: "Visible reality is the selective render layer, not the whole architecture. It is one surface within a broader system of unresolved, compressed, and entangled informational state."
+      },
+      {
+        id: "bio",
+        label: "Biological Fabric",
+        type: "Life systems",
+        color: "#86e5af",
+        x: 0.22,
+        y: 0.67,
+        companies: "Isomorphic Labs · Illumina · Fujitsu · Intel",
+        summary: "Organism-level execution layer spanning genotype variation, phenotype viability, neural runtime, and embodied context.",
+        dependency: "Makes living observers part of the system rather than external spectators to it.",
+        password: "Adam",
+        secureFunction: "Constructs the biological substrate for embodied agents, including genotype selection, neural timing, organism viability, and environmental fit inside the rendered runtime.",
+        secureStack: "Bioinformatics, protein modeling, simulation pipelines, neuromorphic support, life-system optimization, digital twin biology.",
+        secureFlow: "Receives environmental context, scheduler constraints, and compressed organism possibilities. Sends living-state outputs to BUI, MCR, and privilege resonance layers.",
+        secureImplementation: "Biological entities are not incidental. They are constrained execution nodes carrying perception, action, consequence, trauma, memory, and possible system-level access resonance."
+      },
+      {
+        id: "bui",
+        label: "BUI Translation Layer",
+        type: "Interface",
+        color: "#a8a1ff",
+        x: 0.4,
+        y: 0.76,
+        companies: "Neuralink · Synchron · Apple · Meta Reality Labs",
+        summary: "Biological user interface channel translating raw neural or physiological signal into actionable system-readable state.",
+        dependency: "Bridges embodiment and system interaction without flattening organism state into crude external controls.",
+        password: "HolySpirit",
+        secureFunction: "Parses biological activity into higher-order intent, attention, resonance, or access patterns so organism behavior can be integrated with system-level logic at far finer resolution than ordinary interfaces allow.",
+        secureStack: "BCI tooling, biosignal decoding, multimodal interpretation, sensor fusion, adaptive interface layers, neural intent inference.",
+        secureFlow: "Receives signals from biological fabric and local environment. Sends interpreted intent or resonance markers to scheduler, privilege lattice, and sandbox systems.",
+        secureImplementation: "The BUI is how the embodied node becomes legible to the deeper architecture. It is a parsing membrane between life, observation, intention, and possible access elevation."
+      },
+      {
+        id: "mcr",
+        label: "MCR / Moral Consequence Recursion",
+        type: "Ledger",
+        color: "#e2c27a",
+        x: 0.62,
+        y: 0.72,
+        companies: "Palantir · Hyperledger · Neo4j · Databricks",
+        summary: "Records behavioral consequence and feeds resulting branch pressure back into future opportunity presentation.",
+        dependency: "Shapes experiential weighting, bias, and consequence recursion until deprecated or bypassed by higher access outcomes.",
+        password: "Lucifer",
+        secureFunction: "Tracks how action, harm, omission, intent, and recurrence feed back into the future-state surface, producing biased opportunity presentation and consequence-coupled experience selection.",
+        secureStack: "Graph causality stores, append-only ledgers, policy engines, risk scoring, historical consequence indexing, event attribution.",
+        secureFlow: "Receives action and outcome data from biological nodes, canvas events, and BUI interpretations. Sends weighted consequence pressure to scheduler, privilege evaluation, and sandbox eligibility logic.",
+        secureImplementation: "This is not merely ethics text. It is a structural recursion layer governing how consequences remain attached to future experiential paths until an alternate governance mode overtakes it."
+      },
+      {
+        id: "privilege",
+        label: "Privilege Lattice",
+        type: "Access hierarchy",
+        color: "#84dfff",
+        x: 0.82,
+        y: 0.69,
+        companies: "Okta · CyberArk · Palantir · Microsoft",
+        summary: "Access differentiation layer governing ordinary observation, read-only elevated states, scoped control, and rare higher-authority outcomes.",
+        dependency: "Determines what kind of system visibility or influence a node can carry under given resonance conditions.",
+        password: "Throne",
+        secureFunction: "Evaluates whether a node remains ordinary, becomes read-only elevated, receives scoped authority, or crosses into rare higher control conditions based on resonance, continuity, and system fit.",
+        secureStack: "Identity governance, graph authorization, scoped privilege systems, anomaly scoring, resonance analysis, secure state gating.",
+        secureFlow: "Receives resonance markers, BUI signals, MCR state, scheduler conditions, and timing alignment. Sends access outcomes to sandbox, canvas control edges, and compiler exception handling.",
+        secureImplementation: "Access is graded, not binary. This lattice formalizes the difference between seeing more, affecting little, affecting some, or achieving deep structural leverage
