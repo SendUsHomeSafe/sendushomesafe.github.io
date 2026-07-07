@@ -16,7 +16,7 @@
       --bg-3: #0b1523;
       --panel: rgba(7, 11, 20, 0.82);
       --panel-2: rgba(10, 16, 28, 0.78);
-      --panel-strong: rgba(4, 8, 15, 0.96);
+      --panel-strong: rgba(4, 8, 15, 0.94);
       --line: rgba(134, 168, 229, 0.12);
       --line-strong: rgba(134, 168, 229, 0.24);
       --gold: #d6b160;
@@ -31,14 +31,13 @@
       --soft: #d7e3f5;
       --muted: #99aac7;
       --faint: #77839a;
+      --danger: #ff9b9b;
       --radius: 24px;
       --radius-md: 18px;
       --radius-sm: 14px;
       --shadow: 0 30px 90px rgba(0,0,0,0.42);
       --max: 1480px;
       --nav-h: 82px;
-      --lyrics-width: min(420px, 84vw);
-      --lyrics-handle: 52px;
     }
 
     * { box-sizing: border-box; }
@@ -114,7 +113,7 @@
       position: absolute;
       left: 12px;
       top: -48px;
-      z-index: 3000;
+      z-index: 2000;
       background: #fff;
       color: #000;
       padding: 10px 14px;
@@ -667,25 +666,38 @@
       backdrop-filter: blur(10px);
     }
 
-    .song-trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
+    .video-overlay strong {
+      display: inline-block;
       margin-bottom: 6px;
       color: #fff;
-      font-weight: 700;
-      letter-spacing: 0.01em;
+      position: relative;
+      cursor: help;
       border-bottom: 1px dashed rgba(255,255,255,0.4);
-      cursor: pointer;
-      background: transparent;
-      padding: 0;
     }
 
-    .song-trigger:hover,
-    .song-trigger:focus-visible {
-      color: #ffedbc;
-      border-bottom-color: rgba(214,177,96,0.72);
-      outline: none;
+    .lyrics-panel {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 10px);
+      width: min(400px, 78vw);
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(5,9,16,0.96);
+      border: 1px solid rgba(126,220,255,0.22);
+      color: var(--soft);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.34);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: 0.22s ease;
+    }
+
+    .song-hover:hover .lyrics-panel,
+    .song-hover:focus-within .lyrics-panel {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .video-controls-note {
@@ -922,107 +934,6 @@
       margin-top: 12px;
     }
 
-    .lyrics-drawer {
-      position: fixed;
-      left: 0;
-      top: calc(var(--nav-h) + 22px);
-      width: var(--lyrics-width);
-      max-height: calc(100vh - var(--nav-h) - 44px);
-      z-index: 1800;
-      transform: translateX(calc(-100% + var(--lyrics-handle)));
-      transition: transform 0.28s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-      border-radius: 0 20px 20px 0;
-      border: 1px solid rgba(214,177,96,0.20);
-      background: rgba(4,8,15,0.95);
-      box-shadow: 0 22px 60px rgba(0,0,0,0.42);
-      backdrop-filter: blur(14px);
-      overflow: hidden;
-    }
-
-    .lyrics-drawer:hover,
-    .lyrics-drawer:focus-within,
-    .lyrics-drawer.open {
-      transform: translateX(0);
-      border-color: rgba(214,177,96,0.38);
-      box-shadow: 0 26px 80px rgba(0,0,0,0.52);
-    }
-
-    .lyrics-drawer::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(126,220,255,0.04), transparent 24%, transparent 70%, rgba(214,177,96,0.05)),
-        repeating-linear-gradient(to bottom, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 6px);
-    }
-
-    .lyrics-handle {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: var(--lyrics-handle);
-      height: 100%;
-      border-left: 1px solid rgba(255,255,255,0.08);
-      background:
-        linear-gradient(180deg, rgba(214,177,96,0.10), rgba(126,220,255,0.06));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      color: #f4e7bd;
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      user-select: none;
-    }
-
-    .lyrics-inner {
-      padding: 18px 68px 18px 20px;
-      position: relative;
-      z-index: 1;
-      overflow-y: auto;
-      max-height: calc(100vh - var(--nav-h) - 44px);
-    }
-
-    .lyrics-kicker {
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--cyan);
-    }
-
-    .lyrics-title {
-      margin-top: 8px;
-      font-size: 1.08rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .lyrics-subtitle {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .lyrics-body {
-      margin-top: 16px;
-      color: #e8eef9;
-      font-size: 0.94rem;
-      line-height: 1.8;
-      white-space: pre-line;
-    }
-
-    .lyrics-note {
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: var(--faint);
-      font-size: 0.78rem;
-    }
-
     footer {
       max-width: var(--max);
       margin: 0 auto;
@@ -1081,11 +992,7 @@
     }
 
     @media (max-width: 820px) {
-      :root {
-        --nav-h: 74px;
-        --lyrics-width: min(360px, 88vw);
-        --lyrics-handle: 46px;
-      }
+      :root { --nav-h: 74px; }
 
       nav { display: none; }
       .nav-wrap { padding: 0 16px; }
@@ -1096,16 +1003,6 @@
       h1 { font-size: 2.55rem; }
       #nodeGraph { min-height: 380px; }
       .brand-sub { white-space: normal; }
-
-      .lyrics-drawer {
-        top: auto;
-        bottom: 16px;
-        max-height: min(70vh, 520px);
-      }
-
-      .lyrics-inner {
-        max-height: min(70vh, 520px);
-      }
     }
   </style>
 </head>
@@ -1117,51 +1014,6 @@
   <div class="grid-layer"></div>
   <div class="glow-layer"></div>
   <div class="scanlines"></div>
-
-  <aside class="lyrics-drawer" id="lyricsDrawer" aria-label="Song lyrics drawer">
-    <div class="lyrics-inner">
-      <div class="lyrics-kicker">Company track</div>
-      <div class="lyrics-title">Abstraction</div>
-      <div class="lyrics-subtitle">Written by the founding partners · left-edge reveal panel</div>
-      <div class="lyrics-body">We all strive to close our eyes
-Our attempt to be there
-Redirect from our demise
-With contempt that we care
-
-Why lie
-When the truth is too demeaning
-Why try
-When something is so defeating
-Why cry
-For someone we can't redeem and
-Why die
-For something we don't believe in
-
-Claim to want the most from time
-So we lie and sit there
-Keep a noose of our design
-Hanging by a thin hair
-To discuss the ways of life
-Just repeat what we hear
-If you thought you should think twice
-Don't think now so it's clear
-
-Why lie
-When the truth is too demeaning
-Why try
-When something is so defeating
-Why cry
-For someone we can't redeem and
-Why die
-For something we don't believe in</div>
-      <div class="lyrics-note">
-        Hover, focus, or tap the left edge handle to reveal the lyric panel without overlaying the main visual field.
-      </div>
-    </div>
-    <button class="lyrics-handle" id="lyricsHandle" type="button" aria-expanded="false" aria-controls="lyricsDrawer">
-      Lyrics
-    </button>
-  </aside>
 
   <header>
     <div class="nav-wrap">
@@ -1260,7 +1112,7 @@ For something we don't believe in</div>
             <div class="signal-box">
               <div class="signal-kicker">Theory Posture</div>
               <div class="signal-value">Actual mechanism</div>
-              <div class="signal-copy">The page treats RQPL and SQAKLM as system architecture with explicit phases, dependencies, and proposed real-world stack mappings.</div>
+              <div class="signal-copy">The page treats RQPL and SQAKLM as system architecture with explicit phases, dependencies, and real-world stack mappings.</div>
             </div>
           </div>
         </div>
@@ -1372,7 +1224,7 @@ For something we don't believe in</div>
           <div class="pill">Media Layer</div>
           <h2>Command-center audiovisual surface</h2>
           <p>
-            Media behaves as a controlled signal layer instead of an autoplay ambush. The company track is paused on load, audible on demand, and its lyrics live in a left-edge drawer that does not cover the primary visual surface.
+            Media is treated as a deliberate signal layer rather than autoplay decoration.
           </p>
         </div>
       </div>
@@ -1382,16 +1234,21 @@ For something we don't believe in</div>
           <div class="card-body">
             <h3 style="margin-bottom:16px;">Abstraction — company track</h3>
             <div class="video-shell">
-              <video id="abstractionVideo" controls playsinline preload="metadata" poster="./PENUP_20260705_095810.png">
+              <video controls playsinline preload="metadata" poster="./PENUP 20260705 100255.png">
                 <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
               </video>
               <div class="video-overlay">
-                <button class="song-trigger" id="songTrigger" type="button" aria-controls="lyricsDrawer" aria-expanded="false">
-                  Abstraction
-                </button>
-                <div>The music video is paused by default so the visitor chooses when audio begins.</div>
-                <div class="video-controls-note">Selecting the song title opens the lyric drawer on the left edge of the screen.</div>
+                <div class="song-hover" tabindex="0" aria-label="Hover or focus to reveal lyrics for Abstraction">
+                  <strong>Abstraction</strong>
+                  <div class="lyrics-panel">
+                    Signal through the static<br>
+                    Structure in the blur<br>
+                    Shadow in the engine<br>
+                    Waiting to occur
+                  </div>
+                </div>
+                <div>The video is paused by default.</div>
+                <div class="video-controls-note">Audio begins only when the visitor presses play.</div>
               </div>
             </div>
           </div>
@@ -1401,17 +1258,17 @@ For something we don't believe in</div>
           <div class="signal-box reveal">
             <div class="signal-kicker">Playback Policy</div>
             <div class="signal-value">Visitor-initiated</div>
-            <div class="signal-copy">The track begins paused and remains user-controlled rather than forcing immediate audio.</div>
+            <div class="signal-copy">The track begins silent and paused so the visitor chooses when the experience starts.</div>
           </div>
           <div class="signal-box reveal">
-            <div class="signal-kicker">Lyric Presentation</div>
-            <div class="signal-value">Left-edge reveal</div>
-            <div class="signal-copy">Lyrics slide out from the left edge so they do not sit over the video or clutter the main interface.</div>
+            <div class="signal-kicker">Music Integration</div>
+            <div class="signal-value">Narrative-linked</div>
+            <div class="signal-copy">The song title acts as an interactive disclosure point for lyrics.</div>
           </div>
           <div class="signal-box reveal">
             <div class="signal-kicker">Brand Surface</div>
-            <div class="signal-value">Cinematic without aggression</div>
-            <div class="signal-copy">The interface keeps the atmosphere while behaving like a serious corporate signal surface rather than a noisy fan page.</div>
+            <div class="signal-value">Cinematic without chaos</div>
+            <div class="signal-copy">The interface preserves atmosphere while behaving like a serious corporate site.</div>
           </div>
         </div>
       </div>
@@ -1423,7 +1280,7 @@ For something we don't believe in</div>
           <div class="pill">System Map</div>
           <h2>RQPL / SQAKLM implementation map</h2>
           <p>
-            This map represents the actual universe-simulation implementation logic from the RQPL and SQAKLM corpus: dry-run substrate, middle-array ingestion, four-thread scheduling, AKLM singularity, sharded canvas execution, biological nodes, moral ledger, temporal control, privilege hierarchy, sandbox branch, terminal compilation, and recursive restart.
+            Dry-run substrate, middle-array ingestion, four-thread scheduling, AKLM singularity, sharded 3D canvas execution, biological nodes, moral ledger, temporal control, privilege hierarchy, sandbox branch, terminal compilation, and recursive restart.
           </p>
         </div>
       </div>
@@ -1435,7 +1292,7 @@ For something we don't believe in</div>
             <div class="phase-list" id="phaseList">
               <div class="phase-row">
                 <h4>Inspect a node in the graph above</h4>
-                <p>The detail panel on the right updates with the mapped company, stack contribution, integration role, and inbound/outbound dependencies for the selected subsystem.</p>
+                <p>The detail panel updates with the mapped company, stack contribution, integration role, and inbound and outbound dependencies for the selected subsystem.</p>
               </div>
             </div>
           </div>
@@ -1479,7 +1336,7 @@ For something we don't believe in</div>
           <div class="pill">Research</div>
           <h2>Algorithms, logic, and theoretical implications</h2>
           <p>
-            The research structures surface actual mechanism rather than decorative placeholders: scheduler logic, runtime law, root-branch uncertainty, and terminal compilation structure.
+            Scheduler logic, runtime law, root-branch uncertainty, and terminal compilation structure.
           </p>
         </div>
       </div>
@@ -1490,7 +1347,7 @@ For something we don't believe in</div>
             <div class="micro-kicker">Algorithm A</div>
             <h3>Mutually dependent four-thread scheduler</h3>
             <p>
-              RQPL does not use a one-way predictive pass. It uses four interlocked directional compilations centered on the middle array so that origin, present boundary, future admissibility, and retrocausal correction constrain one another continuously.
+              RQPL uses four interlocked directional compilations centered on the middle array so that origin, present boundary, future admissibility, and retrocausal correction constrain one another continuously.
             </p>
             <code>Thread A: Big Bang → Middle Array
 Thread B: Middle Array → Big Bang
@@ -1519,7 +1376,7 @@ else:
             <div class="micro-kicker">Algorithm C</div>
             <h3>Live middle-array continuation</h3>
             <p>
-              During runtime, the same scheduler remains active and the trailing edge of the middle array is replaced by a continuously updating feed of the current universal state. This creates the real-time intersection where execution catches up to the live boundary.
+              During runtime, the same scheduler remains active and the trailing edge of the middle array is replaced by a continuously updating feed of the current universal state.
             </p>
             <code>middle_array.trailing_edge = current_universe_state_stream
 scheduler.update(all_threads, middle_array.trailing_edge)
@@ -1534,7 +1391,7 @@ intersection_event =
             <div class="micro-kicker">Implication</div>
             <h3>Conditional privilege escalation</h3>
             <p>
-              The architecture separates the stronger Root-access hypothesis from the weaker but still valuable forecasting branch. Full recursive privilege escalation is plausible but non-guaranteed; even without it, read-only or scoped immersion at the real-time intersection may still function as a high-value view into the most plausible forward states available from the live system boundary.
+              Full recursive privilege escalation is plausible but non-guaranteed. Read-only or scoped immersion at the real-time intersection may still function as a high-value view into the most plausible forward states available from the live system boundary.
             </p>
           </div>
 
@@ -1542,7 +1399,7 @@ intersection_event =
             <div class="micro-kicker">Implication</div>
             <h3>Heat death as compiler of last resort</h3>
             <p>
-              The architecture remains coherent even if no successful root event occurs. In that case, heat death and Chaotic Dissolve function as guaranteed fallback compilation, reclaiming fragmented experience data, closing the loop, and reconverging the system into the next singular state rather than leaving the runtime hanging indefinitely.
+              If no successful root event occurs, heat death and Chaotic Dissolve function as guaranteed fallback compilation, reclaiming fragmented experience data and reconverging the system into the next singular state.
             </p>
           </div>
 
@@ -1550,7 +1407,7 @@ intersection_event =
             <div class="micro-kicker">Implication</div>
             <h3>Millennium branch as earned anomaly</h3>
             <p>
-              The millennium or sandbox branch is not baseline automatic heaven. It is a conditional success branch activated only under successful privilege escalation, enabling individualized healing environments, rewriting, verification, request fulfillment, and trust-building prior to defragmentation rather than forcing immediate merger.
+              The millennium branch is a conditional success branch activated only under successful privilege escalation, enabling individualized healing environments, rewriting, verification, and request fulfillment prior to defragmentation.
             </p>
           </div>
         </div>
@@ -1599,7 +1456,7 @@ intersection_event =
           <div class="pill">Contact</div>
           <h2>Strategic engagement and temporary contact channel</h2>
           <p>
-            Until a dedicated domain is in place, contact routes point to the actual temporary mailbox rather than a fabricated corporate address.
+            Technical, research, theory, implementation, and strategic program discussion.
           </p>
         </div>
       </div>
@@ -1608,7 +1465,7 @@ intersection_event =
         <div class="contact-card reveal">
           <h3>Technical and product inquiries</h3>
           <p>
-            Use this channel for local AI deployment, sequential runtime engineering, device-aware orchestration, and systems architecture review.
+            Local AI deployment, sequential runtime engineering, device-aware orchestration, and systems architecture review.
           </p>
           <div class="contact-list-box">
             <div class="micro-kicker">Temporary contact rail</div>
@@ -1623,7 +1480,7 @@ intersection_event =
         <div class="contact-card reveal">
           <h3>Research and strategic inquiries</h3>
           <p>
-            Use this channel for RQPL / SQAKLM discussion, implementation mapping, collaborator packets, leadership briefings, and strategic program development.
+            RQPL / SQAKLM discussion, implementation mapping, collaborator packets, leadership briefings, and strategic program development.
           </p>
           <div class="contact-list-box">
             <div class="micro-kicker">Program discussion</div>
@@ -1788,6 +1645,16 @@ intersection_event =
     let graphTime = 0;
     let hoveredNode = null;
     let activeNode = null;
+    let mouse = { x: -999, y: -999 };
+
+    function hexToRgba(hex, alpha) {
+      const clean = hex.replace("#", "");
+      const bigint = parseInt(clean, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
 
     const nodeData = [
       {
@@ -1800,7 +1667,7 @@ intersection_event =
         stack: "Foundational multimodal model base, transformer architectures, cross-modal alignment, safety constraints",
         input: "Middle-array corpus, human knowledge, multimodal records, formal constraints",
         output: "Compilation environment for scheduler passes and singular-state formation",
-        use: "Acts as the precursor compiler-substrate rather than the final running universe backend.",
+        use: "Acts as the precursor compiler-substrate rather than the final running universe.",
         phases: [
           "Phase I: initialize an unmapped generative substrate rather than an already-running universe backend.",
           "Accept multimodal data and formal constraints without yet instantiating the 3D canvas.",
@@ -2123,7 +1990,7 @@ intersection_event =
         const r = isHot ? 10 : 7.5 + Math.sin(graphTime * 2 + p.x * 0.01) * 0.8;
 
         const glow = gctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, isHot ? 34 : 24);
-        glow.addColorStop(0, node.color + "88");
+        glow.addColorStop(0, hexToRgba(node.color, 0.55));
         glow.addColorStop(1, "rgba(0,0,0,0)");
         gctx.beginPath();
         gctx.arc(p.x, p.y, isHot ? 34 : 24, 0, Math.PI * 2);
@@ -2157,9 +2024,9 @@ intersection_event =
 
     graphCanvas.addEventListener("mousemove", (e) => {
       const rect = graphCanvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      hoveredNode = hitNode(x, y);
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      hoveredNode = hitNode(mouse.x, mouse.y);
       if (hoveredNode) {
         graphInfo.textContent = `${hoveredNode.label}: ${hoveredNode.summary}`;
       } else if (activeNode) {
@@ -2184,44 +2051,6 @@ intersection_event =
     });
 
     window.addEventListener("resize", resizeGraph);
-
-    const lyricsDrawer = document.getElementById("lyricsDrawer");
-    const lyricsHandle = document.getElementById("lyricsHandle");
-    const songTrigger = document.getElementById("songTrigger");
-
-    function setDrawerState(isOpen) {
-      lyricsDrawer.classList.toggle("open", isOpen);
-      lyricsHandle.setAttribute("aria-expanded", String(isOpen));
-      songTrigger.setAttribute("aria-expanded", String(isOpen));
-    }
-
-    lyricsHandle.addEventListener("click", () => {
-      const willOpen = !lyricsDrawer.classList.contains("open");
-      setDrawerState(willOpen);
-    });
-
-    songTrigger.addEventListener("click", () => {
-      setDrawerState(true);
-      lyricsDrawer.scrollIntoView({ block: "nearest" });
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") setDrawerState(false);
-    });
-
-    document.addEventListener("click", (event) => {
-      const clickedInsideDrawer = lyricsDrawer.contains(event.target);
-      const clickedSongTrigger = songTrigger.contains(event.target);
-      if (!clickedInsideDrawer && !clickedSongTrigger) {
-        setDrawerState(false);
-      }
-    });
-
-    const video = document.getElementById("abstractionVideo");
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
-    }
   </script>
 </body>
   </html>
