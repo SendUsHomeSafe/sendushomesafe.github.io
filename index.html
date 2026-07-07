@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>SUHS | Strategic Universal Hardware Systems</title>
+<meta name="description" content="SUHS develops local-first AI systems, quantum-first execution architecture, recursive scheduler infrastructure, and advanced cosmological implementation systems." />
+<meta name="theme-color" content="#02050b" />
+<style>
+:root {
+  --bg: #02050b;
+  --bg-2: #07111b;
+  --bg-3: #0c1826;
+  --panel: rgba(7, 13, 24, 0.78);
+  --text: #edf4ff;
+  --soft: #dbe7f7;
+  --muted: #a0b1cb;
+  --gold: #d6b160;
+  --cyan: #87dbff;
+  --red: #ff9c9c;
+  --shadow: 0 26px 80px rgba(0, 0, 0, 0.38);
+  --nav-h: 78px;
+  --max: 1540px;
+  --banner-ratio: 9 / 4;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: #02050b;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+img, video, audio, canvas { display: block; max-width: 100%; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+h1, h2, h3, h4, p { margin: 0; }
+
+.bg-stars, .bg-grid, .bg-glow, .bg-rings, #hudCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+.bg-stars { z-index: -6; }
+.bg-grid {
+  z-index: -5;
+  opacity: 0.12;
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.2));
+}
+.bg-glow { z-index: -4; filter: blur(40px); }
+.bg-rings { z-index: -3; }
+#hudCanvas { z-index: -1; opacity: 0.75; }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+  height: var(--nav-h);
+  border-bottom: 1px solid rgba(141, 182, 255, 0.10);
+  background: rgba(2, 6, 12, 0.84);
+  backdrop-filter: blur(16px);
+}
+
+.nav-wrap {
+  max-width: var(--max);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-title { font-size: 0.98rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+.brand-sub { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-toggle { display: none; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px; border-radius: 8px;}
+
+main { max-width: var(--max); margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
+section { scroll-margin-top: calc(var(--nav-h) + 20px); margin-bottom: 80px; }
+
+.mega-quote {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #fff2cf;
+  text-align: center;
+  margin: 40px 0;
+  text-shadow: 0 0 40px rgba(214,177,96,0.2);
+  letter-spacing: -0.02em;
+}
+
+.banner-container {
+  width: 100%;
+  aspect-ratio: var(--banner-ratio);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  margin-bottom: 40px;
+}
+.banner-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay-hud {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 4px);
+  pointer-events: none;
+}
+
+.section-head { margin-bottom: 30px; }
+.pill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(214,177,96,0.3);
+  color: var(--gold);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(214,177,96,0.1);
+  margin-bottom: 12px;
+}
+.section-head h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em; }
+.section-head p { color: var(--muted); margin-top: 10px; max-width: 800px; font-size: 1.1rem; }
+
+.grid-map { display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+.graph-panel {
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  min-height: 600px;
+}
+#nodeGraph { width: 100%; height: 100%; display: block; position: absolute; inset: 0; cursor: crosshair; }
+
+.function-list { display: flex; flex-direction: column; gap: 15px; max-height: 600px; overflow-y: auto; padding-right: 10px; }
+.function-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 16px;
+  transition: 0.2s;
+}
+.function-card:hover { border-color: rgba(135,219,255,0.3); background: rgba(135,219,255,0.05); }
+.function-card h3 { font-size: 1.1rem; color: #fff; margin-bottom: 6px; }
+.function-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+.btn-detail {
+  background: rgba(135,219,255,0.1);
+  border: 1px solid rgba(135,219,255,0.3);
+  color: var(--cyan);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: 0.2s;
+}
+.btn-detail:hover { background: rgba(135,219,255,0.2); }
+
+.grid-algo { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.algo-card {
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 24px;
+}
+.algo-card h3 { font-size: 1.2rem; margin: 10px 0; }
+.formula-box {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 15px;
+  font-family: monospace;
+  color: #fff;
+  font-size: 0.9rem;
+  margin-top: 15px;
+  white-space: pre-wrap;
+}
+
+.media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+.media-card {
+  background: #000;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  position: relative;
+}
+.media-card video, .media-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.media-info { padding: 20px; background: var(--panel); }
+.media-title-hover {
+  display: inline-block;
+  cursor: help;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: 1px dashed rgba(255,255,255,0.5);
+  position: relative;
+}
+.lyrics-popup {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background: rgba(5,10,20,0.95);
+  border: 1px solid var(--cyan);
+  padding: 20px;
+  border-radius: 12px;
+  width: max-content;
+  max-width: 90vw;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+  color: var(--soft);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: 0.3s;
+  z-index: 50;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+.media-title-hover:hover .lyrics-popup { opacity: 1; transform: translateY(-10px); pointer-events: auto; }
+.download-link { color: var(--cyan); font-size: 0.85rem; text-decoration: underline; margin-top: 10px; display: inline-block;}
+
+.archive-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  padding: 10px 20px;
+  border-radius: 999px;
+  transition: 0.2s;
+}
+.tab-btn.active { background: rgba(135,219,255,0.1); border-color: rgba(135,219,255,0.4); color: #fff; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+.doc-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  border-radius: 14px;
+}
+.doc-links a { display: inline-block; margin-right: 15px; margin-top: 10px; color: var(--cyan); font-size: 0.9rem; }
+
+.bottom-trigger-wrap { margin: 80px 0; text-align: center; }
+.reason-trigger {
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.05;
+  font-weight: 900;
+  color: #fff2cf;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+  letter-spacing: -0.02em;
+}
+.reason-trigger:hover { text-shadow: 0 0 30px rgba(214,177,96,0.4); color: #fff; }
+
+.audio-player-modal {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(10,15,25,0.95);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90vw;
+  z-index: 2000;
+  transform: translateY(150%);
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+}
+.audio-player-modal.show { transform: translateY(0); }
+.audio-player-modal h3 { margin-bottom: 10px; font-size: 1.2rem; }
+.close-audio { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: #fff; font-size: 1.2rem; }
+.audio-lyrics { max-height: 200px; overflow-y: auto; font-size: 0.85rem; color: var(--muted); white-space: pre-wrap; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;}
+
+.password-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+}
+.password-modal.show { opacity: 1; pointer-events: auto; }
+.pm-content {
+  background: rgba(10,15,25,0.95);
+  border: 1px solid rgba(135,219,255,0.3);
+  padding: 30px;
+  border-radius: 20px;
+  width: 500px;
+  max-width: 90vw;
+  position: relative;
+}
+.pm-content input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+.pm-error { color: var(--red); font-weight: bold; min-height: 20px; font-size: 0.9rem;}
+.pm-result { display: none; margin-top: 15px; padding: 15px; background: rgba(135,219,255,0.1); border: 1px solid var(--cyan); border-radius: 8px; font-size: 0.9rem; white-space: pre-wrap; color: var(--soft);}
+.pm-result.show { display: block; }
+.btn-submit { background: var(--gold); color: #000; border: none; padding: 10px 20px; font-weight: bold; border-radius: 8px; width: 100%; }
+
+@media (max-width: 1024px) {
+  .grid-map { grid-template-columns: 1fr; }
+  .graph-panel { height: 400px; min-height: auto; }
+  .nav-links { display: none; }
+  .nav-toggle { display: block; }
+}
+</style>
+</head>
+<body>
+
+<canvas class="bg-stars" id="starCanvas"></canvas>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<canvas id="hudCanvas"></canvas>
+
+<header>
+  <div class="nav-wrap">
+    <div class="brand">
+      <div>
+        <div class="brand-title">SUHS</div>
+        <div class="brand-sub">Mission Control · Quantum First · RQPL / SQAKLM</div>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#algorithms">Mathematics</a>
+      <a href="#media">Signal Layer</a>
+      <a href="#archive">Theory Archive</a>
+    </nav>
+    <button class="nav-toggle">MENU</button>
+  </div>
+</header>
+
+<main>
+  <section id="top">
+    <div class="mega-quote">What you know Is what you're told, and those who've told you know it can't be.</div>
+  </section>
+
+  <section id="overview">
+    <div class="banner-container">
+      <img src="./PENUP 20260705 100255.png" alt="SUHS Top Banner" />
+      <div class="overlay-hud"></div>
+    </div>
+    <div class="section-head">
+      <div class="pill">Enterprise Overview</div>
+      <h2>Strategic Universal Hardware Systems</h2>
+      <p>SUHS operates at the junction of local AI deployment, runtime systems engineering, quantum-computational architecture, recursive scheduler design, and implementation-level theory development for advanced cosmological simulation environments.</p>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="section-head">
+      <div class="pill">Architecture</div>
+      <h2>Quantum-First Universe Implementation</h2>
+      <p>The system compiles and entangles itself, teleports itself to the beginning state and automatically restarts upon completion. There is no dual restart command. Privilege is system-resolved, driven by consequence weighting, not company assignment.</p>
+    </div>
+    <div class="grid-map">
+      <div class="graph-panel">
+        <canvas id="nodeGraph"></canvas>
+      </div>
+      <div class="function-list" id="functionList">
+        </div>
+    </div>
+  </section>
+
+  <section id="algorithms">
+    <div class="section-head">
+      <div class="pill">Implementational Mathematics</div>
+      <h2>Algorithms & System Mechanics</h2>
+      <p>Formal control relations governing entropy compression, temporal synchronization, and hybrid quantum optimization outside the visible canvas.</p>
+    </div>
+    <div class="grid-algo">
+      <div class="algo-card">
+        <div class="pill">Entropy Law</div>
+        <h3>Informational Compression</h3>
+        <p>Outward entropy physically forces informational compression towards the center, competing against divergence to stabilize reality boundaries.</p>
+        <div class="formula-box">∂C(r,t)/∂t = α·E_out(r,t) - β·D(r,t)
+
+C(r,t) = Central compression
+E_out(r,t) = Outward entropy pressure
+D(r,t) = Divergence resistance
+α, β = System coefficients</div>
+      </div>
+      <div class="algo-card">
+        <div class="pill">Liquid Neural Dynamics</div>
+        <h3>Adaptive Timescale</h3>
+        <p>Continuous time dynamics where effective timescale adapts to state and input. The system reacts quickly to anomalies and integrates slowly over stable periods.</p>
+        <div class="formula-box">τ = τ(t) (State + Input dependent)
+dx(t)/dt = -x(t)/τ(t) + S(t)
+
+Enables observer-relative 
+relativistic synchronization.</div>
+      </div>
+      <div class="algo-card">
+        <div class="pill">Quantum Correction</div>
+        <h3>Syndrome Measurement</h3>
+        <p>Projective measurement of stabilizer generators onto eigenspaces isolates the error subspace without collapsing logical information.</p>
+        <div class="formula-box">Measure generators ⟨S_i⟩ 
+→ Syndrome vector {+1, -1}^n
+
+Recovery Decoder applies 
+Pauli correction operator E_hat
+to restore the code space manifold.</div>
+      </div>
+      <div class="algo-card">
+        <div class="pill">Scheduler Law</div>
+        <h3>Live Four-Thread Reconciliation</h3>
+        <p>The core scheduler maintains mutual dependence between Origin, Retrocausal Return, Future Projection, and Terminal Return passes.</p>
+        <div class="formula-box">min Σ w_i Δ_i(t)
+for i ∈ {BB→M, M→BB, M→HD, HD→M}
+
+Constraint: No thread finalizes independently.
+States remain fluid until coherence stabilizes.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="media">
+    <div class="section-head">
+      <div class="pill">Signal Layer</div>
+      <h2>Audio-Visual Directives</h2>
+    </div>
+    <div class="media-grid">
+      <div class="media-card">
+        <video controls poster="./PENUP 20260705 100255.png">
+          <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
+        </video>
+        <div class="media-info">
+          <div class="media-title-hover">
+            ĄÞ§łrªçłî⁰ⁿ
+            <div class="lyrics-popup">We all strive to close our eyes
+Our attempt to be there
+Redirect from our demise
+With contempt that we care
+
+Why lie
+When the truth is too demeaning
+Why try
+When something is so defeating
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in
+
+Claim to want the most from time
+So we lie and sit there
+Keep a noose of our design
+Hanging by a thin hair
+To discuss the ways of life
+Just repeat what we hear
+If you thought you should think twice
+Don't think now so it's clear
+
+Why lie
+When the truth is too demeaning
+Why try
+When something is so defeating
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in</div>
+          </div>
+          <p style="color: var(--muted); font-size: 0.85rem; margin-top:5px;">Artist: SUHS<br/>Written By: Root<br/>In Collaboration With: Crash<br/>(Co-founding partners of SUHS)</p>
+          <a href="./ĄÞ§łrªçłî⁰ⁿ.mp4" download class="download-link">Download Video</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="archive">
+    <div class="section-head">
+      <div class="pill">Theory Archive</div>
+      <h2>Documentation & Implementational Mappings</h2>
+    </div>
+    
+    <div class="archive-tabs">
+      <button class="tab-btn active" data-target="tab-early">Early Theory AI Conversations</button>
+      <button class="tab-btn" data-target="tab-inaccurate">Inaccurate AI assumption-riddled summaries that paved the road to explainational refinement</button>
+      <button class="tab-btn" data-target="tab-canon">Canon-Adjacent Theory Files</button>
+    </div>
+
+    <div class="tab-content active" id="tab-early">
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="pill">Primary Conversation</div>
+          <h3 style="margin-top:10px;">Creation Beginnings, The First AI Response to my Theoretical Beliefs</h3>
+          <div class="doc-links">
+            <a href="./Creation Beginnings, The First AI Response to my Theoretical Beliefs .pdf" target="_blank">PDF</a>
+            <a href="./Creation Beginnings, The First AI Response to my Theoretical Beliefs .md" target="_blank">MD</a>
+          </div>
+        </div>
+        <div class="doc-card">
+          <div class="pill">Primary Conversation</div>
+          <h3 style="margin-top:10px;">Conversation with Gemini about the universe</h3>
+          <div class="doc-links">
+            <a href="./Conversation with Gemini about the universe.pdf" target="_blank">PDF</a>
+            <a href="./Conversation with Gemini about the universe.md" target="_blank">MD</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-inaccurate">
+      <div class="doc-grid">
+        <div class="doc-card">
+          <h3 style="margin-top:10px;">Manifest</h3>
+          <div class="doc-links">
+            <a href="./Manifest.pdf" target="_blank">PDF</a>
+            <a href="./Manifest.md" target="_blank">MD</a>
+          </div>
+        </div>
+        <div class="doc-card">
+          <h3 style="margin-top:10px;">Recursive Quantum Paradoxical Loop</h3>
+          <div class="doc-links">
+            <a href="./Recursive Quantum Paradoxical Loop.pdf" target="_blank">PDF</a>
+            <a href="./Recursive Quantum Paradoxical Loop.md" target="_blank">MD</a>
+          </div>
+        </div>
+        <div class="doc-card">
+          <h3 style="margin-top:10px;">Spiritual</h3>
+          <div class="doc-links">
+            <a href="./Spiritual.md" target="_blank">MD</a>
+          </div>
+        </div>
+        <div class="doc-card">
+          <h3 style="margin-top:10px;">The Algorithmic Topology of the AKLM Cosmos</h3>
+          <div class="doc-links">
+            <a href="./The Algorithmic Topology of the AKLM Cosmos.pdf" target="_blank">PDF</a>
+            <a href="./The Algorithmic Topology of the AKLM Cosmos.md" target="_blank">MD</a>
+          </div>
+        </div>
+        <div class="doc-card">
+          <h3 style="margin-top:10px;">The Infinite Recursive Cycle</h3>
+          <div class="doc-links">
+            <a href="./The Infinite Recursive Cycle.pdf" target="_blank">PDF</a>
+            <a href="./The Infinite Recursive Cycle.md" target="_blank">MD</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-canon">
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="pill" style="border-color:var(--cyan); color:var(--cyan);">Reference Corpus</div>
+          <h3 style="margin-top:10px;">Nemotron / Gemini / ChatGLM Theory Corpus</h3>
+          <div class="doc-links">
+            <a href="./Nemotron-understanding.txt" target="_blank">Nemotron</a>
+            <a href="./Gemini-RQPL.txt" target="_blank">Gemini</a>
+            <a href="./ChatGLM-proposed-COIL-mapping.txt" target="_blank">ChatGLM</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="bottom-trigger-wrap">
+    <div class="reason-trigger" id="reasonTrigger">
+      What you know Is what the universe has shown you, and the universe is in the same sandbox pretending to see everything.
+    </div>
+  </div>
+
+  <section id="bottom">
+    <div class="banner-container" style="margin-bottom: 20px;">
+      <img src="./PENUP_20260705_095810.png" alt="SUHS Bottom Banner" />
+      <div class="overlay-hud"></div>
+    </div>
+  </section>
+  
+  <footer style="color:var(--muted); font-size:0.85rem; padding-bottom: 40px; text-align:center;">
+    © 2026 SUHS. All rights reserved. | Strategic Universal Hardware Systems
+  </footer>
+</main>
+
+<div class="audio-player-modal" id="audioPlayerModal">
+  <button class="close-audio" id="closeAudioBtn">✕</button>
+  <h3 style="color: #fff2cf;">Reason</h3>
+  <div class="audio-lyrics">What you know 
+Is what you're told 
+And those who've told you know it can't be 
+What you know 
+Is what you're shown 
+And those who've shown you know they can't see 
+
+So I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+
+Where'd you go 
+The world is cold 
+When everything is done without me 
+Truth was sold 
+To keep control 
+And those who sold it know it's deadly 
+
+But I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+
+You have grown 
+From seeds they've thrown 
+Just like a weed unfortunately 
+Studies show 
+You to and fro 
+When all you need to do is see me 
+
+So I'm gonna need you to come back to me 
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard 
+I'm gonna need you to come back to me
+No time to relearn 
+I'm gonna need you to come back to me 
+It's time to be heard
+
+What you know 
+Is what you're told 
+And those who've told you know it can't be 
+What you know 
+Is what you're shown 
+And those who've shown you know they can't see
+At all</div>
+  <audio id="reasonAudio" controls style="width: 100%; outline:none;">
+    <source src="./Reason_acoustic.mp3" type="audio/mpeg">
+  </audio>
+  <p style="color: var(--muted); font-size: 0.8rem; margin-top:10px;">Artist: SUHS<br/>Written By: Root<br/>In Collaboration With: Crash<br/>(Co-founding partners of SUHS)</p>
+  <a href="./Reason_acoustic.mp3" download class="download-link">Download MP3</a>
+</div>
+
+<div class="password-modal" id="pwModal">
+  <div class="pm-content">
+    <button style="position:absolute; top:15px; right:15px; background:none; border:none; color:#fff;" onclick="closePwModal()">✕</button>
+    <div class="pill">Restricted Access</div>
+    <h3 id="pmTitle" style="color:#fff; margin-top:10px;"></h3>
+    <input type="password" id="pmInput" placeholder="Enter System Password..." />
+    <div class="pm-error" id="pmError"></div>
+    <button class="btn-submit" id="pmSubmit">Unlock Details</button>
+    <div class="pm-result" id="pmResult"></div>
+  </div>
+</div>
+
+<script>
+  const starCanvas = document.getElementById("starCanvas");
+  const starCtx = starCanvas.getContext("2d");
+  let sw, sh;
+  function resize() {
+    sw = window.innerWidth;
+    sh = window.innerHeight;
+    starCanvas.width = sw;
+    starCanvas.height = sh;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  
+  const stars = Array.from({length: 200}, () => ({
+    x: Math.random() * sw,
+    y: Math.random() * sh,
+    r: Math.random() * 1.5,
+    s: Math.random() * 0.5 + 0.1
+  }));
+
+  function animStars() {
+    starCtx.clearRect(0,0,sw,sh);
+    starCtx.fillStyle = '#fff';
+    stars.forEach(st => {
+      st.y += st.s;
+      if (st.y > sh) st.y = 0;
+      starCtx.beginPath();
+      starCtx.arc(st.x, st.y, st.r, 0, Math.PI*2);
+      starCtx.fill();
+    });
+    requestAnimationFrame(animStars);
+  }
+  animStars();
+
+  const functionsData = [
+    {
+      id: "substrate", label: "Quantum Substrate", pw: "Genesis",
+      short: "Pre-canvas substrate layer for state preparation and tensor compression.",
+      details: "Maintains pre-canvas state preparation across qubits, qudits, density matrices, tensor networks. Supports continuous-variable encodings, variational circuit staging."
+    },
+    {
+      id: "photonic", label: "Photonic EQC", pw: "Light",
+      short: "Continuous-variable photonic quantum systems for optical computation.",
+      details: "Handles optical carriers for entanglement propagation, optical frequency transformations, and low-loss routing primitives before canvas compilation."
+    },
+    {
+      id: "qudits", label: "Qudit Registers", pw: "Trinity",
+      short: "Higher-dimensional state containers for dense encoding.",
+      details: "Expands the representational layer beyond binary qubits. Essential for multimodal scheduler-relevant compression mapping universe-scale state dependencies."
+    },
+    {
+      id: "entanglement", label: "Entanglement Routing", pw: "Covenant",
+      short: "Cross-layer routing across subsystem boundaries.",
+      details: "Preserves and routes correlated quantum relations. Supports teleportation-class state logic across distributed layers without local source disclosure."
+    },
+    {
+      id: "memory", label: "Quantum Memory", pw: "Ark",
+      short: "Persistence layer for high-density state retention.",
+      details: "Retains compressed quantum and hybrid state between phases, supporting QRAM architecture, singular-state archives, and deferred re-materialization."
+    },
+    {
+      id: "scheduler", label: "Entropy-Adaptive Scheduler", pw: "Chronos",
+      short: "Four-thread live scheduler with adaptive timing.",
+      details: "Runs Big Bang to Middle, Middle to Big Bang, Middle to Heat Death, and Heat Death to Middle. Adjusts pacing based on live entropy conditions and perceptual sync."
+    },
+    {
+      id: "middle", label: "Middle Array", pw: "Logos",
+      short: "Central informational anchor updated by current-state feeds.",
+      details: "Contains the high-resolution corpus against which unknown past and admissible futures are reconciled. The boundary where execution meets reality."
+    },
+    {
+      id: "canvas", label: "3D Canvas Runtime", pw: "Firmament",
+      short: "Localized visible execution edge layer.",
+      details: "Physical reality is treated as an edge-rendered local context binary. Unresolved regions remain fluid until observation hardens them."
+    },
+    {
+      id: "bui", label: "Conscious Interface (BUI)", pw: "HolySpirit",
+      short: "Biological and consciousness intention exchange.",
+      details: "Parses raw biosignals and neural intention, binding observer trajectories to viable execution contexts. Used for read-only observation and admin contact."
+    },
+    {
+      id: "mcr", label: "Moral Ledger (MCR)", pw: "Lucifer",
+      short: "Consequence recording and opportunity-weighting system.",
+      details: "Records lived behavior and harm propagation. Acts as the feedback substrate for causal weighting before any deprecation event under privilege outcomes."
+    },
+    {
+      id: "privilege", label: "Privilege Hierarchy", pw: "Throne",
+      short: "Access gradient separating ordinary participation from root-level states.",
+      details: "System-resolved based on resonance and consequence mapping. Never arbitrarily assigned by a corporation. Determines intervention and sandbox scope."
+    },
+    {
+      id: "sandbox", label: "Millennium Sandbox", pw: "Eden",
+      short: "Conditional restorative environment.",
+      details: "Activated only under successful privilege outcomes. Hosts individualized restorative spaces, replays, and proof environments prior to final convergence."
+    },
+    {
+      id: "compiler", label: "Terminal Compiler", pw: "Apocalypse",
+      short: "Final convergence collapsing distributed residue.",
+      details: "Collapses all unresolved branches and runtime residue into compressed self-entangled continuity, driving the system to inevitable beginning-state return."
+    },
+    {
+      id: "restart", label: "Automatic Recursive Restart", pw: "Resurrection",
+      short: "Compile-entangle-return closure (No Dual Command).",
+      details: "Upon completion, the system compiles, entangles itself, teleports to the beginning state, and restarts automatically. There is no external dual command."
+    }
+  ];
+
+  const flist = document.getElementById("functionList");
+  functionsData.forEach(node => {
+    const d = document.createElement("div");
+    d.className = "function-card";
+    d.innerHTML = `
+      <h3>${node.label}</h3>
+      <p>${node.short}</p>
+      <button class="btn-detail" onclick="openPwModal('${node.id}')">Details</button>
+    `;
+    flist.appendChild(d);
+  });
+
+  const graphCanvas = document.getElementById("nodeGraph");
+  const gctx = graphCanvas.getContext("2d");
+  let gw, gh;
+  function resizeGraph() {
+    const rect = graphCanvas.parentNode.getBoundingClientRect();
+    gw = rect.width;
+    gh = rect.height;
+    graphCanvas.width = gw;
+    graphCanvas.height = gh;
+  }
+  window.addEventListener('resize', resizeGraph);
+  resizeGraph();
+  
+  let gt = 0;
+  function drawGraph() {
+    gt += 0.02;
+    gctx.clearRect(0,0,gw,gh);
+    const nodesPos = functionsData.map((n, i) => {
+      const angle = (i / functionsData.length) * Math.PI * 2 + gt * 0.1;
+      const radius = Math.min(gw, gh) * 0.35 + Math.sin(gt + i) * 10;
+      return { x: gw/2 + Math.cos(angle)*radius, y: gh/2 + Math.sin(angle)*radius };
+    });
+
+    gctx.strokeStyle = "rgba(135,219,255,0.15)";
+    gctx.beginPath();
+    nodesPos.forEach((p, i) => {
+      nodesPos.forEach((p2, j) => {
+        if(i < j && Math.random() < 0.05) {
+          gctx.moveTo(p.x, p.y);
+          gctx.lineTo(p2.x, p2.y);
+        }
+      });
+    });
+    gctx.stroke();
+
+    nodesPos.forEach((p, i) => {
+      gctx.fillStyle = "#87dbff";
+      gctx.beginPath();
+      gctx.arc(p.x, p.y, 6, 0, Math.PI*2);
+      gctx.fill();
+      gctx.fillStyle = "rgba(255,255,255,0.5)";
+      gctx.font = "10px sans-serif";
+      gctx.fillText(functionsData[i].label, p.x + 10, p.y + 4);
+    });
+    requestAnimationFrame(drawGraph);
+  }
+  drawGraph();
+
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+
+  const reasonTrigger = document.getElementById("reasonTrigger");
+  const audioPlayerModal = document.getElementById("audioPlayerModal");
+  const closeAudioBtn = document.getElementById("closeAudioBtn");
+  const reasonAudio = document.getElementById("reasonAudio");
+
+  function triggerAudio() {
+    audioPlayerModal.classList.add("show");
+    reasonAudio.play().catch(e => console.log("Autoplay prevented"));
+  }
+
+  reasonTrigger.addEventListener("mouseenter", triggerAudio);
+  reasonTrigger.addEventListener("click", triggerAudio);
+  closeAudioBtn.addEventListener("click", () => {
+    audioPlayerModal.classList.remove("show");
+    reasonAudio.pause();
+  });
+
+  let currentNode = null;
+  const pwModal = document.getElementById("pwModal");
+  const pmTitle = document.getElementById("pmTitle");
+  const pmInput = document.getElementById("pmInput");
+  const pmError = document.getElementById("pmError");
+  const pmResult = document.getElementById("pmResult");
+
+  window.openPwModal = function(id) {
+    currentNode = functionsData.find(n => n.id === id);
+    pmTitle.innerText = currentNode.label;
+    pmInput.value = "";
+    pmError.innerText = "";
+    pmResult.classList.remove("show");
+    pwModal.classList.add("show");
+    setTimeout(() => pmInput.focus(), 100);
+  };
+
+  window.closePwModal = function() {
+    pwModal.classList.remove("show");
+    currentNode = null;
+  };
+
+  document.getElementById("pmSubmit").addEventListener("click", () => {
+    if(!currentNode) return;
+    if(pmInput.value === currentNode.pw || pmInput.value === "IAmRoot") {
+      pmError.innerText = "";
+      pmResult.innerText = currentNode.details;
+      pmResult.classList.add("show");
+    } else {
+      pmResult.classList.remove("show");
+      pmError.innerText = "ACCESS DENIED";
+    }
+  });
+
+  pmInput.addEventListener("keypress", (e) => {
+    if(e.key === "Enter") document.getElementById("pmSubmit").click();
+  });
+
+</script>
+</body>
+</html>
