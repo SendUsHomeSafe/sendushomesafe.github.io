@@ -1,0 +1,3170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>SUHS | Strategic Universal Hardware Systems</title>
+  <meta
+    name="description"
+    content="SUHS develops local-first AI systems, quantum-first execution architecture, recursive scheduler infrastructure, and advanced cosmological implementation systems."
+  />
+  <meta name="theme-color" content="#02050b" />
+  <style>
+    :root {
+      --bg: #02050b;
+      --bg-2: #07111b;
+      --bg-3: #0c1826;
+      --panel: rgba(7, 13, 24, 0.78);
+      --panel-2: rgba(8, 15, 28, 0.88);
+      --panel-3: rgba(4, 8, 15, 0.95);
+      --line: rgba(141, 182, 255, 0.10);
+      --line-2: rgba(141, 182, 255, 0.18);
+      --line-gold: rgba(214, 177, 96, 0.24);
+      --text: #edf4ff;
+      --soft: #dbe7f7;
+      --muted: #a0b1cb;
+      --faint: #738099;
+      --gold: #d6b160;
+      --gold-2: #f0d08d;
+      --cyan: #87dbff;
+      --cyan-2: #bceeff;
+      --violet: #9f9eff;
+      --green: #84ecab;
+      --red: #ff9c9c;
+      --orange: #ffbf86;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.38);
+      --radius: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --nav-h: 78px;
+      --max: 1540px;
+      --banner-top-ratio: 9 / 4;
+      --banner-bottom-ratio: 9 / 4;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 16% 14%, rgba(135,219,255,0.08), transparent 24%),
+        radial-gradient(circle at 78% 18%, rgba(159,158,255,0.07), transparent 26%),
+        radial-gradient(circle at 50% 82%, rgba(214,177,96,0.06), transparent 30%),
+        linear-gradient(180deg, #010308 0%, #07101a 45%, #02050b 100%);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img, video, audio, canvas, svg { display: block; max-width: 100%; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    h1, h2, h3, h4, p { margin: 0; }
+
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -52px;
+      z-index: 9999;
+      background: #fff;
+      color: #000;
+      padding: 10px 14px;
+      border-radius: 12px;
+      transition: top 0.2s ease;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .bg-stars,
+    .bg-grid,
+    .bg-scan,
+    .bg-glow,
+    .bg-rings,
+    #hudCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+    .bg-stars { z-index: -6; }
+    .bg-grid { z-index: -5; }
+    .bg-glow { z-index: -4; }
+    .bg-rings { z-index: -3; }
+    .bg-scan { z-index: -2; }
+    #hudCanvas { z-index: -1; opacity: 0.75; }
+
+    .bg-grid {
+      opacity: 0.12;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.2));
+    }
+
+    .bg-scan {
+      opacity: 0.05;
+      mix-blend-mode: screen;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.04) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    }
+
+    .bg-glow {
+      filter: blur(34px);
+      background:
+        radial-gradient(circle at 14% 16%, rgba(135,219,255,0.08), transparent 22%),
+        radial-gradient(circle at 84% 18%, rgba(159,158,255,0.08), transparent 24%),
+        radial-gradient(circle at 52% 74%, rgba(214,177,96,0.06), transparent 28%);
+    }
+
+    .bg-rings::before,
+    .bg-rings::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(135,219,255,0.08);
+      animation: rotateSlow 22s linear infinite;
+    }
+    .bg-rings::before {
+      width: 560px;
+      height: 560px;
+      left: -180px;
+      top: 18%;
+    }
+    .bg-rings::after {
+      width: 740px;
+      height: 740px;
+      right: -260px;
+      top: 46%;
+      border-color: rgba(214,177,96,0.08);
+      animation-direction: reverse;
+      animation-duration: 28s;
+    }
+
+    #starCanvas, #hudCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      height: var(--nav-h);
+      border-bottom: 1px solid var(--line);
+      background: rgba(2, 6, 12, 0.84);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav-wrap {
+      max-width: var(--max);
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(214,177,96,0.30);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(214,177,96,0.26), rgba(135,219,255,0.10) 42%, transparent 68%);
+      box-shadow: inset 0 0 22px rgba(135,219,255,0.10), 0 0 22px rgba(135,219,255,0.06);
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: 50%;
+      border: 1px solid rgba(135,219,255,0.24);
+      animation: rotateSlow 9s linear infinite;
+    }
+
+    .brand-mark::after {
+      inset: 12px;
+      border-color: rgba(214,177,96,0.20);
+      animation-duration: 6s;
+      animation-direction: reverse;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a,
+    .nav-links button {
+      min-height: 42px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      transition: 0.22s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links button:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.05);
+    }
+
+    .nav-links .nav-contact {
+      color: var(--gold);
+      border-color: rgba(214,177,96,0.22);
+      background: rgba(214,177,96,0.07);
+    }
+
+    .nav-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-toggle span,
+    .nav-toggle::before,
+    .nav-toggle::after {
+      content: "";
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 999px;
+      position: absolute;
+      transition: 0.2s ease;
+    }
+
+    .nav-toggle span { transform: translateY(0); }
+    .nav-toggle::before { transform: translateY(-6px); }
+    .nav-toggle::after { transform: translateY(6px); }
+
+    .mobile-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(86vw, 380px);
+      z-index: 1500;
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+      background: rgba(3, 8, 15, 0.96);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: -18px 0 70px rgba(0,0,0,0.34);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-drawer.open { transform: translateX(0); }
+
+    .drawer-head {
+      padding: 20px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+
+    .drawer-links {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .drawer-links a {
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: var(--soft);
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1400;
+      background: rgba(0,0,0,0.48);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    .drawer-backdrop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 20px 90px;
+      position: relative;
+      z-index: 2;
+    }
+
+    section {
+      scroll-margin-top: calc(var(--nav-h) + 20px);
+    }
+
+    .top-quote {
+      margin-top: 8px;
+      padding: 22px 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(214,177,96,0.16);
+      background:
+        linear-gradient(180deg, rgba(214,177,96,0.06), rgba(214,177,96,0.03)),
+        rgba(7,13,24,0.56);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .top-quote::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 6px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .top-quote p {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(1.5rem, 3vw, 2.75rem);
+      line-height: 1.08;
+      font-weight: 820;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: #fff2cf;
+      max-width: 1200px;
+    }
+
+    .banner-top,
+    .banner-bottom {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      background: #02050b;
+    }
+
+    .banner-top {
+      margin-top: 16px;
+      aspect-ratio: var(--banner-top-ratio);
+      min-height: 320px;
+      max-height: 700px;
+    }
+
+    .banner-bottom {
+      aspect-ratio: var(--banner-bottom-ratio);
+      min-height: 220px;
+      max-height: 520px;
+      margin-top: 28px;
+    }
+
+    .banner-media,
+    .banner-bottom-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      background:
+        linear-gradient(180deg, rgba(2,5,11,0.75), rgba(2,5,11,0.85)),
+        #02050b;
+      transform: scale(1.02);
+      will-change: transform;
+    }
+
+    .banner-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 16%),
+        radial-gradient(circle at 18% 22%, rgba(135,219,255,0.07), transparent 22%),
+        radial-gradient(circle at 84% 22%, rgba(159,158,255,0.07), transparent 24%),
+        linear-gradient(180deg, rgba(2,5,11,0.22) 0%, rgba(2,5,11,0.56) 62%, rgba(2,5,11,0.88) 100%);
+      pointer-events: none;
+    }
+
+    .banner-hud {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 5px);
+      opacity: 0.3;
+      mix-blend-mode: screen;
+    }
+
+    .banner-depth {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .banner-depth span {
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(135,219,255,0.12);
+      box-shadow: 0 0 38px rgba(135,219,255,0.05);
+      animation: driftY 9s ease-in-out infinite;
+    }
+
+    .banner-depth span:nth-child(1) {
+      width: 26%;
+      height: 44%;
+      left: 5%;
+      top: 16%;
+      animation-duration: 8.5s;
+    }
+
+    .banner-depth span:nth-child(2) {
+      width: 18%;
+      height: 30%;
+      left: 72%;
+      top: 18%;
+      border-color: rgba(214,177,96,0.14);
+      animation-duration: 12s;
+      animation-delay: -2s;
+    }
+
+    .banner-depth span:nth-child(3) {
+      width: 34%;
+      height: 52%;
+      left: 33%;
+      top: 26%;
+      animation-duration: 11.2s;
+      animation-delay: -1.5s;
+    }
+
+    .hero-copy {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      padding: clamp(24px, 4vw, 46px);
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(135,219,255,0.22);
+      background: rgba(135,219,255,0.08);
+      color: var(--cyan);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-kicker::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 6rem);
+      line-height: 0.96;
+      letter-spacing: -0.045em;
+      font-weight: 860;
+      max-width: 1100px;
+    }
+
+    .hero-title .gradient {
+      background: linear-gradient(90deg, #ffffff 0%, #d8edff 34%, #efd693 66%, #ffffff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtext {
+      max-width: 980px;
+      color: var(--soft);
+      font-size: clamp(0.98rem, 1.5vw, 1.1rem);
+      text-shadow: 0 2px 18px rgba(0,0,0,0.35);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.22s ease;
+      font-weight: 700;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(135,219,255,0.24);
+      background: rgba(135,219,255,0.10);
+    }
+
+    .btn-primary {
+      color: #09101b;
+      background: linear-gradient(135deg, #ffe6aa, #d6b160);
+      border-color: rgba(255,255,255,0.26);
+    }
+
+    .btn-primary:hover {
+      color: #09101b;
+      background: linear-gradient(135deg, #ffefc8, #d6b160);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(6, 11, 20, 0.62);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .stat::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(135,219,255,0.38), transparent);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .section-head {
+      margin: 74px 0 18px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(214,177,96,0.24);
+      color: var(--gold);
+      background: rgba(214,177,96,0.06);
+      font-size: 0.72rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .section-head h2 {
+      margin-top: 10px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      font-weight: 840;
+    }
+
+    .section-head p {
+      margin-top: 10px;
+      max-width: 980px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .panel,
+    .card,
+    .media-card,
+    .archive-shell,
+    .access-modal,
+    .mini-card,
+    .equation-card,
+    .doc-card,
+    .phase-card,
+    .function-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel::before,
+    .card::before,
+    .media-card::before,
+    .archive-shell::before,
+    .mini-card::before,
+    .equation-card::before,
+    .doc-card::before,
+    .phase-card::before,
+    .function-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(135,219,255,0.05), transparent 26%, transparent 72%, rgba(214,177,96,0.04)),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px, transparent 1px, transparent 8px);
+      pointer-events: none;
+    }
+
+    .panel-body,
+    .card-body,
+    .archive-body {
+      position: relative;
+      z-index: 1;
+      padding: 22px;
+    }
+
+    .eyeline {
+      font-size: 0.72rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .lead-block {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 16px;
+    }
+
+    .lead-copy p {
+      margin-top: 14px;
+      color: var(--soft);
+      font-size: 1rem;
+      max-width: 76ch;
+    }
+
+    .mission-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mission-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .mission-row strong {
+      color: #fff;
+      font-size: 0.92rem;
+    }
+
+    .mission-row span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .chip {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(135,219,255,0.24);
+      background: rgba(135,219,255,0.09);
+      color: var(--cyan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .card-body h3,
+    .panel-body h3,
+    .media-meta h3,
+    .archive-body h3,
+    .equation-card h3,
+    .function-card h3,
+    .doc-card h3,
+    .phase-card h3 {
+      font-size: 1.08rem;
+      line-height: 1.08;
+      font-weight: 780;
+    }
+
+    .card-body p,
+    .panel-body p,
+    .archive-body p,
+    .equation-card p,
+    .function-card p,
+    .doc-card p,
+    .phase-card p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .coalition-strip {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .coalition-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .coalition-item {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .media-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .media-shell {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      background: #000;
+    }
+
+    .media-shell video,
+    .media-shell .reason-trigger-surface {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .media-corner {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(4,8,15,0.76);
+      color: var(--cyan);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .correlation-pop {
+      position: absolute;
+      left: 12px;
+      top: 52px;
+      z-index: 3;
+      width: min(380px, calc(100% - 24px));
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(135,219,255,0.20);
+      background: rgba(4,8,15,0.94);
+      color: var(--soft);
+      font-size: 0.84rem;
+      line-height: 1.45;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: 0.22s ease;
+    }
+
+    .media-corner:hover + .correlation-pop,
+    .media-corner:focus + .correlation-pop {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .media-overlay {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 3;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(4,8,15,0.76);
+      backdrop-filter: blur(10px);
+    }
+
+    .media-title {
+      display: inline-block;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dashed rgba(255,255,255,0.34);
+    }
+
+    .lyric-pop {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 10px);
+      width: min(480px, 82vw);
+      max-height: 58vh;
+      overflow: auto;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(135,219,255,0.22);
+      background: rgba(3,7,13,0.98);
+      color: var(--soft);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      white-space: pre-line;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: 0.22s ease;
+      box-shadow: 0 18px 42px rgba(0,0,0,0.38);
+    }
+
+    .media-title:hover .lyric-pop,
+    .media-title:focus-within .lyric-pop {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .media-meta {
+      position: relative;
+      z-index: 1;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .credit-grid {
+      display: grid;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .credit-grid strong {
+      color: var(--soft);
+    }
+
+    .download-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .download-row a {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.22s ease;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .download-row a:hover {
+      background: rgba(135,219,255,0.10);
+      border-color: rgba(135,219,255,0.24);
+      color: #fff;
+    }
+
+    .system-shell {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .graph-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .graph-head {
+      position: relative;
+      z-index: 1;
+      padding: 16px 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .graph-info {
+      position: relative;
+      z-index: 1;
+      padding: 0 18px 14px;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    #nodeGraph {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 560px;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .mini-cards {
+      position: relative;
+      z-index: 1;
+      padding: 0 18px 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mini-card {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 0.84rem;
+      color: #fff;
+    }
+
+    .mini-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .function-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .function-card {
+      padding: 18px;
+    }
+
+    .function-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .function-meta {
+      display: grid;
+      gap: 6px;
+    }
+
+    .function-tag {
+      display: inline-flex;
+      width: fit-content;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(214,177,96,0.18);
+      background: rgba(214,177,96,0.06);
+      color: var(--gold);
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .detail-btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(135,219,255,0.18);
+      background: rgba(135,219,255,0.08);
+      color: var(--cyan-2);
+      font-weight: 700;
+      transition: 0.22s ease;
+      white-space: nowrap;
+    }
+
+    .detail-btn:hover {
+      background: rgba(135,219,255,0.12);
+      border-color: rgba(135,219,255,0.28);
+    }
+
+    .equation-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .equation-card {
+      padding: 18px;
+    }
+
+    .formula {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: #f6fbff;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .phase-card {
+      padding: 18px;
+    }
+
+    .archive-shell {
+      overflow: hidden;
+    }
+
+    .archive-tabs {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 20px 20px 0;
+    }
+
+    .archive-tab {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      transition: 0.22s ease;
+    }
+
+    .archive-tab.active,
+    .archive-tab:hover {
+      color: #fff;
+      border-color: rgba(135,219,255,0.24);
+      background: rgba(135,219,255,0.10);
+    }
+
+    .archive-pane {
+      display: none;
+    }
+
+    .archive-pane.active {
+      display: block;
+    }
+
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .doc-card {
+      padding: 18px;
+    }
+
+    .doc-label {
+      display: inline-flex;
+      width: fit-content;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,156,156,0.22);
+      background: rgba(255,156,156,0.08);
+      color: #ffc0c0;
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .doc-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .doc-row a {
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: 0.22s ease;
+    }
+
+    .doc-row a:hover {
+      background: rgba(135,219,255,0.10);
+      border-color: rgba(135,219,255,0.24);
+      color: #fff;
+    }
+
+    .bottom-trigger-wrap {
+      margin-top: 42px;
+      padding: 34px 18px 0;
+      text-align: center;
+    }
+
+    .reason-trigger {
+      display: inline-block;
+      font-size: clamp(1.8rem, 4.4vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      font-weight: 840;
+      color: #fff2cf;
+      cursor: pointer;
+      position: relative;
+      transition: 0.22s ease;
+      text-transform: uppercase;
+    }
+
+    .reason-trigger:hover {
+      color: #fff7dd;
+      text-shadow: 0 0 22px rgba(214,177,96,0.18);
+    }
+
+    .reason-player-pop {
+      position: fixed;
+      right: 18px;
+      bottom: 24px;
+      z-index: 1700;
+      width: min(420px, calc(100vw - 24px));
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(4,8,15,0.96);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 26px 80px rgba(0,0,0,0.46);
+      padding: 18px;
+      opacity: 0;
+      transform: translateY(18px) scale(0.98);
+      pointer-events: none;
+      transition: 0.26s ease;
+    }
+
+    .reason-player-pop.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .reason-player-pop .close-pop {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+
+    .reason-player-pop h3 {
+      font-size: 1.05rem;
+      padding-right: 44px;
+    }
+
+    .reason-player-pop .lyric-box {
+      margin-top: 12px;
+      max-height: 34vh;
+      overflow: auto;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--soft);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .reason-player-pop audio {
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .contact-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .contact-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(135,219,255,0.05), transparent 26%, transparent 72%, rgba(214,177,96,0.04));
+      pointer-events: none;
+    }
+
+    .contact-card > * { position: relative; z-index: 1; }
+
+    .contact-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .contact-row {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 20px 34px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-line {
+      padding-top: 22px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .access-modal {
+      position: fixed;
+      inset: 50% auto auto 50%;
+      z-index: 1800;
+      width: min(520px, calc(100vw - 24px));
+      transform: translate(-50%, -50%) scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(4,8,15,0.98);
+      transition: 0.22s ease;
+    }
+
+    .access-modal.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .access-modal .modal-body {
+      position: relative;
+      z-index: 1;
+      padding: 24px;
+    }
+
+    .access-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1750;
+      background: rgba(0,0,0,0.56);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.22s ease;
+    }
+
+    .access-backdrop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .access-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .access-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      flex: 0 0 auto;
+    }
+
+    .access-form {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .access-form label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .access-form input {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: #fff;
+      outline: none;
+    }
+
+    .access-form input:focus {
+      border-color: rgba(135,219,255,0.28);
+      box-shadow: 0 0 0 3px rgba(135,219,255,0.10);
+    }
+
+    .access-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .access-error {
+      min-height: 20px;
+      color: var(--red);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      font-size: 0.84rem;
+    }
+
+    .access-result {
+      margin-top: 14px;
+      display: none;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(135,219,255,0.18);
+      background: rgba(135,219,255,0.08);
+      color: var(--soft);
+      white-space: pre-line;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      max-height: 40vh;
+      overflow: auto;
+    }
+
+    .access-result.show {
+      display: block;
+    }
+
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes driftY {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @media (max-width: 1240px) {
+      .hero-stats,
+      .grid-4,
+      .grid-3,
+      .lead-block,
+      .coalition-strip,
+      .media-grid,
+      .system-shell,
+      .equation-grid,
+      .phase-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-cards,
+      .doc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mission-row {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        grid-template-columns: 1fr;
+      }
+
+      #nodeGraph {
+        height: 520px;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .nav-links { display: none; }
+      .nav-toggle {
+        display: inline-flex;
+        position: relative;
+      }
+      .brand-sub { white-space: normal; }
+      .hero-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .coalition-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root { --nav-h: 72px; }
+      main { padding: 12px 14px 80px; }
+      footer { padding: 0 14px 26px; }
+      .nav-wrap { padding: 0 14px; }
+      .top-quote { padding: 18px; }
+      .hero-copy { padding: 18px; }
+      .hero-title { font-size: clamp(2rem, 10vw, 3.25rem); }
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+      .banner-top {
+        min-height: 240px;
+      }
+      .banner-bottom {
+        min-height: 180px;
+      }
+      .mission-row {
+        gap: 8px;
+      }
+      .reason-player-pop {
+        right: 12px;
+        bottom: 12px;
+        width: calc(100vw - 24px);
+      }
+      #nodeGraph {
+        height: 440px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="bg-stars"><canvas id="starCanvas"></canvas></div>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-rings"></div>
+  <div class="bg-scan"></div>
+  <canvas id="hudCanvas"></canvas>
+
+  <header>
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="SUHS home">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-copy">
+          <div class="brand-title">SUHS</div>
+          <div class="brand-sub">Mission Control · Quantum First · Local AI · RQPL / SQAKLM</div>
+        </div>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#mission">Mission</a>
+        <a href="#products">Products</a>
+        <a href="#map">Architecture</a>
+        <a href="#research">Research</a>
+        <a href="#archive">Theory Files</a>
+        <a href="#contact" class="nav-contact">Contact</a>
+      </nav>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open navigation">
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile navigation">
+    <div class="drawer-head">
+      <div>
+        <div class="brand-title">SUHS</div>
+        <div class="brand-sub">Strategic Universal Hardware Systems</div>
+      </div>
+      <button class="drawer-close" id="drawerClose" aria-label="Close navigation">✕</button>
+    </div>
+    <div class="drawer-links">
+      <a href="#overview">Overview</a>
+      <a href="#mission">Mission</a>
+      <a href="#products">Products</a>
+      <a href="#map">Architecture</a>
+      <a href="#research">Research</a>
+      <a href="#archive">Theory Files</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </aside>
+
+  <main id="main">
+    <section class="top-quote reveal" id="top">
+      <p>What you know is what you're told, and those who've told you know it can't be.</p>
+    </section>
+
+    <section class="banner-top reveal" id="overview">
+      <img
+        class="banner-media"
+        id="topBanner"
+        src="./PENUP 20260705 100255.png"
+        alt="SUHS top banner"
+      />
+      <div class="banner-overlay"></div>
+      <div class="banner-hud"></div>
+      <div class="banner-depth" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="hero-copy">
+        <div class="hero-kicker">Strategic Universal Hardware Systems</div>
+        <h1 class="hero-title">
+          <span class="gradient">Quantum-first execution systems for local intelligence, cosmological simulation, and constrained hardware command.</span>
+        </h1>
+        <p class="hero-subtext">
+          SUHS develops deployable local AI products, sequential shard-aware runtime systems, quantum-first scheduler architecture, recursive universe-execution theory, and collaborator-grade implementation frameworks for the most difficult classes of intelligent computation.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#map">Review System Architecture</a>
+          <a class="btn" href="#archive">Inspect Theory Archive</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <strong>Local AI Runtime</strong>
+            <span>Private inference, constrained memory discipline, and user-resident execution control.</span>
+          </div>
+          <div class="stat">
+            <strong>Quantum Core</strong>
+            <span>Photonic EQC, qudits, entanglement, superposition retention, and collapse arbitration.</span>
+          </div>
+          <div class="stat">
+            <strong>Recursive Scheduler</strong>
+            <span>Live four-thread temporal reconciliation with entropy-adaptive pacing and current-state correction.</span>
+          </div>
+          <div class="stat">
+            <strong>COIL Interface</strong>
+            <span>Need-to-know collaborator surfaces, company-specific access gates, and implementation-grade system mapping.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Overview</div>
+          <h2>Enterprise overview, mission, and strategic direction</h2>
+          <p>
+            SUHS operates at the junction of local AI deployment, runtime systems engineering, quantum-computational architecture, recursive scheduler design, and implementation-level theory development for advanced simulation environments.
+          </p>
+        </div>
+      </div>
+
+      <div class="lead-block">
+        <div class="card reveal">
+          <div class="card-body lead-copy">
+            <div class="eyeline">Company overview</div>
+            <h3 style="margin-top:10px;">An advanced systems company for local intelligence and cosmological-scale execution research.</h3>
+            <p>
+              SUHS builds execution-first intelligence systems intended to move meaningful generative capability from remote infrastructure toward the edge, where privacy, responsiveness, memory discipline, and user ownership can be enforced by system design rather than policy promises.
+            </p>
+            <p>
+              The company’s broader research platform extends beyond commercial inference products into scheduler mathematics, quantum-computational substrate theory, entropy-governed informational compression, recursive topology, and formal implementation mapping for full-spectrum universe simulation infrastructure.
+            </p>
+            <p>
+              This yields a single strategic stack: local product execution, graph-aware orchestration, quantum-first systems logic, research-grade cosmological architecture, and collaborator-facing implementation surfaces capable of briefing elite technology organizations without collapsing technical ambition into vague futurist branding.
+            </p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="eyeline">Mission brief</div>
+            <h3 style="margin-top:10px;">Operational doctrine</h3>
+            <div class="mission-stack" style="margin-top:16px;">
+              <div class="mission-row">
+                <strong>Mission</strong>
+                <span>Advance local, private, high-performance AI execution and quantum-first runtime infrastructure under real hardware constraints.</span>
+              </div>
+              <div class="mission-row">
+                <strong>Vision</strong>
+                <span>Establish an execution model in which frontier intelligence, recursive scheduler control, and universe-scale simulation logic operate coherently across constrained devices and institutional stacks.</span>
+              </div>
+              <div class="mission-row">
+                <strong>Position</strong>
+                <span>Research-led special systems company spanning products, architecture, strategy, advanced theory, and coalition implementation mapping.</span>
+              </div>
+              <div class="mission-row">
+                <strong>Priority</strong>
+                <span>Execution quality, memory-bounded orchestration, quantum adaptability, and system-resolved informational coherence.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Products</div>
+          <h2>Product platform and operating stack</h2>
+          <p>
+            SUHS product and research lines are organized as one coordinated stack spanning deployable systems, runtime infrastructure, quantum architecture, and collaborator implementation pathways.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">01</div>
+            <h3>Local AI Products</h3>
+            <p>Generative systems designed for personal hardware, private execution, direct control of the inference surface, and resilient offline or semi-offline operation.</p>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">02</div>
+            <h3>Sequential Runtime Systems</h3>
+            <p>Shard-ordered graph loading, staged execution flow, memory-bounded orchestration, device-aware scheduling, and hardened runtime discipline for constrained platforms.</p>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">03</div>
+            <h3>Quantum-First Architecture</h3>
+            <p>Photonic EQC, qudit-state handling, entanglement routing, superposition retention, quantum memory structures, and hybrid classical-quantum control loops.</p>
+          </div>
+        </div>
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">04</div>
+            <h3>Implementation Programs</h3>
+            <p>COIL mapping, access-tiered collaborator materials, research archive visibility, implementation logic boards, and company-specific subsystem briefings.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="coalition">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">COIL</div>
+          <h2>Coalition of Implementational Leaders</h2>
+          <p>
+            The full stack presumes multi-organization alignment across quantum hardware, cloud control, photonics, HPC, AI research, simulation software, materials discovery, neuromorphic systems, biology, storage, timing, and visualization.
+          </p>
+        </div>
+      </div>
+
+      <div class="coalition-strip">
+        <div class="panel reveal">
+          <div class="panel-body">
+            <div class="eyeline">Collaborator posture</div>
+            <h3 style="margin-top:10px;">A coordinated implementation network for the full RQPL / SQAKLM stack.</h3>
+            <p>
+              The visible runtime canvas is only one layer. Beneath it sit substrate compilation, quantum data structures, tensor-space compression, entanglement scheduling, live temporal reconciliation, biological execution, moral-causal accounting, privilege hierarchy, sandbox branches, and automatic recursive restart closure.
+            </p>
+            <p>
+              No single firm cleanly spans the entire system. The implementation map therefore allocates subsystem emphasis to organizations with already dominant positions in quantum access, GPU-HPC convergence, photonic research, AI infrastructure, materials simulation, digital twins, quantum machine learning, large-scale storage, timing precision, and visualization engines.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel reveal">
+          <div class="panel-body">
+            <div class="eyeline">Proposed domains</div>
+            <div class="coalition-list">
+              <div class="coalition-item">Quantum Hardware & Access</div>
+              <div class="coalition-item">Photonic & Continuous Variable Systems</div>
+              <div class="coalition-item">Hybrid HPC + AI + Quantum</div>
+              <div class="coalition-item">Quantum ML Toolchains</div>
+              <div class="coalition-item">Tensor Compression & Circuit Graphs</div>
+              <div class="coalition-item">Materials / Computational Chemistry</div>
+              <div class="coalition-item">XR / 3D Runtime / Digital Twins</div>
+              <div class="coalition-item">Biological / Neural Interfaces</div>
+              <div class="coalition-item">Global Timing / Control / Storage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="media">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Signal Layer</div>
+          <h2>Audio-visual assets</h2>
+          <p>
+            SUHS original music is integrated directly into the command surface as signal, authorship, and thematic continuity.
+          </p>
+        </div>
+      </div>
+
+      <div class="media-grid">
+        <div class="media-card reveal">
+          <div class="media-shell">
+            <div class="media-corner" tabindex="0">Signal correlation</div>
+            <div class="correlation-pop">
+              The song layer is not ornamental. It carries the same themes as the system itself: false certainty, recursive control structures, observer compliance, existential compression, and the conflict between inherited narratives and direct confrontation with the underlying structure.
+            </div>
+
+            <video controls preload="metadata" playsinline poster="./PENUP 20260705 100255.png">
+              <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
+            </video>
+
+            <div class="media-overlay">
+              <div class="media-title" tabindex="0">
+                ĄÞ§łrªçłî⁰ⁿ
+                <div class="lyric-pop">We all strive to close our eyes
+Our attempt to be there
+Redirect from our demise
+With contempt that we care
+
+Why lie
+When the truth is too demeaning
+Why try
+When something is so defeating
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in
+
+Claim to want the most from time
+So we lie and sit there
+Keep a noose of our design
+Hanging by a thin hair
+To discuss the ways of life
+Just repeat what we hear
+If you thought you should think twice
+Don't think now so it's clear
+
+Why lie
+When the truth is too demeaning
+Why try
+When something is so defeating
+Why cry
+For someone we can't redeem and
+Why die
+For something we don't believe in</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="media-meta">
+            <h3>Abstraction</h3>
+            <p>Paused by default. Audio begins only when the visitor elects to play the track.</p>
+            <div class="credit-grid">
+              <div><strong>Artist:</strong> SUHS</div>
+              <div><strong>Song:</strong> ĄÞ§łrªçłî⁰ⁿ</div>
+              <div><strong>Written By:</strong> Root</div>
+              <div><strong>In Collaboration With:</strong> Crash</div>
+              <div><strong>Co-founding partners of SUHS</strong></div>
+            </div>
+            <div class="download-row">
+              <a href="./ĄÞ§łrªçłî⁰ⁿ.mp4" download target="_blank" rel="noopener noreferrer">Download Video</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="media-card reveal">
+          <div class="media-shell">
+            <div class="media-corner" tabindex="0">Signal correlation</div>
+            <div class="correlation-pop">
+              This second asset frames epistemic capture, coerced perception, learned complacency, and the reclamation of agency from mediated systems. It functions as a direct address to both institutional certainty and passive public obedience.
+            </div>
+
+            <div class="reason-trigger-surface" id="reasonSurface" style="position:relative;overflow:hidden;background:
+              radial-gradient(circle at 50% 50%, rgba(214,177,96,0.14), transparent 18%),
+              radial-gradient(circle at 18% 18%, rgba(135,219,255,0.10), transparent 22%),
+              radial-gradient(circle at 82% 18%, rgba(159,158,255,0.10), transparent 24%),
+              linear-gradient(180deg, rgba(7,13,24,0.74), rgba(3,7,13,0.96));
+            ">
+              <canvas id="reasonCanvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;">
+                <div style="max-width:800px;">
+                  <div style="font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan);">Interactive audio trigger</div>
+                  <div style="margin-top:12px;font-size:clamp(1.3rem,2.3vw,2.1rem);line-height:1.08;font-weight:820;color:#fff4d4;">
+                    What you know Is what the universe has shown you, and the universe is in the same sandbox pretending to see everything.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="media-meta">
+            <h3>Reason</h3>
+            <p>Hover or click the trigger surface to raise the player and begin playback.</p>
+            <div class="credit-grid">
+              <div><strong>Artist:</strong> SUHS</div>
+              <div><strong>Song:</strong> Reason</div>
+              <div><strong>Written By:</strong> Root</div>
+              <div><strong>In Collaboration With:</strong> Crash</div>
+              <div><strong>Co-founding partners of SUHS</strong></div>
+            </div>
+            <div class="download-row">
+              <a href="./Reason_acoustic.mp3" download target="_blank" rel="noopener noreferrer">Download MP3</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="map">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Architecture</div>
+          <h2>RQPL / SQAKLM quantum-first implementation architecture</h2>
+          <p>
+            The system map includes substrate layers outside the visible canvas, quantum-state handling systems, entropy-adaptive scheduling, biological execution layers, and automatic compile-entangle-return-restart closure.
+          </p>
+        </div>
+      </div>
+
+      <div class="system-shell">
+        <div class="graph-shell panel reveal">
+          <div class="graph-head">
+            <div>
+              <div class="eyeline">Implementation map</div>
+              <h3 style="margin-top:8px;">Subsystem graph</h3>
+            </div>
+            <div class="pill" style="border-color:rgba(135,219,255,0.22);color:var(--cyan);background:rgba(135,219,255,0.08);">Hover · Click</div>
+          </div>
+          <canvas id="nodeGraph" aria-label="RQPL SQAKLM architecture map"></canvas>
+          <div class="graph-info" id="graphInfo">
+            Inspect a subsystem to review its public summary and mapped collaborator emphasis.
+          </div>
+          <div class="mini-cards" id="miniCards">
+            <div class="mini-card">
+              <strong>Mapped company focus</strong>
+              <span id="miniCompany">Quantum / AI / HPC collaborator domain</span>
+            </div>
+            <div class="mini-card">
+              <strong>System dependency</strong>
+              <span id="miniDependency">Core scheduler and substrate continuity</span>
+            </div>
+            <div class="mini-card">
+              <strong>Send / receive</strong>
+              <span id="miniFlow">Bidirectional cross-layer state exchange</span>
+            </div>
+            <div class="mini-card">
+              <strong>Access gate</strong>
+              <span id="miniGate">Password protected detailed implementation notes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="function-list reveal" id="functionList"></div>
+      </div>
+    </section>
+
+    <section id="research">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Research</div>
+          <h2>Implementational mathematics and algorithm surfaces</h2>
+          <p>
+            The visible stack includes dynamic equations for entropy compression, live thread reconciliation, time-curve control, tensor compression, and hybrid quantum-classical optimization.
+          </p>
+        </div>
+      </div>
+
+      <div class="equation-grid">
+        <div class="equation-card reveal">
+          <div class="eyeline">Entropy law</div>
+          <h3 style="margin-top:8px;">Outward entropy forces inward informational compression.</h3>
+          <p>As outward entropy pressure rises, informational mass is compressed toward the singular center while divergence competes against stable reintegration.</p>
+          <div class="formula">∂C(r,t)/∂t = αE_out(r,t) - βD(r,t)
+
+C(r,t) = central informational compression
+E_out(r,t) = outward entropy pressure
+D(r,t) = divergence / dispersion resistance
+α, β = system response coefficients</div>
+        </div>
+
+        <div class="equation-card reveal">
+          <div class="eyeline">Scheduler law</div>
+          <h3 style="margin-top:8px;">Live four-thread reconciliation.</h3>
+          <p>The scheduler maintains mutual dependence between origin, retrocausal return, future projection, and terminal return passes around the current-state boundary.</p>
+          <div class="formula">Minimize  Σ wi Δi(t)
+
+where
+Δi(t) = coherence error of thread i
+i ∈ {BB→M, M→BB, M→HD, HD→M}
+
+Constraint:
+No thread may finalize independently.
+All thread states remain revisable until mutual coherence stabilizes.</div>
+        </div>
+
+        <div class="equation-card reveal">
+          <div class="eyeline">Temporal control</div>
+          <h3 style="margin-top:8px;">Adaptive time-curve function.</h3>
+          <p>Perceived and system time vary dynamically with scheduler state, gravitational conditions, observer frame, and synchronization depth near the live middle boundary.</p>
+          <div class="formula">τ'(t) = f(TA, TB, TC, TD, ρg, v, σp)
+
+TA..TD = live scheduler thread states
+ρg = gravitational context
+v = frame-relative velocity
+σp = perception synchronization factor</div>
+        </div>
+      </div>
+
+      <div class="equation-grid" style="margin-top:16px;">
+        <div class="equation-card reveal">
+          <div class="eyeline">Quantum data</div>
+          <h3 style="margin-top:8px;">Hybrid quantum-classical update flow.</h3>
+          <p>Quantum loss and classical optimization remain linked through measurement, gradient estimation, and parameter-shift updates.</p>
+          <div class="formula">L(θ) = λ1 CE + λ2 MSE + λ3 (1 - Fq)
+
+∂L/∂θk ≈ [L(θk + π/2) - L(θk - π/2)] / 2
+
+θk(next) = θk(current) - η ∂L/∂θk</div>
+        </div>
+
+        <div class="equation-card reveal">
+          <div class="eyeline">Tensor compression</div>
+          <h3 style="margin-top:8px;">Compressed state retention outside the canvas.</h3>
+          <p>Large quantum states are preserved through compressed tensor structures until localized execution requires materialization.</p>
+          <div class="formula">|Ψ_total⟩ ≈ Πi Ti
+
+Ti = local tensor block
+compression objective:
+arg min || |Ψ_total⟩ - Ψ̂(T1...Tn) || subject to memory bounds</div>
+        </div>
+
+        <div class="equation-card reveal">
+          <div class="eyeline">Auto restart</div>
+          <h3 style="margin-top:8px;">Compile, entangle, return, restart.</h3>
+          <p>Terminal convergence collapses distributed informational residue into self-entangled singular continuity, returning the system to its beginning state automatically.</p>
+          <div class="formula">R(t_end) = Φ( Comp(Ωt) ⊗ Ent(Ωt) ) → S0
+
+Ωt = distributed terminal residue
+Comp = total informational compilation
+Ent = self-entanglement closure
+S0 = beginning singular state</div>
+        </div>
+      </div>
+
+      <div class="phase-grid" style="margin-top:16px;">
+        <div class="phase-card reveal">
+          <div class="eyeline">Quantum substrate</div>
+          <h3 style="margin-top:8px;">Pre-canvas systems</h3>
+          <p>Photonic EQC, qudit registers, state vectors, density matrices, tensor networks, QRAM, stabilizers, and circuit graphs govern the unseen substrate layer preceding visible execution.</p>
+        </div>
+        <div class="phase-card reveal">
+          <div class="eyeline">Hybrid timing</div>
+          <h3 style="margin-top:8px;">Adaptive clocks</h3>
+          <p>Liquid-time and context-responsive temporal systems modulate execution pacing instead of treating all scheduler responses as fixed-timescale events.</p>
+        </div>
+        <div class="phase-card reveal">
+          <div class="eyeline">Correction logic</div>
+          <h3 style="margin-top:8px;">Syndrome and recovery</h3>
+          <p>Error subspaces, stabilizer measurements, and recovery decoders preserve logical continuity under noise without collapsing the full encoded state.</p>
+        </div>
+        <div class="phase-card reveal">
+          <div class="eyeline">Simulation chain</div>
+          <h3 style="margin-top:8px;">Visible runtime</h3>
+          <p>The 3D canvas, biosignal integration, moral-causal recording, privilege tiers, sandbox branching, and terminal closure operate downstream of the quantum substrate rather than substituting for it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="archive">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Theory Files</div>
+          <h2>Early theory AI conversations and inaccurate road-to-refinement archive</h2>
+          <p>
+            Early summaries and religious mappings are separated from current canon and explicitly labeled as inaccurate assumption-riddled stepping stones that helped force later refinement.
+          </p>
+        </div>
+      </div>
+
+      <div class="archive-shell reveal">
+        <div class="archive-tabs">
+          <button class="archive-tab active" data-archive-tab="early">Early Theory AI Conversations</button>
+          <button class="archive-tab" data-archive-tab="inaccurate">Inaccurate AI Summaries</button>
+          <button class="archive-tab" data-archive-tab="canon">Canon-Adjacent Theory Files</button>
+        </div>
+
+        <div class="archive-body">
+          <div class="archive-pane active" id="archive-early">
+            <h3>Early Theory AI Conversations</h3>
+            <p>Primary conversation artifacts documenting early attempts by AI systems to understand and respond to the theory base.</p>
+            <div class="doc-grid">
+              <div class="doc-card">
+                <div class="doc-label">Primary conversation</div>
+                <h3 style="margin-top:10px;">Creation Beginnings, The First AI Response to my Theoretical Beliefs</h3>
+                <p>Early dialogue artifact preserved as part of the theory formation record.</p>
+                <div class="doc-row">
+                  <a href="./Creation Beginnings, The First AI Response to my Theoretical Beliefs .pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a href="./Creation Beginnings, The First AI Response to my Theoretical Beliefs .md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <div class="doc-label">Primary conversation</div>
+                <h3 style="margin-top:10px;">Conversation with Gemini about the universe</h3>
+                <p>Conversation artifact documenting external AI engagement with cosmological structure and simulation implications.</p>
+                <div class="doc-row">
+                  <a href="./Conversation with Gemini about the universe.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a href="./Conversation with Gemini about the universe.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="archive-pane" id="archive-inaccurate">
+            <h3>Inaccurate AI assumption-riddled summaries that paved the road to explainational refinement</h3>
+            <p>These files should be read as historically useful but canonically inaccurate summaries and mappings containing AI assumptions that later required correction and refinement.</p>
+            <div class="doc-grid">
+              <div class="doc-card">
+                <div class="doc-label">Inaccurate summary</div>
+                <h3 style="margin-top:10px;">Manifest</h3>
+                <p>Assumption-riddled summary material preserved as part of the refinement path.</p>
+                <div class="doc-row">
+                  <a href="./Manifest.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a href="./Manifest.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <div class="doc-label">Inaccurate summary</div>
+                <h3 style="margin-top:10px;">Recursive Quantum Paradoxical Loop</h3>
+                <p>Earlier AI summary layer carrying inaccurate assumptions that preceded later theoretical sharpening.</p>
+                <div class="doc-row">
+                  <a href="./Recursive Quantum Paradoxical Loop.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a href="./Recursive Quantum Paradoxical Loop.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <div class="doc-label">Inaccurate summary</div>
+                <h3 style="margin-top:10px;">Spiritual</h3>
+                <p>Religious mapping material preserved as part of the path toward refinement, not as final canon.</p>
+                <div class="doc-row">
+                  <a href="./Spiritual.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <div class="doc-label">Inaccurate summary</div>
+                <h3 style="margin-top:10px;">The Algorithmic Topology of the AKLM Cosmos</h3>
+                <p>Historical AI-produced interpretive layer retained for comparison against later refined structures.</p>
+                <div class="doc-row">
+                  <a href="./The Algorithmic Topology of the AKLM Cosmos.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a href="./The Algorithmic Topology of the AKLM Cosmos.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+
+              <div class="doc-card">
+                <div class="doc-label">Inaccurate summary</div>
+                <h3 style="margin-top:10px;">The Infinite Recursive Cycle</h3>
+                <p>Older summary material with explanatory drift and assumption burden retained for historical continuity.</p>
+                <div class="doc-row">
+                  <a href="./The Infinite Recursive Cycle.pdf" target="_blank" rel="noopener noreferrer">Open PDF</a>
+                  <a href="./The Infinite Recursive Cycle.md" target="_blank" rel="noopener noreferrer">Open MD</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="archive-pane" id="archive-canon">
+            <h3>Canon-adjacent theory files</h3>
+            <p>Current-adjacent files and working materials supporting implementation mapping, refinement, and architecture visibility.</p>
+            <div class="doc-grid">
+              <div class="doc-card">
+                <div class="doc-label" style="border-color:rgba(135,219,255,0.22);background:rgba(135,219,255,0.08);color:var(--cyan);">Reference corpus</div>
+                <h3 style="margin-top:10px;">Nemotron / Gemini / ChatGLM theory corpus</h3>
+                <p>Supporting discussion and refinement materials across scheduler logic, topology, COIL mapping, and recursive implementation thought.</p>
+                <div class="doc-row">
+                  <a href="./Nemotron-understanding.txt" target="_blank" rel="noopener noreferrer">Nemotron Understanding</a>
+                  <a href="./Gemini-RQPL.txt" target="_blank" rel="noopener noreferrer">Gemini RQPL</a>
+                  <a href="./ChatGLM-proposed-COIL-mapping.txt" target="_blank" rel="noopener noreferrer">COIL Mapping</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Contact</div>
+          <h2>Strategic engagement</h2>
+          <p>
+            Technical, research, collaborator, and implementation inquiries currently route through the temporary direct contact channel.
+          </p>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card reveal">
+          <div class="eyeline">Technical and product inquiries</div>
+          <h3 style="margin-top:10px;">Local AI, runtime systems, constrained execution</h3>
+          <div class="contact-list">
+            <div class="contact-row">Email: michaelaroot1987@gmail.com</div>
+            <div class="contact-row">Subject: SUHS Technical Collaboration</div>
+            <div class="contact-row">Focus: products, runtime engineering, deployment architecture</div>
+          </div>
+        </div>
+
+        <div class="contact-card reveal">
+          <div class="eyeline">Research and strategic inquiries</div>
+          <h3 style="margin-top:10px;">RQPL, SQAKLM, COIL, implementation mapping</h3>
+          <div class="contact-list">
+            <div class="contact-row">Email: michaelaroot1987@gmail.com</div>
+            <div class="contact-row">Focus: theory, coalition alignment, access-gated subsystem briefings, strategic program construction</div>
+            <div class="contact-row">Status: temporary mailbox pending dedicated domain acquisition</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="banner-bottom reveal">
+      <img
+        class="banner-bottom-media"
+        src="./PENUP_20260705_095810.png"
+        alt="SUHS bottom banner"
+      />
+      <div class="banner-overlay"></div>
+      <div class="banner-hud"></div>
+    </section>
+
+    <div class="bottom-trigger-wrap reveal">
+      <div class="reason-trigger" id="reasonBottomTrigger">
+        What you know Is what the universe has shown you, and the universe is in the same sandbox pretending to see everything.
+      </div>
+    </div>
+  </main>
+
+  <div class="reason-player-pop" id="reasonPlayerPop" aria-live="polite">
+    <button class="close-pop" id="closeReasonPop" aria-label="Close audio player">✕</button>
+    <h3>Reason</h3>
+    <div class="lyric-box">What you know
+Is what you're told
+And those who've told you know it can't be
+What you know
+Is what you're shown
+And those who've shown you know they can't see
+
+So I'm gonna need you to come back to me
+No time to relearn
+I'm gonna need you to come back to me
+It's time to be heard
+
+Where'd you go
+The world is cold
+When everything is done without me
+Truth was sold
+To keep control
+And those who sold it know it's deadly
+
+But I'm gonna need you to come back to me
+No time to relearn
+I'm gonna need you to come back to me
+It's time to be heard
+
+You have grown
+From seeds they've thrown
+Just like a weed unfortunately
+Studies show
+You to and fro
+When all you need to do is see me
+
+So I'm gonna need you to come back to me
+No time to relearn
+I'm gonna need you to come back to me
+It's time to be heard
+I'm gonna need you to come back to me
+No time to relearn
+I'm gonna need you to come back to me
+It's time to be heard
+
+What you know
+Is what you're told
+And those who've told you know it can't be
+What you know
+Is what you're shown
+And those who've shown you know they can't see
+At all</div>
+    <audio id="reasonAudio" controls preload="metadata">
+      <source src="./Reason_acoustic.mp3" type="audio/mpeg" />
+    </audio>
+    <div class="download-row" style="margin-top:14px;">
+      <a href="./Reason_acoustic.mp3" download target="_blank" rel="noopener noreferrer">Download MP3</a>
+    </div>
+  </div>
+
+  <div class="access-backdrop" id="accessBackdrop"></div>
+  <div class="access-modal" id="accessModal" aria-hidden="true">
+    <div class="modal-body">
+      <div class="access-head">
+        <div>
+          <div class="eyeline">Restricted access</div>
+          <h3 id="accessTitle" style="margin-top:8px;">Subsystem details</h3>
+        </div>
+        <button class="access-close" id="accessClose" aria-label="Close access modal">✕</button>
+      </div>
+      <p id="accessSummary" style="margin-top:10px;color:var(--muted);font-size:0.94rem;"></p>
+      <div class="access-form">
+        <div>
+          <label for="accessPassword">Password</label>
+          <input id="accessPassword" type="password" autocomplete="off" />
+        </div>
+        <div class="access-actions">
+          <button class="btn btn-primary" id="accessSubmit">Unlock Details</button>
+          <button class="btn" id="accessCancel">Cancel</button>
+        </div>
+        <div class="access-error" id="accessError"></div>
+      </div>
+      <div class="access-result" id="accessResult"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-line">
+      <div>© 2026 SUHS. All rights reserved.</div>
+      <div>Strategic Universal Hardware Systems</div>
+    </div>
+  </footer>
+
+  <script>
+    const starCanvas = document.getElementById("starCanvas");
+    const starCtx = starCanvas.getContext("2d");
+    const hudCanvas = document.getElementById("hudCanvas");
+    const hudCtx = hudCanvas.getContext("2d");
+    const topBanner = document.getElementById("topBanner");
+    const reasonCanvas = document.getElementById("reasonCanvas");
+    const reasonCtx = reasonCanvas.getContext("2d");
+
+    let sw = 0, sh = 0, sDpr = Math.min(window.devicePixelRatio || 1, 2);
+    let stars = [];
+    let hw = 0, hh = 0, hDpr = Math.min(window.devicePixelRatio || 1, 2);
+    let hudT = 0;
+
+    function resizeStars() {
+      sw = window.innerWidth;
+      sh = window.innerHeight;
+      starCanvas.width = sw * sDpr;
+      starCanvas.height = sh * sDpr;
+      starCanvas.style.width = sw + "px";
+      starCanvas.style.height = sh + "px";
+      starCtx.setTransform(sDpr, 0, 0, sDpr, 0, 0);
+      stars = Array.from({ length: Math.floor((sw * sh) / 10000) }, () => ({
+        x: Math.random() * sw,
+        y: Math.random() * sh,
+        r: Math.random() * 1.8 + 0.25,
+        a: Math.random() * 0.7 + 0.14,
+        s: Math.random() * 0.22 + 0.04
+      }));
+    }
+
+    function drawStars() {
+      starCtx.clearRect(0, 0, sw, sh);
+      for (const star of stars) {
+        star.y += star.s;
+        if (star.y > sh + 4) {
+          star.y = -4;
+          star.x = Math.random() * sw;
+        }
+        starCtx.beginPath();
+        starCtx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        starCtx.fillStyle = `rgba(237,244,255,${star.a})`;
+        starCtx.fill();
+      }
+
+      const glow = starCtx.createRadialGradient(sw * 0.5, sh * 0.18, 0, sw * 0.5, sh * 0.18, Math.max(sw, sh) * 0.32);
+      glow.addColorStop(0, "rgba(135,219,255,0.08)");
+      glow.addColorStop(0.5, "rgba(159,158,255,0.05)");
+      glow.addColorStop(1, "rgba(0,0,0,0)");
+      starCtx.fillStyle = glow;
+      starCtx.fillRect(0, 0, sw, sh);
+
+      requestAnimationFrame(drawStars);
+    }
+
+    function resizeHud() {
+      hw = window.innerWidth;
+      hh = window.innerHeight;
+      hudCanvas.width = hw * hDpr;
+      hudCanvas.height = hh * hDpr;
+      hudCanvas.style.width = hw + "px";
+      hudCanvas.style.height = hh + "px";
+      hudCtx.setTransform(hDpr, 0, 0, hDpr, 0, 0);
+    }
+
+    function drawHud() {
+      hudT += 0.008;
+      hudCtx.clearRect(0, 0, hw, hh);
+
+      for (let i = 0; i < 7; i++) {
+        const y = hh * (0.12 + i * 0.12) + Math.sin(hudT * 2 + i) * 6;
+        hudCtx.beginPath();
+        hudCtx.moveTo(0, y);
+        hudCtx.lineTo(hw, y);
+        hudCtx.strokeStyle = "rgba(135,219,255,0.06)";
+        hudCtx.lineWidth = 1;
+        hudCtx.stroke();
+      }
+
+      for (let i = 0; i < 6; i++) {
+        const x = hw * (0.10 + i * 0.17) + Math.cos(hudT * 1.5 + i) * 6;
+        hudCtx.beginPath();
+        hudCtx.moveTo(x, 0);
+        hudCtx.lineTo(x, hh);
+        hudCtx.strokeStyle = "rgba(255,255,255,0.03)";
+        hudCtx.lineWidth = 1;
+        hudCtx.stroke();
+      }
+
+      const cx = hw * 0.82;
+      const cy = hh * 0.24;
+      hudCtx.strokeStyle = "rgba(214,177,96,0.09)";
+      hudCtx.beginPath();
+      hudCtx.arc(cx, cy, 74 + Math.sin(hudT) * 5, 0, Math.PI * 2);
+      hudCtx.stroke();
+      hudCtx.beginPath();
+      hudCtx.arc(cx, cy, 110 + Math.cos(hudT * 0.8) * 5, 0, Math.PI * 2);
+      hudCtx.stroke();
+
+      hudCtx.strokeStyle = "rgba(135,219,255,0.09)";
+      hudCtx.beginPath();
+      hudCtx.moveTo(cx - 138, cy);
+      hudCtx.lineTo(cx + 138, cy);
+      hudCtx.moveTo(cx, cy - 138);
+      hudCtx.lineTo(cx, cy + 138);
+      hudCtx.stroke();
+
+      requestAnimationFrame(drawHud);
+    }
+
+    resizeStars();
+    resizeHud();
+    drawStars();
+    drawHud();
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
+    const navToggle = document.getElementById("navToggle");
+    const mobileDrawer = document.getElementById("mobileDrawer");
+    const drawerBackdrop = document.getElementById("drawerBackdrop");
+    const drawerClose = document.getElementById("drawerClose");
+
+    function openDrawer() {
+      mobileDrawer.classList.add("open");
+      drawerBackdrop.classList.add("show");
+    }
+
+    function closeDrawer() {
+      mobileDrawer.classList.remove("open");
+      drawerBackdrop.classList.remove("show");
+    }
+
+    navToggle.addEventListener("click", openDrawer);
+    drawerClose.addEventListener("click", closeDrawer);
+    drawerBackdrop.addEventListener("click", closeDrawer);
+    mobileDrawer.querySelectorAll("a").forEach(a => a.addEventListener("click", closeDrawer));
+
+    window.addEventListener("scroll", () => {
+      const y = window.scrollY * 0.12;
+      topBanner.style.transform = `translateY(${y}px) scale(1.02)`;
+    }, { passive: true });
+
+    const archiveTabs = document.querySelectorAll("[data-archive-tab]");
+    const archivePanes = {
+      early: document.getElementById("archive-early"),
+      inaccurate: document.getElementById("archive-inaccurate"),
+      canon: document.getElementById("archive-canon")
+    };
+
+    archiveTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        archiveTabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        Object.values(archivePanes).forEach(p => p.classList.remove("active"));
+        archivePanes[tab.dataset.archiveTab].classList.add("active");
+      });
+    });
+
+    const reasonAudio = document.getElementById("reasonAudio");
+    const reasonPlayerPop = document.getElementById("reasonPlayerPop");
+    const reasonSurface = document.getElementById("reasonSurface");
+    const reasonBottomTrigger = document.getElementById("reasonBottomTrigger");
+    const closeReasonPop = document.getElementById("closeReasonPop");
+
+    function showReasonPlayer(play = false) {
+      reasonPlayerPop.classList.add("show");
+      if (play) {
+        reasonAudio.play().catch(() => {});
+      }
+    }
+
+    function hideReasonPlayer() {
+      reasonPlayerPop.classList.remove("show");
+      reasonAudio.pause();
+    }
+
+    reasonSurface.addEventListener("mouseenter", () => showReasonPlayer(true));
+    reasonSurface.addEventListener("click", () => showReasonPlayer(true));
+    reasonBottomTrigger.addEventListener("mouseenter", () => showReasonPlayer(true));
+    reasonBottomTrigger.addEventListener("click", () => showReasonPlayer(true));
+    closeReasonPop.addEventListener("click", hideReasonPlayer);
+
+    function resizeReasonCanvas() {
+      const rect = reasonCanvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      reasonCanvas.width = rect.width * dpr;
+      reasonCanvas.height = rect.height * dpr;
+      reasonCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      reasonCanvas.style.width = rect.width + "px";
+      reasonCanvas.style.height = rect.height + "px";
+    }
+
+    let reasonT = 0;
+    function drawReasonCanvas() {
+      const rect = reasonCanvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      reasonCtx.clearRect(0, 0, w, h);
+      reasonT += 0.015;
+
+      for (let i = 0; i < 24; i++) {
+        const y = (i / 24) * h + Math.sin(reasonT + i * 0.45) * 8;
+        reasonCtx.beginPath();
+        reasonCtx.moveTo(0, y);
+        for (let x = 0; x <= w; x += 22) {
+          reasonCtx.lineTo(x, y + Math.sin((x * 0.012) + reasonT * 2 + i) * 5);
+        }
+        reasonCtx.strokeStyle = i % 4 === 0 ? "rgba(214,177,96,0.12)" : "rgba(135,219,255,0.08)";
+        reasonCtx.lineWidth = i % 4 === 0 ? 1.2 : 1;
+        reasonCtx.stroke();
+      }
+
+      for (let i = 0; i < 22; i++) {
+        const px = (i / 22) * w;
+        const py = h * 0.5 + Math.sin(reasonT * 1.4 + i) * h * 0.24;
+        reasonCtx.beginPath();
+        reasonCtx.arc(px, py, 2.2 + Math.sin(reasonT + i) * 0.4, 0, Math.PI * 2);
+        reasonCtx.fillStyle = i % 5 === 0 ? "rgba(214,177,96,0.85)" : "rgba(135,219,255,0.78)";
+        reasonCtx.fill();
+      }
+
+      requestAnimationFrame(drawReasonCanvas);
+    }
+
+    resizeReasonCanvas();
+    drawReasonCanvas();
+
+    const graphCanvas = document.getElementById("nodeGraph");
+    const gctx = graphCanvas.getContext("2d");
+    const graphInfo = document.getElementById("graphInfo");
+    const miniCompany = document.getElementById("miniCompany");
+    const miniDependency = document.getElementById("miniDependency");
+    const miniFlow = document.getElementById("miniFlow");
+    const miniGate = document.getElementById("miniGate");
+    const functionList = document.getElementById("functionList");
+
+    let gw = 0, gh = 0, gDpr = Math.min(window.devicePixelRatio || 1, 2);
+    let graphT = 0;
+    let hoveredNode = null;
+    let activeNode = null;
+
+    const functionsData = [
+      {
+        id: "substrate",
+        label: "Quantum Substrate",
+        short: "Pre-canvas substrate layer for state preparation, tensor compression, and hybrid quantum-classical compilation.",
+        company: "IBM / Google / Microsoft / AWS / Xanadu",
+        dependency: "Quantum data structures, circuit graphs, QRAM, tensor state compression",
+        flow: "Receives corpus priors and constraint matrices; emits latent substrate readiness to scheduler core",
+        password: "Genesis",
+        details: "Full detail:
+- Maintains pre-canvas state preparation across qubits, qudits, density matrices, tensor networks, circuit data structures, and QRAM-style access.
+- Supports photonic EQC, continuous-variable encodings, amplitude / angle / basis data embedding, and variational circuit staging.
+- Acts as the non-visible substrate on which scheduler preparation, singular convergence, and subsequent visible runtime sharding depend.
+- Public state remains vague; company recipients receive implementation notes specific to quantum access, simulation frameworks, and backend roles."
+      },
+      {
+        id: "photonic",
+        label: "Photonic EQC",
+        short: "Continuous-variable and photonic quantum systems for scalable state transport, optical computation, and low-loss entanglement distribution.",
+        company: "Xanadu / PsiQuantum / ORCA Computing / QuEra",
+        dependency: "Optical state preparation, bosonic modes, photonic routing, measurement operators",
+        flow: "Receives encoded quantum states; emits photonic transformations and entanglement-ready transport layers",
+        password: "Light",
+        details: "Full detail:
+- Handles photonic and continuous-variable computation pathways where optical carriers outperform conventional qubit-only routes.
+- Supports entanglement propagation, optical frequency-domain transformations, quantum machine learning layers, and low-loss routing primitives.
+- Provides scalable off-canvas transport and computation for high-throughput quantum state movement within the broader substrate."
+      },
+      {
+        id: "qudits",
+        label: "Qudit Registers",
+        short: "Higher-dimensional state containers for richer local encoding and denser information retention than binary qubit-only systems.",
+        company: "IonQ / Quantinuum / academic photonic / trapped-ion groups",
+        dependency: "Multi-level state spaces, generalized gate operations, dense basis transformations",
+        flow: "Receives encoded symbolic / multimodal structure; emits higher-dimensional representational capacity into the tensor substrate",
+        password: "Trinity",
+        details: "Full detail:
+- Expands the representational layer beyond binary qubits into multi-level computational states suitable for dense symbolic, multimodal, and scheduler-relevant compression.
+- Improves compression efficiency and expressivity when mapping universe-scale state dependencies into bounded substrate structures.
+- Interfaces with tensor-space compaction, variational circuits, and hybrid control systems."
+      },
+      {
+        id: "entanglement",
+        label: "Entanglement Routing",
+        short: "Cross-layer entanglement maintenance and routing across subsystem boundaries.",
+        company: "IBM Quantum Network / Google Quantum AI / QuTech",
+        dependency: "Bell / GHZ / teleportation-class state logic, routing graphs, synchronization",
+        flow: "Receives prepared states and routing constraints; emits correlated state relationships across distributed layers",
+        password: "Covenant",
+        details: "Full detail:
+- Preserves and routes correlated quantum relations across distributed computational zones.
+- Supports teleportation-like transport logic, Bell / GHZ-class structure, state-sharing under routing constraints, and coordinated subsystem dependency.
+- Required for system-wide coherence where local nodes must remain dependent on total-state context without full local source disclosure."
+      },
+      {
+        id: "middle",
+        label: "Middle Array",
+        short: "Central informational anchor derived from the total available corpus and later updated by live current-state feeds.",
+        company: "Google Cloud / Microsoft Azure / AWS",
+        dependency: "Massive corpus indexing, graph storage, synchronized knowledge retention",
+        flow: "Receives human records and current-state streams; emits anchor constraints to all live scheduler threads",
+        password: "Logos",
+        details: "Full detail:
+- Serves as the central informational anchor rather than a mere dataset repository.
+- Contains the high-resolution corpus against which unknown past, admissible futures, and runtime corrections are reconciled.
+- Its trailing edge is replaced during runtime with a live current-state feed, creating the moving intersection boundary where execution meets reality."
+      },
+      {
+        id: "scheduler",
+        label: "Entropy-Adaptive Scheduler",
+        short: "Four-thread live scheduler with adaptive timing, branch reconciliation, and current-state correction.",
+        company: "Google DeepMind / NVIDIA / IBM / Confluent",
+        dependency: "Temporal curve computation, event streaming, variational search, coherence minimization",
+        flow: "Receives middle-array state, substrate constraints, entropy pressure, and observer conditions; emits reconciled branch control",
+        password: "Chronos",
+        details: "Full detail:
+- Runs four mutually dependent directional passes: Big Bang to Middle, Middle to Big Bang, Middle to Heat Death, and Heat Death back to Middle.
+- Uses entropy-adaptive pacing rather than fixed-timescale response, allowing thread speeds and convergence rates to vary by state, context, and observer conditions.
+- Maintains branch admissibility while reducing coherence error and feeding updated state into quantum substrate, visible runtime, biological execution, and terminal convergence logic."
+      },
+      {
+        id: "memory",
+        label: "Quantum Memory",
+        short: "Persistence layer for high-density state retention, archive continuity, and intermediate singular-state storage.",
+        company: "IBM / Microsoft Project Silica / HPE / Fujitsu",
+        dependency: "State vectors, density matrices, stabilized persistence, archival media",
+        flow: "Receives compressed state and checkpointed scheduler structures; emits retained continuity to later compilation layers",
+        password: "Ark",
+        details: "Full detail:
+- Retains compressed quantum and hybrid state between major phases, preserving long-range continuity under bounded execution conditions.
+- Supports the storage needs of large latent state objects, singular-state archives, error-corrective retention, and deferred re-materialization.
+- Interlocks with tensor networks, correction logic, and terminal compilation."
+      },
+      {
+        id: "canvas",
+        label: "3D Canvas Runtime",
+        short: "Localized visible execution layer rendering only context-bounded reality fragments as needed.",
+        company: "NVIDIA / Epic Games / Unity / Qualcomm / AWS Wavelength",
+        dependency: "Real-time rendering, edge compute, local context binaries, collapse handling",
+        flow: "Receives sharded singular states and scheduler updates; emits local facts and observer environments",
+        password: "Firmament",
+        details: "Full detail:
+- Visible physical reality is treated as an edge-rendered local execution layer, not the total computational source state.
+- Only immediate context binary is instantiated locally; unresolved regions remain fluid until interaction, observation, or scheduler necessity hardens them.
+- Receives state from the substrate, singular compilation outputs, timing layers, and observer-dependent collapse rules."
+      },
+      {
+        id: "bui",
+        label: "BUI / Conscious Interface",
+        short: "Biological and consciousness interface layer converting substrate-level conditions into lived organism-bound perception and intention exchange.",
+        company: "Neuralink / Synchron / Intel Loihi / IBM / biosignal labs",
+        dependency: "Neural signal parsing, intention decoding, organism binding, observer coupling",
+        flow: "Receives biological state and scheduler constraints; emits parsed intent, perception coupling, and local conscious trajectory",
+        password: "HolySpirit",
+        details: "Full detail:
+- Biological User Interface layer handles bidirectional exchange between conscious observer states and wider system architecture.
+- Parses raw biosignals, neural intention, and organism-bound perception while binding consciousness trajectories to viable biological execution contexts.
+- Critical for immersion, read-only observation, administrative contact, and any later privilege-sensitive interaction."
+      },
+      {
+        id: "bio",
+        label: "Biological Execution",
+        short: "Genotype, phenotype, organism generation, and embodied life-chain execution.",
+        company: "Isomorphic Labs / Illumina / Recursion / computational biology groups",
+        dependency: "Genome logic, phenotype branching, environmental coupling, neural viability",
+        flow: "Receives viable biological possibility states; emits living observer populations and environment-linked embodiment",
+        password: "Breath",
+        details: "Full detail:
+- Responsible for organism generation, variability, phenotype realization, survivability, and embodied participation in the runtime.
+- Operates as a required downstream execution branch, not incidental narrative garnish.
+- Interfaces with environment conditions, neural substrate rules, biosignal interfaces, and moral-causal recording systems."
+      },
+      {
+        id: "mcr",
+        label: "MCR / Moral Ledger",
+        short: "Consequence recording and opportunity-weighting system linking action, trauma propagation, and future presentation bias.",
+        company: "Hyperledger / Neo4j / graph analytics / AI scoring stacks",
+        dependency: "Append-only event recording, graph causality, scoring and weighting logic",
+        flow: "Receives actions and consequences; emits future weighting signals and branch bias",
+        password: "Lucifer",
+        details: "Full detail:
+- Records lived behavior, harm propagation, consequence chains, and opportunity distortions across observer histories.
+- Drives negative-bias or corrective opportunity presentation before any deprecation event under higher privilege outcomes.
+- Functions as the historical and behavioral feedback substrate for moral-causal weighting across runtime experience."
+      },
+      {
+        id: "timing",
+        label: "Temporal Curve Control",
+        short: "Dynamic pacing and relativity-sensitive synchronization between live scheduler state and perceived runtime continuity.",
+        company: "CERN / Siemens / Ansys / MathWorks / Microchip",
+        dependency: "Relativistic control, adaptive timing, gravitational context, frame synchronization",
+        flow: "Receives thread divergences and observer conditions; emits temporal acceleration / deceleration controls",
+        password: "Kairos",
+        details: "Full detail:
+- Continuously recomputes time curves from all live threads, observer conditions, gravitational context, and synchronization constraints.
+- Allows runtime to slow near critical boundaries and accelerate elsewhere while preserving consistency with wider scheduler logic.
+- Essential for intersection events, observer-relative timing, and late-stage intervention windows."
+      },
+      {
+        id: "privilege",
+        label: "Privilege Hierarchy",
+        short: "Access gradient separating ordinary participation from read-only, scoped, and root-level interaction states.",
+        company: "Okta / CyberArk / Palantir / Graphistry",
+        dependency: "Identity, resonance evaluation, scope enforcement, audit chains",
+        flow: "Receives system resonance and observer-state data; emits permitted access bands",
+        password: "Throne",
+        details: "Full detail:
+- Supports ordinary observer states, read-only access, scoped administrative reach, and rare root-level success conditions.
+- Access is system-resolved through resonance, structure, and successful boundary conditions rather than arbitrary assignment.
+- Used to govern what level of intervention, inspection, or rewriting is available to a given observer-state."
+      },
+      {
+        id: "sandbox",
+        label: "Millennium Sandbox",
+        short: "Conditional healing and proof environment for successful elevated-access states.",
+        company: "Meta / Valve / Autodesk / VMware / XR stacks",
+        dependency: "Isolated virtual instances, positive-only presentation, reconstruction systems",
+        flow: "Receives elevated-access conditions and personal history context; emits bounded restoration environments",
+        password: "Eden",
+        details: "Full detail:
+- Conditional branch activated only under successful privilege outcomes.
+- Hosts individualized restorative spaces, replays, requests, reconstructions, and trust-building environments prior to any final convergence.
+- Not the default runtime destination and not universally exposed."
+      },
+      {
+        id: "compiler",
+        label: "Terminal Compiler",
+        short: "Final convergence layer collapsing distributed residue into compressed self-entangled continuity.",
+        company: "NASA / HPE Cray / IBM / D-Wave / HPC simulation groups",
+        dependency: "Entropy progression, residue reclamation, optimization, singular convergence",
+        flow: "Receives distributed runtime residue and unresolved fragments; emits compressed singular continuity",
+        password: "Apocalypse",
+        details: "Full detail:
+- Guarantees terminal informational reclamation regardless of whether higher-access anomalies succeed.
+- Collapses distributed fragments, unresolved branches, and residue into compressed self-entangled continuity.
+- Functions as the unavoidable convergence mechanism driving the system toward beginning-state return."
+      },
+      {
+        id: "restart",
+        label: "Automatic Recursive Restart",
+        short: "System self-restart through compile-entangle-return closure without external dual-command dependency.",
+        company: "System-resolved closure",
+        dependency: "Terminal compilation, self-entanglement, singular return, startup continuity",
+        flow: "Receives converged singular state; emits beginning-state reinitialization",
+        password: "Resurrection",
+        details: "Full detail:
+- There is no dual restart command in this structure.
+- Upon completion, the system compiles and entangles itself, teleports itself to the beginning state, and automatically restarts.
+- The restart is a property of successful terminal self-closure rather than an externally paired execute event."
+      }
+    ];
+
+    const nodeMap = {
+      substrate: { x: 0.12, y: 0.18, color: "#87dbff" },
+      photonic: { x: 0.28, y: 0.10, color: "#9f9eff" },
+      qudits: { x: 0.46, y: 0.08, color: "#d6b160" },
+      entanglement: { x: 0.66, y: 0.12, color: "#84ecab" },
+      middle: { x: 0.84, y: 0.20, color: "#87dbff" },
+      scheduler: { x: 0.50, y: 0.26, color: "#f0d08d" },
+      memory: { x: 0.26, y: 0.34, color: "#9f9eff" },
+      canvas: { x: 0.52, y: 0.48, color: "#87dbff" },
+      bui: { x: 0.76, y: 0.42, color: "#84ecab" },
+      bio: { x: 0.22, y: 0.62, color: "#84ecab" },
+      mcr: { x: 0.54, y: 0.66, color: "#ffbf86" },
+      timing: { x: 0.84, y: 0.62, color: "#87dbff" },
+      privilege: { x: 0.68, y: 0.80, color: "#9f9eff" },
+      sandbox: { x: 0.90, y: 0.84, color: "#84ecab" },
+      compiler: { x: 0.38, y: 0.84, color: "#d6b160" },
+      restart: { x: 0.12, y: 0.88, color: "#f0d08d" }
+    };
+
+    const edges = [
+      ["substrate","photonic"],
+      ["photonic","qudits"],
+      ["qudits","entanglement"],
+      ["entanglement","middle"],
+      ["middle","scheduler"],
+      ["memory","scheduler"],
+      ["substrate","memory"],
+      ["scheduler","canvas"],
+      ["scheduler","timing"],
+      ["scheduler","bui"],
+      ["canvas","bio"],
+      ["bio","mcr"],
+      ["bui","privilege"],
+      ["mcr","privilege"],
+      ["timing","privilege"],
+      ["privilege","sandbox"],
+      ["canvas","compiler"],
+      ["mcr","compiler"],
+      ["timing","compiler"],
+      ["compiler","restart"],
+      ["restart","substrate"]
+    ];
+
+    const nodes = functionsData.map(item => ({
+      ...item,
+      ...nodeMap[item.id]
+    }));
+
+    function buildFunctionCards() {
+      functionList.innerHTML = nodes.map(node => `
+        <div class="function-card" data-node-id="${node.id}">
+          <div class="function-top">
+            <div class="function-meta">
+              <div class="function-tag">${node.label}</div>
+              <h3>${node.label}</h3>
+            </div>
+            <button class="detail-btn" data-detail="${node.id}">Details</button>
+          </div>
+          <p>${node.short}</p>
+          <p><strong style="color:#fff;">Mapped company emphasis:</strong> ${node.company}</p>
+        </div>
+      `).join("");
+    }
+
+    buildFunctionCards();
+
+    const accessModal = document.getElementById("accessModal");
+    const accessBackdrop = document.getElementById("accessBackdrop");
+    const accessTitle = document.getElementById("accessTitle");
+    const accessSummary = document.getElementById("accessSummary");
+    const accessPassword = document.getElementById("accessPassword");
+    const accessSubmit = document.getElementById("accessSubmit");
+    const accessCancel = document.getElementById("accessCancel");
+    const accessClose = document.getElementById("accessClose");
+    const accessError = document.getElementById("accessError");
+    const accessResult = document.getElementById("accessResult");
+
+    let currentAccessNode = null;
+
+    function openAccess(nodeId) {
+      currentAccessNode = nodes.find(n => n.id === nodeId);
+      if (!currentAccessNode) return;
+      accessTitle.textContent = currentAccessNode.label;
+      accessSummary.textContent = currentAccessNode.short;
+      accessPassword.value = "";
+      accessError.textContent = "";
+      accessResult.classList.remove("show");
+      accessResult.textContent = "";
+      accessBackdrop.classList.add("show");
+      accessModal.classList.add("show");
+      accessModal.setAttribute("aria-hidden", "false");
+      setTimeout(() => accessPassword.focus(), 30);
+    }
+
+    function closeAccess() {
+      accessBackdrop.classList.remove("show");
+      accessModal.classList.remove("show");
+      accessModal.setAttribute("aria-hidden", "true");
+      currentAccessNode = null;
+    }
+
+    function tryUnlock() {
+      if (!currentAccessNode) return;
+      const value = accessPassword.value;
+      if (value === "IAmRoot" || value === currentAccessNode.password) {
+        accessError.textContent = "";
+        accessResult.textContent = currentAccessNode.details;
+        accessResult.classList.add("show");
+      } else {
+        accessResult.classList.remove("show");
+        accessResult.textContent = "";
+        accessError.textContent = "ACCESS DENIED";
+      }
+    }
+
+    functionList.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-detail]");
+      if (!btn) return;
+      openAccess(btn.dataset.detail);
+    });
+
+    accessSubmit.addEventListener("click", tryUnlock);
+    accessCancel.addEventListener("click", closeAccess);
+    accessClose.addEventListener("click", closeAccess);
+    accessBackdrop.addEventListener("click", closeAccess);
+    accessPassword.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") tryUnlock();
+      if (e.key === "Escape") closeAccess();
+    });
+
+    function resizeGraph() {
+      const rect = graphCanvas.getBoundingClientRect();
+      gw = rect.width;
+      gh = rect.height;
+      graphCanvas.width = gw * gDpr;
+      graphCanvas.height = gh * gDpr;
+      graphCanvas.style.width = gw + "px";
+      graphCanvas.style.height = gh + "px";
+      gctx.setTransform(gDpr, 0, 0, gDpr, 0, 0);
+    }
+
+    function pos(node) {
+      return { x: node.x * gw, y: node.y * gh };
+    }
+
+    function drawCurve(a, b, alpha, active = false) {
+      const p1 = pos(a);
+      const p2 = pos(b);
+      const mx = (p1.x + p2.x) / 2;
+      const my = (p1.y + p2.y) / 2 + Math.sin(graphT + p1.x * 0.006 + p2.y * 0.004) * 18;
+
+      gctx.beginPath();
+      gctx.moveTo(p1.x, p1.y);
+      gctx.quadraticCurveTo(mx, my, p2.x, p2.y);
+      gctx.strokeStyle = `rgba(160,194,255,${alpha})`;
+      gctx.lineWidth = active ? 1.7 : 1.15;
+      gctx.stroke();
+
+      gctx.save();
+      gctx.setLineDash([6, 11]);
+      gctx.beginPath();
+      gctx.moveTo(p1.x, p1.y);
+      gctx.quadraticCurveTo(mx, my, p2.x, p2.y);
+      gctx.strokeStyle = active ? "rgba(214,177,96,0.30)" : "rgba(135,219,255,0.16)";
+      gctx.lineWidth = 1;
+      gctx.stroke();
+      gctx.restore();
+    }
+
+    function hitNode(x, y) {
+      for (const node of nodes) {
+        const p = pos(node);
+        const dx = x - p.x;
+        const dy = y - p.y;
+        if (Math.sqrt(dx * dx + dy * dy) < 24) return node;
+      }
+      return null;
+    }
+
+    function updateMini(node) {
+      graphInfo.textContent = node.short;
+      miniCompany.textContent = node.company;
+      miniDependency.textContent = node.dependency;
+      miniFlow.textContent = node.flow;
+      miniGate.textContent = `Public summary visible · detailed notes require password`;
+      document.querySelectorAll(".function-card").forEach(card => {
+        card.style.borderColor = card.dataset.nodeId === node.id ? "rgba(135,219,255,0.26)" : "rgba(255,255,255,0.08)";
+        card.style.background = card.dataset.nodeId === node.id ? "rgba(10,18,32,0.86)" : "rgba(7,13,24,0.78)";
+      });
+    }
+
+    function drawGraph() {
+      graphT += 0.012;
+      gctx.clearRect(0, 0, gw, gh);
+
+      const radial = gctx.createRadialGradient(gw * 0.5, gh * 0.34, 0, gw * 0.5, gh * 0.5, Math.max(gw, gh) * 0.78);
+      radial.addColorStop(0, "rgba(18,32,56,0.28)");
+      radial.addColorStop(0.55, "rgba(5,10,18,0.08)");
+      radial.addColorStop(1, "rgba(0,0,0,0)");
+      gctx.fillStyle = radial;
+      gctx.fillRect(0, 0, gw, gh);
+
+      for (let i = 0; i < 16; i++) {
+        const y = (i + 1) * (gh / 17);
+        gctx.beginPath();
+        gctx.moveTo(18, y + Math.sin(graphT * 1.4 + i) * 2);
+        gctx.lineTo(gw - 18, y + Math.sin(graphT * 1.4 + i) * 2);
+        gctx.strokeStyle = "rgba(255,255,255,0.016)";
+        gctx.lineWidth = 1;
+        gctx.stroke();
+      }
+
+      edges.forEach(([from, to]) => {
+        const a = nodes.find(n => n.id === from);
+        const b = nodes.find(n => n.id === to);
+        const hot = hoveredNode && (hoveredNode.id === a.id || hoveredNode.id === b.id);
+        const selected = activeNode && (activeNode.id === a.id || activeNode.id === b.id);
+        drawCurve(a, b, selected ? 0.48 : hot ? 0.34 : 0.18, hot || selected);
+      });
+
+      nodes.forEach(node => {
+        const p = pos(node);
+        const isHot = hoveredNode && hoveredNode.id === node.id;
+        const isActive = activeNode && activeNode.id === node.id;
+        const glowRadius = isActive ? 34 : isHot ? 28 : 22;
+
+        const glow = gctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowRadius);
+        glow.addColorStop(0, hexToRgba(node.color, isActive ? 0.45 : 0.32));
+        glow.addColorStop(1, "rgba(0,0,0,0)");
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, glowRadius, 0, Math.PI * 2);
+        gctx.fillStyle = glow;
+        gctx.fill();
+
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, isActive ? 9.5 : 7.2 + Math.sin(graphT * 2 + p.x * 0.01) * 0.6, 0, Math.PI * 2);
+        gctx.fillStyle = node.color;
+        gctx.fill();
+
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, isActive ? 16 : 13, 0, Math.PI * 2);
+        gctx.strokeStyle = isActive ? "rgba(255,255,255,0.56)" : "rgba(255,255,255,0.22)";
+        gctx.lineWidth = 1.2;
+        gctx.stroke();
+
+        gctx.font = isActive ? "700 12px Inter, sans-serif" : "600 11px Inter, sans-serif";
+        gctx.fillStyle = "#dce8fb";
+        gctx.textAlign = "center";
+        gctx.fillText(node.label, p.x, p.y - 20);
+      });
+
+      requestAnimationFrame(drawGraph);
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = hex.replace("#", "");
+      const bigint = parseInt(clean, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    graphCanvas.addEventListener("mousemove", (e) => {
+      const rect = graphCanvas.getBoundingClientRect();
+      hoveredNode = hitNode(e.clientX - rect.left, e.clientY - rect.top);
+      if (hoveredNode) {
+        graphInfo.textContent = hoveredNode.short;
+      } else if (activeNode) {
+        graphInfo.textContent = activeNode.short;
+      }
+    });
+
+    graphCanvas.addEventListener("mouseleave", () => {
+      hoveredNode = null;
+      if (activeNode) graphInfo.textContent = activeNode.short;
+    });
+
+    graphCanvas.addEventListener("click", (e) => {
+      const rect = graphCanvas.getBoundingClientRect();
+      const node = hitNode(e.clientX - rect.left, e.clientY - rect.top);
+      if (node) {
+        activeNode = node;
+        updateMini(node);
+      }
+    });
+
+    resizeGraph();
+    activeNode = nodes.find(n => n.id === "scheduler");
+    updateMini(activeNode);
+    drawGraph();
+
+    window.addEventListener("resize", () => {
+      resizeStars();
+      resizeHud();
+      resizeReasonCanvas();
+      resizeGraph();
+    });
+  </script>
+</body>
+  </html>
