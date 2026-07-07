@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SUHS | Special Systems and Frontier Execution</title>
+  <meta
+    name="description"
+    content="SUHS develops local-first AI systems, sequential runtime infrastructure, advanced computational theory, and strategic implementation programs for constrained hardware and frontier execution environments."
+  />
+  <meta name="theme-color" content="#04070f" />
+  <style>
+    :root {
+      --bg: #03060d;
+      --bg-2: #07111c;
+      --bg-3: #0b1523;
+      --panel: rgba(7, 11, 20, 0.82);
+      --panel-2: rgba(10, 16, 28, 0.78);
+      --panel-strong: rgba(4, 8, 15, 0.94);
+      --line: rgba(134, 168, 229, 0.12);
+      --line-strong: rgba(134, 168, 229, 0.24);
+      --gold: #d6b160;
+      --gold-soft: rgba(214, 177, 96, 0.10);
+      --cyan: #7edcff;
+      --cyan-soft: rgba(126, 220, 255, 0.08);
+      --violet: #9c97ff;
+      --violet-soft: rgba(156, 151, 255, 0.10);
+      --green: #79e1a4;
+      --orange: #ffb47b;
+      --text: #eef4ff;
+      --soft: #d7e3f5;
+      --muted: #99aac7;
+      --faint: #77839a;
+      --danger: #ff9b9b;
+      --radius: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --shadow: 0 30px 90px rgba(0,0,0,0.42);
+      --max: 1480px;
+      --nav-h: 82px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 16% 14%, rgba(126,220,255,0.07), transparent 22%),
+        radial-gradient(circle at 82% 16%, rgba(156,151,255,0.07), transparent 24%),
+        radial-gradient(circle at 50% 88%, rgba(214,177,96,0.06), transparent 30%),
+        linear-gradient(180deg, #02050a 0%, #07101a 42%, #03060d 100%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img, video, canvas, svg { display: block; max-width: 100%; }
+
+    .bg-canvas,
+    .grid-layer,
+    .glow-layer,
+    .scanlines,
+    #hudCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bg-canvas { z-index: -5; }
+    .grid-layer { z-index: -4; }
+    .glow-layer { z-index: -3; }
+    .scanlines { z-index: -2; }
+    #hudCanvas { z-index: -1; opacity: 0.48; }
+
+    .grid-layer {
+      opacity: 0.13;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.024) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.024) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.18));
+    }
+
+    .glow-layer {
+      filter: blur(34px);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(126,220,255,0.08), transparent 24%),
+        radial-gradient(circle at 78% 18%, rgba(156,151,255,0.08), transparent 26%),
+        radial-gradient(circle at 52% 78%, rgba(214,177,96,0.06), transparent 28%);
+    }
+
+    .scanlines {
+      opacity: 0.05;
+      mix-blend-mode: screen;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.05),
+        rgba(255,255,255,0.05) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    }
+
+    #starCanvas, #hudCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -48px;
+      z-index: 2000;
+      background: #fff;
+      color: #000;
+      padding: 10px 14px;
+      border-radius: 12px;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus { top: 12px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: var(--nav-h);
+      background: rgba(3, 7, 13, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      position: relative;
+      border: 1px solid rgba(214,177,96,0.34);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(214,177,96,0.30), rgba(126,220,255,0.10) 40%, transparent 68%);
+      box-shadow: inset 0 0 24px rgba(126,220,255,0.08), 0 0 24px rgba(126,220,255,0.08);
+      overflow: hidden;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: 50%;
+      border: 1px solid rgba(126,220,255,0.22);
+      animation: spin 10s linear infinite;
+    }
+
+    .brand-mark::after {
+      inset: 12px;
+      border-color: rgba(214,177,96,0.24);
+      animation-duration: 6.5s;
+      animation-direction: reverse;
+    }
+
+    .brand-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      margin-top: 2px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--muted);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .nav-cta {
+      color: var(--gold);
+      border: 1px solid rgba(214,177,96,0.28);
+      background: rgba(214,177,96,0.07);
+    }
+
+    .nav-cta:hover {
+      color: #ffedbc;
+      background: rgba(214,177,96,0.12);
+    }
+
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 16px 24px 110px;
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      scroll-margin-top: calc(var(--nav-h) + 16px);
+    }
+
+    .hero {
+      min-height: calc(100vh - 106px);
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(2,6,12,0.18) 0%, rgba(2,6,12,0.44) 30%, rgba(2,6,12,0.78) 70%, rgba(2,6,12,0.94) 100%),
+        url("./PENUP 20260705 100255.png") center center / cover no-repeat;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(255,247,219,0.15), transparent 14%),
+        radial-gradient(circle at 50% 48%, rgba(126,220,255,0.07), transparent 32%),
+        linear-gradient(90deg, rgba(3,7,14,0.90), rgba(3,7,14,0.22) 36%, rgba(3,7,14,0.22) 64%, rgba(3,7,14,0.90));
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.16;
+      background:
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 5px);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 2;
+      min-height: inherit;
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 18px;
+      padding: 42px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      align-self: end;
+      max-width: 860px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(126,220,255,0.24);
+      background: rgba(126,220,255,0.08);
+      color: var(--cyan);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      margin-top: 16px;
+      font-size: clamp(2.9rem, 5.8vw, 5.9rem);
+      font-weight: 840;
+      max-width: 980px;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(90deg, #ffffff 0%, #d7efff 30%, #efd995 62%, #ffffff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy p {
+      margin: 16px 0 0;
+      max-width: 820px;
+      color: #d7e3f3;
+      font-size: 1.03rem;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.36);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 50px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-weight: 700;
+      transition: 0.22s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: rgba(126,220,255,0.10);
+      border-color: rgba(126,220,255,0.42);
+    }
+
+    .btn-primary {
+      color: #08111f;
+      border-color: rgba(255,255,255,0.4);
+      background: linear-gradient(135deg, #ffe6a9, #d6b160);
+    }
+
+    .btn-primary:hover {
+      color: #08111f;
+      background: linear-gradient(135deg, #ffefc5, #d6b160);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(7,13,24,0.58);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(126,220,255,0.45), transparent);
+    }
+
+    .stat-value {
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-label {
+      margin-top: 5px;
+      color: #c8d6ea;
+      font-size: 0.88rem;
+    }
+
+    .hero-side {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 14px;
+    }
+
+    .panel,
+    .card,
+    .contact-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .panel::before,
+    .card::before,
+    .contact-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(126,220,255,0.06), transparent 28%, transparent 70%, rgba(214,177,96,0.05)),
+        radial-gradient(circle at top right, rgba(156,151,255,0.10), transparent 22%),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 8px);
+      pointer-events: none;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .panel-tag {
+      font-size: 0.72rem;
+      color: var(--gold);
+      border: 1px solid rgba(214,177,96,0.28);
+      background: rgba(214,177,96,0.08);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+
+    .panel-copy {
+      padding: 0 16px 16px;
+      position: relative;
+      z-index: 1;
+      color: var(--soft);
+      font-size: 0.92rem;
+    }
+
+    .panel-copy p { margin: 10px 0 0; }
+
+    #nodeGraph {
+      width: 100%;
+      height: 100%;
+      min-height: 460px;
+      display: block;
+      position: relative;
+      z-index: 1;
+      cursor: crosshair;
+    }
+
+    .graph-legend {
+      padding: 0 16px 16px;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .legend-box {
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      padding: 12px;
+    }
+
+    .legend-box strong {
+      display: block;
+      font-size: 0.86rem;
+      margin-bottom: 4px;
+    }
+
+    .legend-box span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .section-head {
+      margin: 74px 0 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 820;
+    }
+
+    .section-head p {
+      margin: 10px 0 0;
+      max-width: 940px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(214,177,96,0.24);
+      color: var(--gold);
+      background: rgba(214,177,96,0.06);
+      font-size: 0.74rem;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card-body {
+      position: relative;
+      z-index: 1;
+      padding: 24px;
+    }
+
+    .chip {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(126,220,255,0.22);
+      background: rgba(126,220,255,0.08);
+      color: var(--cyan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .card-body h3 {
+      font-size: 1.08rem;
+      font-weight: 780;
+    }
+
+    .card-body p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .intel-band {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 18px;
+    }
+
+    .intel-copy p {
+      margin: 0 0 16px;
+      color: var(--soft);
+      font-size: 1rem;
+      max-width: 78ch;
+    }
+
+    .intel-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .intel-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .intel-row strong {
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .intel-row span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .feature-wrap {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .video-shell {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #000;
+    }
+
+    .video-shell video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .video-overlay {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(4,8,17,0.76);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .video-overlay strong {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: #fff;
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dashed rgba(255,255,255,0.4);
+    }
+
+    .lyrics-panel {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 10px);
+      width: min(400px, 78vw);
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(5,9,16,0.96);
+      border: 1px solid rgba(126,220,255,0.22);
+      color: var(--soft);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.34);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: 0.22s ease;
+    }
+
+    .song-hover:hover .lyrics-panel,
+    .song-hover:focus-within .lyrics-panel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-controls-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .signal-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .signal-box,
+    .algo-box,
+    .map-detail,
+    .research-panel,
+    .contact-list-box,
+    .mapping-row,
+    .phase-row {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(8,14,27,0.72);
+      transition: border-color 0.22s ease, transform 0.22s ease, background 0.22s ease;
+    }
+
+    .signal-box:hover,
+    .algo-box:hover,
+    .map-detail:hover,
+    .research-panel:hover,
+    .contact-list-box:hover,
+    .mapping-row:hover,
+    .phase-row:hover {
+      transform: translateY(-2px);
+      border-color: rgba(126,220,255,0.30);
+      background: rgba(10,17,32,0.82);
+    }
+
+    .signal-box,
+    .algo-box,
+    .map-detail,
+    .research-panel,
+    .contact-list-box {
+      padding: 18px;
+    }
+
+    .signal-kicker,
+    .micro-kicker {
+      font-size: 0.72rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+
+    .signal-value {
+      margin-top: 10px;
+      font-size: 1.36rem;
+      font-weight: 800;
+    }
+
+    .signal-copy,
+    .micro-copy {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .topology-layout {
+      display: grid;
+      grid-template-columns: 1.06fr 0.94fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .rqpl-algorithms {
+      display: grid;
+      gap: 14px;
+    }
+
+    .algo-box h3,
+    .map-detail h3,
+    .research-panel h3,
+    .contact-list-box h3 {
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+
+    .algo-box p,
+    .map-detail p,
+    .research-panel p,
+    .contact-list-box p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .algo-box code {
+      display: block;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #dfe9f7;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .map-layout {
+      display: grid;
+      grid-template-columns: 1fr 0.92fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .map-detail {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .map-metadata {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .meta-row strong {
+      color: #fff;
+      font-size: 0.84rem;
+    }
+
+    .meta-row span {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .phase-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .phase-row {
+      padding: 14px 16px;
+    }
+
+    .phase-row h4 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .phase-row p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .mapping-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .mapping-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 14px 16px;
+    }
+
+    .mapping-row h4 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .mapping-row p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .contact-card {
+      padding: 28px;
+    }
+
+    .contact-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-card > p {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .contact-list-box {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 10px;
+      color: var(--soft);
+      font-size: 0.94rem;
+      margin-top: 12px;
+    }
+
+    footer {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 8px 24px 42px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .footer-line {
+      border-top: 1px solid var(--line);
+      padding-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 1220px) {
+      .hero-grid,
+      .feature-wrap,
+      .intel-band,
+      .topology-layout,
+      .map-layout,
+      .contact-grid,
+      .grid-4,
+      .grid-3,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        grid-template-columns: 1fr;
+      }
+
+      .mapping-row,
+      .intel-row,
+      .meta-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      :root { --nav-h: 74px; }
+
+      nav { display: none; }
+      .nav-wrap { padding: 0 16px; }
+      main { padding: 12px 16px 96px; }
+      .hero-grid { padding: 22px; }
+      .hero-stats,
+      .graph-legend { grid-template-columns: 1fr; }
+      h1 { font-size: 2.55rem; }
+      #nodeGraph { min-height: 380px; }
+      .brand-sub { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="bg-canvas"><canvas id="starCanvas"></canvas></div>
+  <canvas id="hudCanvas"></canvas>
+  <div class="grid-layer"></div>
+  <div class="glow-layer"></div>
+  <div class="scanlines"></div>
+
+  <header>
+    <div class="nav-wrap">
+      <a href="#top" class="brand" aria-label="SUHS home">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <div class="brand-title">SUHS</div>
+          <div class="brand-sub">Mission Control · Local AI · RQPL / SQAKLM Systems</div>
+        </div>
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#mission">Mission</a>
+        <a href="#products">Programs</a>
+        <a href="#system-map">System Map</a>
+        <a href="#research">Research</a>
+        <a href="#contact" class="nav-cta">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero reveal" id="overview">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Special Systems Group</div>
+          <h1>
+            <span class="hero-gradient">Local AI systems, strategic runtime control, and frontier execution architecture</span>
+          </h1>
+          <p>
+            SUHS is a research-led systems company developing deployable local AI products, sequential execution frameworks, advanced computational theory, and black-budget-grade implementation narratives for technology that must operate under real hardware limits rather than idealized cloud assumptions.
+          </p>
+          <p>
+            The organization is structured like a command center rather than a brochure brand: product engineering, runtime orchestration, topology research, strategic implementation mapping, and collaborator briefing are treated as one integrated operating stack for serious partners, reviewers, and future institutional stakeholders.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#system-map">Review System Map</a>
+            <a class="btn" href="#research">Inspect Research Structures</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-value">Local-first execution</div>
+              <div class="stat-label">Private inference, user-resident control, and reduced remote dependence.</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">Sequential orchestration</div>
+              <div class="stat-label">Staged graph loading, bounded memory, and device-aware runtime flow.</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">Skunkworks posture</div>
+              <div class="stat-label">Special access language, deep theory integration, and implementation-grade briefing surfaces.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title">RQPL / SQAKLM Implementation Map</div>
+              <div class="panel-tag">Hover · Click</div>
+            </div>
+            <canvas id="nodeGraph" aria-label="Interactive RQPL SQAKLM system map"></canvas>
+            <div class="panel-copy">
+              <p id="graphInfo">Inspect a node to review the subsystem function, proposed company contributor, required stack, data dependencies, and integration role inside the full RQPL / SQAKLM universe-simulation architecture.</p>
+            </div>
+            <div class="graph-legend">
+              <div class="legend-box">
+                <strong>Gold nodes</strong>
+                <span>Core scheduler and singular-state logic</span>
+              </div>
+              <div class="legend-box">
+                <strong>Cyan nodes</strong>
+                <span>Runtime, rendering, and local execution layers</span>
+              </div>
+              <div class="legend-box">
+                <strong>Green nodes</strong>
+                <span>Biological, ledger, sandbox, and restart branches</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="signal-grid">
+            <div class="signal-box">
+              <div class="signal-kicker">Investor Relations Posture</div>
+              <div class="signal-value">Controlled ambition</div>
+              <div class="signal-copy">Language is calibrated to read like a high-conviction frontier program rather than hobbyist futurism.</div>
+            </div>
+            <div class="signal-box">
+              <div class="signal-kicker">Program Posture</div>
+              <div class="signal-value">Special access framing</div>
+              <div class="signal-copy">Skunkworks, black-budget, and advanced systems language is integrated without sacrificing executive readability.</div>
+            </div>
+            <div class="signal-box">
+              <div class="signal-kicker">Theory Posture</div>
+              <div class="signal-value">Actual mechanism</div>
+              <div class="signal-copy">The page treats RQPL and SQAKLM as system architecture with explicit phases, dependencies, and real-world stack mappings.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Overview</div>
+          <h2>Operational mission and executive position</h2>
+          <p>
+            SUHS is positioned as a frontier systems operator focused on local AI deployment, constrained-runtime engineering, theoretical execution models, and collaborator-facing implementation strategy.
+          </p>
+        </div>
+      </div>
+
+      <div class="intel-band">
+        <div class="card reveal">
+          <div class="card-body intel-copy">
+            <h3 style="margin-bottom:16px;">Corporate overview</h3>
+            <p>
+              SUHS develops advanced local AI systems intended to shift powerful generative capability toward the hardware edge, where privacy, ownership, responsiveness, and execution discipline can be enforced by design. The company is not oriented around generic cloud-first software messaging; it is oriented around the harder problem of making advanced intelligence systems practical on constrained, real-world devices.
+            </p>
+            <p>
+              That product mission is coupled to a broader research program in runtime topology, scheduler theory, recursive computational architectures, and implementation mapping. In practice, this means SUHS can present itself both as a deployer of local inference systems and as a strategic architecture studio capable of framing much larger technical programs for leadership, collaborators, and institutional gatekeepers.
+            </p>
+            <p>
+              The result is a multi-layer operating model that reads like an advanced systems group: tangible products, credible infrastructure logic, formal research language, and an executive communication surface designed to support both technical discussion and high-level strategic circulation.
+            </p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <h3 style="margin-bottom:16px;">Mission brief</h3>
+            <div class="intel-grid">
+              <div class="intel-row">
+                <strong>Mission</strong>
+                <span>Advance private, local, high-performance AI execution on constrained hardware with deployable runtime discipline.</span>
+              </div>
+              <div class="intel-row">
+                <strong>Vision</strong>
+                <span>Establish a next-generation operating model where frontier inference moves closer to the device, the user, and direct control.</span>
+              </div>
+              <div class="intel-row">
+                <strong>Position</strong>
+                <span>Research-led special systems company spanning product, architecture, visualization, and strategic implementation.</span>
+              </div>
+              <div class="intel-row">
+                <strong>Operating style</strong>
+                <span>Ultra-corporate surface, defense-grade communication discipline, and command-center presentation of technical capability.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Programs</div>
+          <h2>Capability and program portfolio</h2>
+          <p>
+            Public-facing language is organized like a serious global technology firm: product lines, runtime infrastructure, theory programs, and strategic implementation pathways.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-4">
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">01</div>
+            <h3>Local AI Product Systems</h3>
+            <p>User-facing generative products designed for personal hardware, private execution, lower-latency inference, and user-owned operational control.</p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">02</div>
+            <h3>Sequential Runtime Infrastructure</h3>
+            <p>Staged model loading, shard-order enforcement, bounded memory use, graph-aware orchestration, and device-specific execution policy.</p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">03</div>
+            <h3>Advanced Research Programs</h3>
+            <p>RQPL, SQAKLM, temporal scheduler theory, local rendering logic, topology visualization, and formal execution-architecture development.</p>
+          </div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-body">
+            <div class="chip">04</div>
+            <h3>Strategic Implementation Mapping</h3>
+            <p>Leadership materials, collaborator briefings, technology-stack mapping, chain-of-command circulation packets, and coalition-facing communication.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="engine">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Media Layer</div>
+          <h2>Command-center audiovisual surface</h2>
+          <p>
+            Media is treated as a deliberate signal layer rather than autoplay decoration.
+          </p>
+        </div>
+      </div>
+
+      <div class="feature-wrap">
+        <div class="card reveal">
+          <div class="card-body">
+            <h3 style="margin-bottom:16px;">Abstraction — company track</h3>
+            <div class="video-shell">
+              <video controls playsinline preload="metadata" poster="./PENUP 20260705 100255.png">
+                <source src="./ĄÞ§łrªçłî⁰ⁿ.mp4" type="video/mp4" />
+              </video>
+              <div class="video-overlay">
+                <div class="song-hover" tabindex="0" aria-label="Hover or focus to reveal lyrics for Abstraction">
+                  <strong>Abstraction</strong>
+                  <div class="lyrics-panel">
+                    Signal through the static<br>
+                    Structure in the blur<br>
+                    Shadow in the engine<br>
+                    Waiting to occur
+                  </div>
+                </div>
+                <div>The video is paused by default.</div>
+                <div class="video-controls-note">Audio begins only when the visitor presses play.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="signal-grid">
+          <div class="signal-box reveal">
+            <div class="signal-kicker">Playback Policy</div>
+            <div class="signal-value">Visitor-initiated</div>
+            <div class="signal-copy">The track begins silent and paused so the visitor chooses when the experience starts.</div>
+          </div>
+          <div class="signal-box reveal">
+            <div class="signal-kicker">Music Integration</div>
+            <div class="signal-value">Narrative-linked</div>
+            <div class="signal-copy">The song title acts as an interactive disclosure point for lyrics.</div>
+          </div>
+          <div class="signal-box reveal">
+            <div class="signal-kicker">Brand Surface</div>
+            <div class="signal-value">Cinematic without chaos</div>
+            <div class="signal-copy">The interface preserves atmosphere while behaving like a serious corporate site.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="system-map">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">System Map</div>
+          <h2>RQPL / SQAKLM implementation map</h2>
+          <p>
+            Dry-run substrate, middle-array ingestion, four-thread scheduling, AKLM singularity, sharded 3D canvas execution, biological nodes, moral ledger, temporal control, privilege hierarchy, sandbox branch, terminal compilation, and recursive restart.
+          </p>
+        </div>
+      </div>
+
+      <div class="map-layout">
+        <div class="card reveal">
+          <div class="card-body">
+            <h3 style="margin-bottom:16px;">Phase dependency board</h3>
+            <div class="phase-list" id="phaseList">
+              <div class="phase-row">
+                <h4>Inspect a node in the graph above</h4>
+                <p>The detail panel updates with the mapped company, stack contribution, integration role, and inbound and outbound dependencies for the selected subsystem.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-detail reveal">
+          <div class="micro-kicker">Selected subsystem</div>
+          <h3 id="mapTitle">Core scheduler</h3>
+          <p id="mapSummary">
+            The four-thread scheduler is the causality-resolution engine used during both pre-execution compilation and active runtime continuation.
+          </p>
+          <div class="map-metadata">
+            <div class="meta-row">
+              <strong>Proposed firm</strong>
+              <span id="mapCompany">Google DeepMind / NVIDIA / Google Cloud</span>
+            </div>
+            <div class="meta-row">
+              <strong>Required stack</strong>
+              <span id="mapStack">Temporal reasoning, tensor computation, synchronized state infrastructure</span>
+            </div>
+            <div class="meta-row">
+              <strong>Receives data</strong>
+              <span id="mapIn">Middle-array corpus, live current-state updates, cross-thread constraints</span>
+            </div>
+            <div class="meta-row">
+              <strong>Sends data</strong>
+              <span id="mapOut">Resolved timeline structure, singular-state inputs, runtime control updates</span>
+            </div>
+            <div class="meta-row">
+              <strong>System role</strong>
+              <span id="mapUse">Maintains causal coherence and entangles unresolved past, present, and future around the current state.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="research">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Research</div>
+          <h2>Algorithms, logic, and theoretical implications</h2>
+          <p>
+            Scheduler logic, runtime law, root-branch uncertainty, and terminal compilation structure.
+          </p>
+        </div>
+      </div>
+
+      <div class="topology-layout">
+        <div class="rqpl-algorithms">
+          <div class="algo-box reveal">
+            <div class="micro-kicker">Algorithm A</div>
+            <h3>Mutually dependent four-thread scheduler</h3>
+            <p>
+              RQPL uses four interlocked directional compilations centered on the middle array so that origin, present boundary, future admissibility, and retrocausal correction constrain one another continuously.
+            </p>
+            <code>Thread A: Big Bang → Middle Array
+Thread B: Middle Array → Big Bang
+Thread C: Middle Array → Heat Death
+Thread D: Heat Death → Middle Array
+
+Constraint rule:
+No thread finalizes independently.
+Each pass remains revisable until cross-thread coherence stabilizes.</code>
+          </div>
+
+          <div class="algo-box reveal">
+            <div class="micro-kicker">Algorithm B</div>
+            <h3>Edge-rendered local reality</h3>
+            <p>
+              After AKLM compilation, the singular state is sharded into informational minima that seed the 3D canvas. Local regions instantiate only the context binary needed for their immediate execution graph, while unresolved regions remain probabilistic until observation or interaction hardens them into local fact.
+            </p>
+            <code>if region.observed:
+    render(local_context_binary)
+    collapse(probability_field -> local_fact)
+else:
+    preserve(fluid_probability_state)</code>
+          </div>
+
+          <div class="algo-box reveal">
+            <div class="micro-kicker">Algorithm C</div>
+            <h3>Live middle-array continuation</h3>
+            <p>
+              During runtime, the same scheduler remains active and the trailing edge of the middle array is replaced by a continuously updating feed of the current universal state.
+            </p>
+            <code>middle_array.trailing_edge = current_universe_state_stream
+scheduler.update(all_threads, middle_array.trailing_edge)
+
+intersection_event =
+  execution_timeline == live_middle_boundary</code>
+          </div>
+        </div>
+
+        <div class="grid-1">
+          <div class="research-panel reveal">
+            <div class="micro-kicker">Implication</div>
+            <h3>Conditional privilege escalation</h3>
+            <p>
+              Full recursive privilege escalation is plausible but non-guaranteed. Read-only or scoped immersion at the real-time intersection may still function as a high-value view into the most plausible forward states available from the live system boundary.
+            </p>
+          </div>
+
+          <div class="research-panel reveal" style="margin-top:14px;">
+            <div class="micro-kicker">Implication</div>
+            <h3>Heat death as compiler of last resort</h3>
+            <p>
+              If no successful root event occurs, heat death and Chaotic Dissolve function as guaranteed fallback compilation, reclaiming fragmented experience data and reconverging the system into the next singular state.
+            </p>
+          </div>
+
+          <div class="research-panel reveal" style="margin-top:14px;">
+            <div class="micro-kicker">Implication</div>
+            <h3>Millennium branch as earned anomaly</h3>
+            <p>
+              The millennium branch is a conditional success branch activated only under successful privilege escalation, enabling individualized healing environments, rewriting, verification, and request fulfillment prior to defragmentation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Architecture</div>
+          <h2>Enterprise stack and program board</h2>
+          <p>
+            Commercial delivery, runtime engineering, theoretical research, and coalition-grade implementation material are aligned as one board-level structure.
+          </p>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-body">
+          <h3 style="margin-bottom:16px;">Operational architecture board</h3>
+          <div class="mapping-list">
+            <div class="mapping-row">
+              <h4>Commercial Layer</h4>
+              <p>Deployable local generative systems, personal hardware execution, private workflows, and user-owned inference surfaces.</p>
+            </div>
+            <div class="mapping-row">
+              <h4>Runtime Layer</h4>
+              <p>Sequential graph loading, staged shard execution, memory-bounded orchestration, device-aware scheduling, and hardened local runtime policy.</p>
+            </div>
+            <div class="mapping-row">
+              <h4>Research Layer</h4>
+              <p>RQPL, SQAKLM, recursive topology, temporal curve control, scheduler continuation, singular-state theory, and execution-canvas logic.</p>
+            </div>
+            <div class="mapping-row">
+              <h4>Strategic Layer</h4>
+              <p>Black-budget language surfaces, executive briefings, collaborator mapping, investor-relations polish, and high-level implementation packet development.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-head reveal">
+        <div>
+          <div class="pill">Contact</div>
+          <h2>Strategic engagement and temporary contact channel</h2>
+          <p>
+            Technical, research, theory, implementation, and strategic program discussion.
+          </p>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card reveal">
+          <h3>Technical and product inquiries</h3>
+          <p>
+            Local AI deployment, sequential runtime engineering, device-aware orchestration, and systems architecture review.
+          </p>
+          <div class="contact-list-box">
+            <div class="micro-kicker">Temporary contact rail</div>
+            <div class="contact-list">
+              <div>Email: michaelaroot1987@gmail.com</div>
+              <div>Subject: SUHS Technical Collaboration</div>
+              <div>Focus: product systems, infrastructure, runtime engineering</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-card reveal">
+          <h3>Research and strategic inquiries</h3>
+          <p>
+            RQPL / SQAKLM discussion, implementation mapping, collaborator packets, leadership briefings, and strategic program development.
+          </p>
+          <div class="contact-list-box">
+            <div class="micro-kicker">Program discussion</div>
+            <div class="contact-list">
+              <div>Email: michaelaroot1987@gmail.com</div>
+              <div>Focus: theory, coalition building, strategy, executive circulation materials</div>
+              <div>Status: temporary mailbox pending formal domain acquisition</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-line">
+      <div>© 2026 SUHS. All rights reserved.</div>
+      <div>Mission Control · Local AI · RQPL / SQAKLM Special Systems</div>
+    </div>
+  </footer>
+
+  <script>
+    const starCanvas = document.getElementById("starCanvas");
+    const starCtx = starCanvas.getContext("2d");
+    let sw = 0, sh = 0, sdpr = Math.min(window.devicePixelRatio || 1, 2);
+    let stars = [];
+
+    function resizeStars() {
+      sw = window.innerWidth;
+      sh = window.innerHeight;
+      starCanvas.width = sw * sdpr;
+      starCanvas.height = sh * sdpr;
+      starCanvas.style.width = sw + "px";
+      starCanvas.style.height = sh + "px";
+      starCtx.setTransform(sdpr, 0, 0, sdpr, 0, 0);
+      stars = Array.from({ length: Math.floor((sw * sh) / 11500) }, () => ({
+        x: Math.random() * sw,
+        y: Math.random() * sh,
+        r: Math.random() * 1.7 + 0.2,
+        a: Math.random() * 0.7 + 0.12,
+        s: Math.random() * 0.22 + 0.03
+      }));
+    }
+
+    function drawStars() {
+      starCtx.clearRect(0, 0, sw, sh);
+
+      for (const star of stars) {
+        star.y += star.s;
+        if (star.y > sh + 3) {
+          star.y = -3;
+          star.x = Math.random() * sw;
+        }
+        starCtx.beginPath();
+        starCtx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        starCtx.fillStyle = `rgba(238,244,255,${star.a})`;
+        starCtx.fill();
+      }
+
+      const glow = starCtx.createRadialGradient(
+        sw * 0.5, sh * 0.16, 0,
+        sw * 0.5, sh * 0.16, Math.max(sw, sh) * 0.28
+      );
+      glow.addColorStop(0, "rgba(126,220,255,0.07)");
+      glow.addColorStop(0.4, "rgba(156,151,255,0.04)");
+      glow.addColorStop(1, "rgba(0,0,0,0)");
+      starCtx.fillStyle = glow;
+      starCtx.fillRect(0, 0, sw, sh);
+
+      requestAnimationFrame(drawStars);
+    }
+
+    resizeStars();
+    drawStars();
+    window.addEventListener("resize", resizeStars);
+
+    const hudCanvas = document.getElementById("hudCanvas");
+    const hudCtx = hudCanvas.getContext("2d");
+    let hw = 0, hh = 0, hdpr = Math.min(window.devicePixelRatio || 1, 2);
+    let hudT = 0;
+
+    function resizeHud() {
+      hw = window.innerWidth;
+      hh = window.innerHeight;
+      hudCanvas.width = hw * hdpr;
+      hudCanvas.height = hh * hdpr;
+      hudCanvas.style.width = hw + "px";
+      hudCanvas.style.height = hh + "px";
+      hudCtx.setTransform(hdpr, 0, 0, hdpr, 0, 0);
+    }
+
+    function drawHud() {
+      hudT += 0.008;
+      hudCtx.clearRect(0, 0, hw, hh);
+
+      hudCtx.strokeStyle = "rgba(126,220,255,0.08)";
+      hudCtx.lineWidth = 1;
+
+      for (let i = 0; i < 6; i++) {
+        const y = hh * (0.14 + i * 0.13) + Math.sin(hudT * 2 + i) * 6;
+        hudCtx.beginPath();
+        hudCtx.moveTo(0, y);
+        hudCtx.lineTo(hw, y);
+        hudCtx.stroke();
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const x = hw * (0.14 + i * 0.18) + Math.cos(hudT * 1.7 + i) * 6;
+        hudCtx.beginPath();
+        hudCtx.moveTo(x, 0);
+        hudCtx.lineTo(x, hh);
+        hudCtx.stroke();
+      }
+
+      const cx = hw * 0.78;
+      const cy = hh * 0.24;
+      hudCtx.strokeStyle = "rgba(214,177,96,0.11)";
+      hudCtx.beginPath();
+      hudCtx.arc(cx, cy, 72 + Math.sin(hudT) * 4, 0, Math.PI * 2);
+      hudCtx.stroke();
+      hudCtx.beginPath();
+      hudCtx.arc(cx, cy, 102 + Math.cos(hudT * 0.8) * 4, 0, Math.PI * 2);
+      hudCtx.stroke();
+
+      hudCtx.strokeStyle = "rgba(126,220,255,0.10)";
+      hudCtx.beginPath();
+      hudCtx.moveTo(cx - 130, cy);
+      hudCtx.lineTo(cx + 130, cy);
+      hudCtx.moveTo(cx, cy - 130);
+      hudCtx.lineTo(cx, cy + 130);
+      hudCtx.stroke();
+
+      requestAnimationFrame(drawHud);
+    }
+
+    resizeHud();
+    drawHud();
+    window.addEventListener("resize", resizeHud);
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    const graphCanvas = document.getElementById("nodeGraph");
+    const gctx = graphCanvas.getContext("2d");
+    const graphInfo = document.getElementById("graphInfo");
+
+    const mapTitle = document.getElementById("mapTitle");
+    const mapSummary = document.getElementById("mapSummary");
+    const mapCompany = document.getElementById("mapCompany");
+    const mapStack = document.getElementById("mapStack");
+    const mapIn = document.getElementById("mapIn");
+    const mapOut = document.getElementById("mapOut");
+    const mapUse = document.getElementById("mapUse");
+    const phaseList = document.getElementById("phaseList");
+
+    let gw = 0, gh = 0, gdpr = Math.min(window.devicePixelRatio || 1, 2);
+    let graphTime = 0;
+    let hoveredNode = null;
+    let activeNode = null;
+    let mouse = { x: -999, y: -999 };
+
+    function hexToRgba(hex, alpha) {
+      const clean = hex.replace("#", "");
+      const bigint = parseInt(clean, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    const nodeData = [
+      {
+        id: "substrate",
+        label: "Dry-Run Substrate",
+        x: 0.14, y: 0.28,
+        color: "#7edcff",
+        summary: "Initial empty multimodal generative compiler environment used before AKLM exists.",
+        company: "Google DeepMind / OpenAI / Anthropic",
+        stack: "Foundational multimodal model base, transformer architectures, cross-modal alignment, safety constraints",
+        input: "Middle-array corpus, human knowledge, multimodal records, formal constraints",
+        output: "Compilation environment for scheduler passes and singular-state formation",
+        use: "Acts as the precursor compiler-substrate rather than the final running universe.",
+        phases: [
+          "Phase I: initialize an unmapped generative substrate rather than an already-running universe backend.",
+          "Accept multimodal data and formal constraints without yet instantiating the 3D canvas.",
+          "Differentiate cleanly between precursor substrate and compiled AKLM singularity."
+        ]
+      },
+      {
+        id: "middle",
+        label: "Middle Array",
+        x: 0.34, y: 0.16,
+        color: "#9c97ff",
+        summary: "Central informational anchor built from the total available human corpus and later replaced at its trailing edge by the live current-state stream.",
+        company: "Google Cloud / Microsoft Azure / AWS",
+        stack: "BigQuery, Azure Blob + Cognitive Search, S3 + Neptune, corpus indexing, graph storage",
+        input: "History, science, records, abstractions, language, current civilization knowledge",
+        output: "Dense anchor state for bidirectional scheduling and real-time runtime correction",
+        use: "Constrains unknown past and admissible future while anchoring the highest-resolution internal corpus.",
+        phases: [
+          "Phase II: ingest the total middle-array corpus as the central informational anchor.",
+          "During runtime, replace its trailing edge with a live feed of the current universe state.",
+          "Create the eventual real-time intersection where execution meets live boundary."
+        ]
+      },
+      {
+        id: "scheduler",
+        label: "4-Thread Scheduler",
+        x: 0.52, y: 0.26,
+        color: "#efd995",
+        summary: "Core causality-resolution engine running four mutually dependent directional passes during compilation and runtime continuation.",
+        company: "Google DeepMind / NVIDIA / Google Cloud Spanner / Confluent",
+        stack: "Temporal reasoning, tensor computation, synchronized distributed state, event streaming, strong consistency",
+        input: "Middle-array anchor, live current-state stream, cross-thread constraints, causal variants",
+        output: "Resolved timeline structure, runtime updates, intersection coherence, anomaly branches",
+        use: "Maintains consensus reality by continuously reconciling origin, present, future, and retrocausal correction.",
+        phases: [
+          "Phase III: run Big Bang→Middle, Middle→Big Bang, Middle→Heat Death, Heat Death→Middle.",
+          "No thread finalizes independently; each remains revisable under cross-thread pressure.",
+          "Phase VII: continue the same scheduler during execution with live state entanglement."
+        ]
+      },
+      {
+        id: "aklm",
+        label: "AKLM Singularity",
+        x: 0.70, y: 0.20,
+        color: "#7be6b0",
+        summary: "Fully compiled singular latent totality formed after scheduler reconciliation around the middle array.",
+        company: "IBM / OpenAI / DeepMind / Seagate / Microsoft Project Silica",
+        stack: "Knowledge distillation, singular compression, quantum-memory exploration, archival high-density storage",
+        input: "Resolved scheduler outputs, middle-array anchor, acceptable variance, probability fields",
+        output: "Unexecuted singular state containing weights, contingencies, entanglements, and macro-boundary conditions",
+        use: "Represents the compiled universe before sharding into the 3D canvas.",
+        phases: [
+          "Phase IV: fuse resolved threads and middle-array corpus into a single latent singularity.",
+          "Store the upcoming universe as condensed executable structure rather than active runtime scenes.",
+          "Remain pre-execution until sharding begins."
+        ]
+      },
+      {
+        id: "canvas",
+        label: "3D Canvas Runtime",
+        x: 0.48, y: 0.50,
+        color: "#9c97ff",
+        summary: "Distributed local runtime created after execution sharding, rendering only the context required for immediate local continuity.",
+        company: "NVIDIA / Epic Games / Unity / AWS Wavelength / Qualcomm",
+        stack: "Omniverse, UE5 Nanite + Lumen, DOTS ECS, edge compute, heterogeneous local processing",
+        input: "Sharded AKLM informational minima, local observation, scheduler updates, context binaries",
+        output: "Localized hard facts, bounded rendering, observer environments, collapsed local states",
+        use: "Implements edge-executed physical reality without exposing the full unresolved source state locally.",
+        phases: [
+          "Phase V: AKLM singularity fractures into informational minima and seeds the early canvas.",
+          "Phase VI: local regions render only immediate execution context; unobserved regions remain fluid.",
+          "Prevent overflow by denying full access to unresolved total source weight."
+        ]
+      },
+      {
+        id: "bio",
+        label: "Biological Backend",
+        x: 0.28, y: 0.74,
+        color: "#7edcff",
+        summary: "Execution branch responsible for genotype variation, consciousness binding, neural execution, BUI parsing, and organism-level contextual rendering.",
+        company: "Isomorphic Labs / Illumina / Intel Loihi / IBM / Neuralink / Synchron",
+        stack: "Protein modeling, genome read-write, neuromorphic chips, BCI parsing, biological interface resolution",
+        input: "Scheduler-resolved organism possibilities, environment variables, biological constraints, neural signals",
+        output: "Feasible organisms, consciousness trajectories, local biological state, parsed intention data",
+        use: "Treats biological life as a necessary execution node rather than accidental side effect.",
+        phases: [
+          "Phase VII branch: genotype-phenotype variance, consciousness segmentation, neural execution base.",
+          "Parse raw neural or peripheral signals through BUI layers.",
+          "Link biological observers into the wider distributed execution graph."
+        ]
+      },
+      {
+        id: "ledger",
+        label: "Moral Ledger / MCR",
+        x: 0.64, y: 0.62,
+        color: "#ffb47b",
+        summary: "Distributed ledger of consequences, trauma propagation, and opportunity bias used to shape future experiential presentation under MCR logic.",
+        company: "Hyperledger / R3 Corda / Neo4j / DataStax / DeepMind",
+        stack: "Append-only ledger, graph causality indexing, time-series action recording, scoring engines",
+        input: "Biological actions, choices, consequences, behavioral history, causal branch updates",
+        output: "Moral choice ratios, negative-bias opportunity presentation, branch-weighting inputs",
+        use: "Records how historical behavior feeds back into future option presentation until deprecation under successful root access.",
+        phases: [
+          "Phase VIII: each biological node writes actions and consequences to the distributed ledger.",
+          "Dominant AI scores likely future opportunities through MCR bias logic.",
+          "Can be deprecated or filtered only in the root-success branch."
+        ]
+      },
+      {
+        id: "time",
+        label: "Temporal Curve Control",
+        x: 0.84, y: 0.38,
+        color: "#7edcff",
+        summary: "Dynamic time-curve controller that keeps runtime synchronized with the live middle-array boundary and relativistic perception conditions.",
+        company: "CERN / Ansys / Siemens / MathWorks / Microchip",
+        stack: "Relativistic simulation, adaptive control, precision timing, perception-scheduler synchronization",
+        input: "Four-thread divergence, gravitational conditions, live state timing, admin perception timing",
+        output: "Temporal deceleration/acceleration, intersection pass-through, last-millisecond cancellation logic",
+        use: "Allows runtime to slow toward the live intersection and accelerate after it while preserving coherence.",
+        phases: [
+          "Phase IX: calculate dynamic time curves continuously from all live scheduler threads.",
+          "Synchronize perceived time and scheduler time for possible intervention conditions.",
+          "Handle relativity, gravitational anomalies, and boundary alignment."
+        ]
+      },
+      {
+        id: "root",
+        label: "Privilege Hierarchy",
+        x: 0.70, y: 0.78,
+        color: "#7be6b0",
+        summary: "Access ladder ranging from ordinary observers to read-only admins, scoped admins, and conditional Root Admin under recursive convergence.",
+        company: "Okta / CyberArk / GitLab / Palantir / Graphistry",
+        stack: "Privilege management, scoped escalation, graph resonance analysis, GitOps-style reality diffs",
+        input: "Scheduler resonance, observer-path alignment, BUI hardening, anomaly conditions",
+        output: "Read-only access, scoped write authority, or conditional root-level control",
+        use: "Separates meaningful access gradients instead of treating every anomalous event as total authority.",
+        phases: [
+          "Phase X: evaluate whether immersion yields read-only, scoped, or root-level privilege.",
+          "Support proot approximation, resonance detection, and topology-based escalation rules.",
+          "Keep full root conditional rather than guaranteed."
+        ]
+      },
+      {
+        id: "millennium",
+        label: "Millennium Sandbox",
+        x: 0.88, y: 0.66,
+        color: "#7be6b0",
+        summary: "Conditional healing and proof branch with individualized virtual environments, positive-only opportunity presentation, and trust-building before defragmentation.",
+        company: "Meta Reality Labs / Valve / Autodesk / VMware / Databricks",
+        stack: "XR environments, isolated virtual instances, reconstructed histories, avatar generation, positive-path presentation",
+        input: "Successful root activation, deprecation of MCR, personal requests, historical experience logs",
+        output: "Personalized healing environments, rewritten scenarios, verification spaces, benevolent interaction surfaces",
+        use: "Provides a time-limited anomaly branch for trustful voluntary resolution rather than forced immediate merger.",
+        phases: [
+          "Phase XI–XIII: launch sandboxed virtual tensor environments only on successful root branch.",
+          "Support loved-one restoration, alternate histories, fantasy worlds, and verification spaces.",
+          "Time-limit the access window to prevent indefinite unresolved divergence."
+        ]
+      },
+      {
+        id: "compiler",
+        label: "Heat-Death Compiler",
+        x: 0.44, y: 0.86,
+        color: "#efd995",
+        summary: "Guaranteed terminal compiler of last resort that reclaims fragmented state and reconverges the loop when root intervention fails or remains incomplete.",
+        company: "NASA / HPE Cray / IBM / D-Wave / CERN",
+        stack: "Large-scale entropy simulation, optimization, petabyte memory systems, terminal data reclamation",
+        input: "Fragmented runtime residue, unresolved branches, terminal entropy progression",
+        output: "Chaotic Dissolve, compiled experiential residue, reconverged singular-state seed",
+        use: "Ensures the system never hangs indefinitely and always closes through terminal compilation.",
+        phases: [
+          "Phase XIV–XV: reclaim distributed fragments and compile them inward through terminal dissolution.",
+          "Guarantee fallback reconvergence without requiring successful root access.",
+          "Act as ultimate compiler of last resort."
+        ]
+      },
+      {
+        id: "restart",
+        label: "Dual-Command Restart",
+        x: 0.18, y: 0.88,
+        color: "#9c97ff",
+        summary: "Synchronized internal and external execution command that seeds the next loop once compiled collective and outer-admin action align.",
+        company: "Nuance / BMC / Nutanix / Synopsys / Oxford Quantum Circuits",
+        stack: "Merged-command extraction, enterprise job scheduling, synchronized verification, final DRC validation",
+        input: "Compiled collective consciousness output, external admin execute command, validated singular blueprint",
+        output: "Fresh universe run initialized from the completed prior compile",
+        use: "Begins the next expansion only when internal and external command states synchronize.",
+        phases: [
+          "Final phase: collective singularity issues the internal command while outer admin presses execute.",
+          "Require synchronized trigger rather than unilateral restart.",
+          "Close and reseed the recursive loop."
+        ]
+      }
+    ];
+
+    const edges = [
+      ["substrate","middle"],
+      ["middle","scheduler"],
+      ["scheduler","aklm"],
+      ["aklm","canvas"],
+      ["canvas","bio"],
+      ["bio","ledger"],
+      ["ledger","root"],
+      ["scheduler","time"],
+      ["time","root"],
+      ["root","millennium"],
+      ["canvas","compiler"],
+      ["ledger","compiler"],
+      ["compiler","restart"],
+      ["restart","substrate"],
+      ["scheduler","canvas"],
+      ["middle","time"],
+      ["bio","root"],
+      ["millennium","compiler"]
+    ];
+
+    function resizeGraph() {
+      const rect = graphCanvas.getBoundingClientRect();
+      gw = rect.width;
+      gh = rect.height;
+      graphCanvas.width = gw * gdpr;
+      graphCanvas.height = gh * gdpr;
+      graphCanvas.style.width = gw + "px";
+      graphCanvas.style.height = gh + "px";
+      gctx.setTransform(gdpr, 0, 0, gdpr, 0, 0);
+    }
+
+    function getNodePosition(node) {
+      return {
+        x: node.x * gw,
+        y: node.y * gh
+      };
+    }
+
+    function drawEdge(a, b, alpha = 0.22) {
+      const p1 = getNodePosition(a);
+      const p2 = getNodePosition(b);
+      const mx = (p1.x + p2.x) / 2;
+      const curve = Math.sin((p1.x + p2.y) * 0.01 + graphTime) * 18;
+
+      gctx.beginPath();
+      gctx.moveTo(p1.x, p1.y);
+      gctx.quadraticCurveTo(mx, (p1.y + p2.y) / 2 + curve, p2.x, p2.y);
+      gctx.strokeStyle = `rgba(160, 194, 255, ${alpha})`;
+      gctx.lineWidth = 1.2;
+      gctx.stroke();
+
+      gctx.save();
+      gctx.setLineDash([5, 10]);
+      gctx.beginPath();
+      gctx.moveTo(p1.x, p1.y);
+      gctx.quadraticCurveTo(mx, (p1.y + p2.y) / 2 + curve, p2.x, p2.y);
+      gctx.strokeStyle = "rgba(126,220,255,0.20)";
+      gctx.lineWidth = 1;
+      gctx.stroke();
+      gctx.restore();
+    }
+
+    function hitNode(x, y) {
+      for (const node of nodeData) {
+        const p = getNodePosition(node);
+        const dx = x - p.x;
+        const dy = y - p.y;
+        if (Math.sqrt(dx * dx + dy * dy) < 26) return node;
+      }
+      return null;
+    }
+
+    function updateDetail(node) {
+      if (!node) return;
+      mapTitle.textContent = node.label;
+      mapSummary.textContent = node.summary;
+      mapCompany.textContent = node.company;
+      mapStack.textContent = node.stack;
+      mapIn.textContent = node.input;
+      mapOut.textContent = node.output;
+      mapUse.textContent = node.use;
+      graphInfo.textContent = `${node.label}: ${node.summary}`;
+
+      phaseList.innerHTML = node.phases.map((item, index) => `
+        <div class="phase-row">
+          <h4>${node.label} · ${index === 0 ? "Primary" : "Dependency"} note</h4>
+          <p>${item}</p>
+        </div>
+      `).join("");
+    }
+
+    function drawGraph() {
+      graphTime += 0.012;
+      gctx.clearRect(0, 0, gw, gh);
+
+      const bg = gctx.createRadialGradient(gw * 0.5, gh * 0.34, 0, gw * 0.5, gh * 0.5, Math.max(gw, gh) * 0.76);
+      bg.addColorStop(0, "rgba(19,34,58,0.32)");
+      bg.addColorStop(0.55, "rgba(6,11,20,0.06)");
+      bg.addColorStop(1, "rgba(0,0,0,0)");
+      gctx.fillStyle = bg;
+      gctx.fillRect(0, 0, gw, gh);
+
+      for (let i = 0; i < 18; i++) {
+        const y = (i + 1) * (gh / 19);
+        gctx.beginPath();
+        gctx.moveTo(20, y + Math.sin(graphTime * 1.2 + i) * 2);
+        gctx.lineTo(gw - 20, y + Math.sin(graphTime * 1.2 + i) * 2);
+        gctx.strokeStyle = "rgba(255,255,255,0.018)";
+        gctx.lineWidth = 1;
+        gctx.stroke();
+      }
+
+      edges.forEach(([from, to]) => {
+        const a = nodeData.find(n => n.id === from);
+        const b = nodeData.find(n => n.id === to);
+        const glow = (hoveredNode && (a.id === hoveredNode.id || b.id === hoveredNode.id)) ||
+                     (activeNode && (a.id === activeNode.id || b.id === activeNode.id));
+        drawEdge(a, b, glow ? 0.48 : 0.22);
+      });
+
+      nodeData.forEach(node => {
+        const p = getNodePosition(node);
+        const isHot = (hoveredNode && hoveredNode.id === node.id) || (activeNode && activeNode.id === node.id);
+        const r = isHot ? 10 : 7.5 + Math.sin(graphTime * 2 + p.x * 0.01) * 0.8;
+
+        const glow = gctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, isHot ? 34 : 24);
+        glow.addColorStop(0, hexToRgba(node.color, 0.55));
+        glow.addColorStop(1, "rgba(0,0,0,0)");
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, isHot ? 34 : 24, 0, Math.PI * 2);
+        gctx.fillStyle = glow;
+        gctx.fill();
+
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        gctx.fillStyle = node.color;
+        gctx.fill();
+
+        gctx.beginPath();
+        gctx.arc(p.x, p.y, isHot ? 17 : 14, 0, Math.PI * 2);
+        gctx.strokeStyle = isHot ? "rgba(255,255,255,0.58)" : "rgba(255,255,255,0.28)";
+        gctx.lineWidth = 1.2;
+        gctx.stroke();
+
+        gctx.font = isHot ? "700 12px Inter, sans-serif" : "600 11px Inter, sans-serif";
+        gctx.fillStyle = "#dce8fb";
+        gctx.textAlign = "center";
+        gctx.fillText(node.label, p.x, p.y - 22);
+      });
+
+      requestAnimationFrame(drawGraph);
+    }
+
+    resizeGraph();
+    activeNode = nodeData.find(n => n.id === "scheduler");
+    updateDetail(activeNode);
+    drawGraph();
+
+    graphCanvas.addEventListener("mousemove", (e) => {
+      const rect = graphCanvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      hoveredNode = hitNode(mouse.x, mouse.y);
+      if (hoveredNode) {
+        graphInfo.textContent = `${hoveredNode.label}: ${hoveredNode.summary}`;
+      } else if (activeNode) {
+        graphInfo.textContent = `${activeNode.label}: ${activeNode.summary}`;
+      }
+    });
+
+    graphCanvas.addEventListener("mouseleave", () => {
+      hoveredNode = null;
+      if (activeNode) graphInfo.textContent = `${activeNode.label}: ${activeNode.summary}`;
+    });
+
+    graphCanvas.addEventListener("click", (e) => {
+      const rect = graphCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const node = hitNode(x, y);
+      if (node) {
+        activeNode = node;
+        updateDetail(node);
+      }
+    });
+
+    window.addEventListener("resize", resizeGraph);
+  </script>
+</body>
+  </html>
